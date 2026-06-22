@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GQ Data — Build Explainer</title>
+<title>GQ Data, Build Explainer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -150,7 +150,7 @@
     </div>
     <span class="eyebrow">Build Explainer · Phase 1</span>
     <h1>What exists today, and whether it's heading the right way.</h1>
-    <p class="sub">A visual snapshot of the GQ Data engineering scaffold — the platform vision, the
+    <p class="sub">A visual snapshot of the GQ Data engineering scaffold, the platform vision, the
       governed-data pipeline, the core/pack design that keeps it reusable across any vertical, and
       exactly which pieces are <b>built &amp; compiling</b>, which are <b>scaffolded stubs</b>, and
       which are <b>still to come</b>. Generated 2026-06-22.</p>
@@ -177,14 +177,14 @@
 <!-- VISION -->
 <section id="vision"><div class="wrap">
   <span class="eyebrow">The platform</span>
-  <h2>Four layers — a stable core, customized on top</h2>
+  <h2>Four layers, a stable core, customized on top</h2>
   <p class="note">Greyquill is an enterprise trust &amp; governance platform. GQ Data is the
     foundation everything else depends on, so it's built first as a standalone product. The
     other three layers talk to it only through documented contracts, so they build in parallel.</p>
 
   <div class="layer data">
     <div class="tag">GQ Data</div>
-    <div class="desc">Enterprise data-truth layer — ingest, resolve, classify, lineage, quality, governed API.</div>
+    <div class="desc">Enterprise data-truth layer, ingest, resolve, classify, lineage, quality, governed API.</div>
     <div class="now">◀ current focus</div>
   </div>
   <div class="layer govern">
@@ -200,7 +200,7 @@
     <div class="desc">Business-specific customization layer (low-code + optional code).</div>
   </div>
   <div class="callout" style="margin-top:16px">
-    <b>Why this matters for direction:</b> building GQ Data alone — with contracts as the boundary —
+    <b>Why this matters for direction:</b> building GQ Data alone, with contracts as the boundary, 
     is what lets the rest of the platform proceed without coupling. We're working on the right layer first.
   </div>
 </div></section>
@@ -239,7 +239,7 @@
   <span class="eyebrow">The key design decision</span>
   <h2>Domain-agnostic core + verticals as loadable data</h2>
   <p class="note">This is the answer to "make it reusable for any use case." The engine knows
-    <i>nothing</i> about insurance. A vertical is a <b>pack</b> — pure data declaring entity types,
+    <i>nothing</i> about insurance. A vertical is a <b>pack</b>, pure data declaring entity types,
     match keys, survivorship &amp; quality rules. Adding BFSI or Healthcare = a new <code>pack.yaml</code>,
     <b>zero service-code changes</b>.</p>
   <div class="cp">
@@ -251,13 +251,13 @@
       <div class="iface">interface Matcher &nbsp;<span style="color:var(--muted)">// exact, phonetic…</span></div>
       <div class="iface">interface SurvivorshipRule <span style="color:var(--muted)">// most_recent…</span></div>
       <div class="iface">interface QualityRule <span style="color:var(--muted)">// not_null…</span></div>
-      <div class="iface" style="background:var(--accent-soft)">ontology.LoadPack() — validates a pack
+      <div class="iface" style="background:var(--accent-soft)">ontology.LoadPack(), validates a pack
         against the registry</div>
     </div>
     <div class="pack-box">
       <h4>🧩 Vertical pack <span class="chip ok" style="margin-left:6px">insurance live</span></h4>
-      <p class="card" style="border:none;box-shadow:none;padding:0 0 8px"><code>packs/insurance-claims/pack.yaml</code>
-        — references core strategies by id.</p>
+      <p class="card" style="border:none;box-shadow:none;padding:0 0 8px"><code>packs/insurance-claims/pack.yaml</code>,
+        references core strategies by id.</p>
       <div class="pl">PolicyHolder, Policy, Claim, KYC_Document</div>
       <div class="pl">match: national_id, email → fuzzy(name,phone,addr)</div>
       <div class="pl">survivorship: email→most_recent …</div>
@@ -273,7 +273,7 @@
 <!-- TREE -->
 <section id="tree" style="background:var(--bg-soft)"><div class="wrap">
   <span class="eyebrow">What's on disk</span>
-  <h2>The <code>gq-data/</code> monorepo — 47 files</h2>
+  <h2>The <code>gq-data/</code> monorepo, 47 files</h2>
   <div class="legend">
     <span><span class="dot" style="background:#5fd3a3"></span> built &amp; compiling</span>
     <span><span class="dot" style="background:#f0ad4e"></span> scaffolded stub (TODO inside)</span>
@@ -288,7 +288,7 @@
 │   ├── <span class="d">gq-pb/</span>              <span class="c">✓ buf + resolve.proto (MatchService)</span>
 │   └── <span class="d">gq-sdk/</span>             <span class="c">✓ Python client (ingest/get/lineage/audit)</span>
 ├── <span class="d">packs/</span>
-│   └── insurance-claims/   <span class="c">✓ pack.yaml — vertical as DATA</span>
+│   └── insurance-claims/   <span class="c">✓ pack.yaml, vertical as DATA</span>
 ├── <span class="d">services/</span>
 │   ├── gq-ingest-api/      <span class="c">✓ compiles</span> · Gin: <span class="s">POST /ingest, GET /jobs (stub bodies)</span>
 │   ├── gq-ingest-worker/   <span class="c">✓ compiles · CSV connector real</span> · <span class="s">Kafka loop TODO</span>
@@ -336,7 +336,7 @@
       <tr><td>Survivorship rules (recent / frequent / confidence)</td><td><span class="chip ok">built</span></td><td class="k">gq-resolve/.../survivorship</td></tr>
       <tr><td>CSV connector</td><td><span class="chip ok">built</span></td><td class="k">ingest-worker/.../connectors</td></tr>
       <tr><td>YAML pack parsing</td><td><span class="chip stub">stub</span></td><td>add <code>yaml.v3</code> in loader (E0-4)</td></tr>
-      <tr><td>Fuzzy / ML matching</td><td><span class="chip stub">stub</span></td><td>E3-2 — then install ML deps</td></tr>
+      <tr><td>Fuzzy / ML matching</td><td><span class="chip stub">stub</span></td><td>E3-2, then install ML deps</td></tr>
       <tr><td>Kafka wiring · DB persistence (Neo4j/PG/Mongo)</td><td><span class="chip stub">stub</span></td><td>E1–E4</td></tr>
       <tr><td>Steward review queue · audit pack</td><td><span class="chip stub">stub</span></td><td>E5 · E6</td></tr>
       <tr><td>Graph API / Classify / Lineage / Quality services</td><td><span class="chip plan">later</span></td><td>E7 + Phase 2</td></tr>
@@ -351,17 +351,17 @@
   <p class="note">9 epics (E0–E8), tracked in Jira (project GQ, board 34). The scaffold delivers most of
     E0-4 already. Critical path: <b>E0 → E1 → E3 → E4 → E6 → E7 → E8</b>.</p>
   <div class="grid g2">
-    <div class="card"><h4>E0 — Infra &amp; CI/CD bootstrap <span class="chip stub" style="margin-left:4px">in progress</span></h4>
+    <div class="card"><h4>E0, Infra &amp; CI/CD bootstrap <span class="chip stub" style="margin-left:4px">in progress</span></h4>
       <p>OpenShift namespace, data stores, CI pipeline, monorepo scaffold. <b>Scaffold + CI skeleton done.</b></p></div>
-    <div class="card"><h4>E1 — GQ Ingest: API &amp; jobs <span class="chip plan">next</span></h4>
+    <div class="card"><h4>E1, GQ Ingest: API &amp; jobs <span class="chip plan">next</span></h4>
       <p>POST /ingest, job lifecycle, CSV + SAP connectors, raw persistence.</p></div>
-    <div class="card"><h4>E2 — Ingest validation &amp; quarantine</h4><p>Quality rules, no silent drops.</p></div>
-    <div class="card"><h4>E3 — Resolve: matching engine</h4><p>Deterministic + fuzzy + confidence routing. The heart.</p></div>
-    <div class="card"><h4>E4 — Golden records &amp; survivorship</h4><p>Merge, stable URIs, temporal versioning.</p></div>
-    <div class="card"><h4>E5 — Steward review queue</h4><p>Below-threshold matches, audited accept/reject.</p></div>
-    <div class="card"><h4>E6 — Lineage (audit slice)</h4><p>Field provenance + signed audit pack.</p></div>
-    <div class="card"><h4>E7 — Graph API (read path)</h4><p>GET entity / lineage / audit-pack, RBAC, PII masking.</p></div>
-    <div class="card"><h4>E8 — Demo dataset &amp; E2E</h4><p>Seeded duplicates, the "one query" walkthrough.</p></div>
+    <div class="card"><h4>E2, Ingest validation &amp; quarantine</h4><p>Quality rules, no silent drops.</p></div>
+    <div class="card"><h4>E3, Resolve: matching engine</h4><p>Deterministic + fuzzy + confidence routing. The heart.</p></div>
+    <div class="card"><h4>E4, Golden records &amp; survivorship</h4><p>Merge, stable URIs, temporal versioning.</p></div>
+    <div class="card"><h4>E5, Steward review queue</h4><p>Below-threshold matches, audited accept/reject.</p></div>
+    <div class="card"><h4>E6, Lineage (audit slice)</h4><p>Field provenance + signed audit pack.</p></div>
+    <div class="card"><h4>E7, Graph API (read path)</h4><p>GET entity / lineage / audit-pack, RBAC, PII masking.</p></div>
+    <div class="card"><h4>E8, Demo dataset &amp; E2E</h4><p>Seeded duplicates, the "one query" walkthrough.</p></div>
     <div class="card" style="background:var(--accent-soft);border-color:var(--data-line)">
       <h4>Sprint slicing</h4><p>S1 bootstrap (E0) · S2 ingest (E1+E2) · S3 match (E3) · S4 golden+audit+demo (E4–E8).</p></div>
   </div>
@@ -370,9 +370,9 @@
 <!-- BUILD STATUS -->
 <section id="build"><div class="wrap">
   <span class="eyebrow">Verification</span>
-  <h2>Build status — compiled on real Linux</h2>
+  <h2>Build status, compiled on real Linux</h2>
   <p class="note">The dev Mac has no Go toolchain, so the scaffold was rsync'd to a home-lab Ubuntu host
-    and built there. This proves the code I wrote actually compiles — not just that files exist.</p>
+    and built there. This proves the code I wrote actually compiles, not just that files exist.</p>
   <div class="grid g4">
     <div class="card"><h4>Host</h4><p>big-ubuntu<br><span class="meta">amar@192.168.1.19 · 8 cores</span></p></div>
     <div class="card"><h4>Toolchain</h4><p>Go 1.26.4<br><span class="meta">Python 3.12 venv</span></p></div>
@@ -380,9 +380,9 @@
     <div class="card"><h4>Tests</h4><p><span class="chip ok">pytest 2/2</span><br><span class="meta">go test: no failures</span></p></div>
   </div>
   <div class="callout warn" style="margin-top:16px"><b>Honest caveats.</b> ① The build proves
-    <i>compilation</i>, not behaviour — most logic is still stubbed. ② <b>Heavy ML deps deferred:</b>
+    <i>compilation</i>, not behaviour, most logic is still stubbed. ② <b>Heavy ML deps deferred:</b>
     recordlinkage / scikit-learn are declared but not installed (the matcher stub doesn't import them
-    yet; saves ~1–2 GB until E3-2). ③ Intended host ubuntu-01 (408 GB disk) couldn't Wake-on-LAN —
+    yet; saves ~1–2 GB until E3-2). ③ Intended host ubuntu-01 (408 GB disk) couldn't Wake-on-LAN, 
     same portable <code>remote-bootstrap.sh</code> will build there once powered on.</div>
 </div></section>
 
@@ -400,13 +400,13 @@
     <p>Only GQ Data is scaffolded; the contract boundary (doc 03 / gq-pb) is where Govern plugs in later.</p></div></div>
   <div class="check"><div class="mk y">✓</div><div>
     <b>Locked stack, actually compiles</b>
-    <p>Go + Python, Gin, buf, Kafka/Neo4j/PG planned per doc 05 — green build on real Linux, deps locked in go.sum.</p></div></div>
+    <p>Go + Python, Gin, buf, Kafka/Neo4j/PG planned per doc 05, green build on real Linux, deps locked in go.sum.</p></div></div>
   <div class="check"><div class="mk y">✓</div><div>
     <b>Right first vertical for the thesis</b>
-    <p>Insurance Claims is Resolve-heavy + audit-heavy — it stresses the hardest component and is the demo centerpiece.</p></div></div>
+    <p>Insurance Claims is Resolve-heavy + audit-heavy, it stresses the hardest component and is the demo centerpiece.</p></div></div>
   <div class="check"><div class="mk n">○</div><div>
     <b>End-to-end MVP working</b>
-    <p>Not yet — this is a scaffold. Real ingest→resolve→golden→audit is the E1–E8 work ahead. Expected at this stage.</p></div></div>
+    <p>Not yet, this is a scaffold. Real ingest→resolve→golden→audit is the E1–E8 work ahead. Expected at this stage.</p></div></div>
   <div class="check"><div class="mk n">○</div><div>
     <b>Proven on a second vertical (BFSI)</b>
     <p>The mechanism is ready; BFSI pack is Phase 2. That's when reusability is truly demonstrated, not just designed.</p></div></div>
@@ -416,7 +416,7 @@
 </div></section>
 
 <footer><div class="wrap">
-  Greyquill · GQ Data — generated from the repo on 2026-06-22. Sources: <code>docs/01,03,04,05,06</code>,
+  Greyquill · GQ Data, generated from the repo on 2026-06-22. Sources: <code>docs/01,03,04,05,06</code>,
   <code>gq-data/</code> scaffold, <code>CONTEXT.md</code>. Companion to the C4 diagram in
   <code>docs/architecture/greyquill-c4-architecture.html</code>.
 </div></footer>
