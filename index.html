@@ -5,43 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex" />
 <title>Greyquill · Document Center</title>
+<link rel="icon" href="/dc/assets/greyquill-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0b1220; --ink-soft:#475067; --muted:#8b93a7;
-    --line:#e4e7ee; --accent:#1f4fe0; --bg-soft:#f7f8fa;
-    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --brand-blue:#0B4F88; --brand-blue-light:#1a6bb5; --brand-blue-dark:#083d6a;
+    --ink:#0a1628; --mist:#eefbff;
+    --ink-soft:#475067; --muted:#8b93a7; --line:#e4e7ee;
+    --display:'Sora',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:var(--font);color:var(--ink);
-    background:linear-gradient(180deg,#fff,var(--bg-soft));line-height:1.55}
-  .wrap{max-width:760px;margin:0 auto;padding:72px 24px}
-  .brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
-  .logo{width:34px;height:34px;border-radius:8px;background:var(--ink);color:#fff;
-    display:grid;place-items:center;font-weight:800;font-size:15px}
-  .brand b{font-size:17px} .brand span{color:var(--muted)}
-  h1{font-size:30px;letter-spacing:-.02em;margin:0 0 10px}
-  p.sub{color:var(--ink-soft);font-size:16px;max-width:560px;margin:0 0 28px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;
-    box-shadow:0 1px 2px rgba(11,18,32,.04),0 6px 20px rgba(11,18,32,.05);margin-bottom:16px}
-  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    background:var(--bg-soft);border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:13.5px}
-  .foot{color:var(--muted);font-size:13px;margin-top:36px}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:#fff;line-height:1.55}
+  .wrap{max-width:780px;margin:0 auto;padding:64px 24px}
+  .logo{height:30px;width:auto;display:block;margin-bottom:36px}
+  .eyebrow{font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand-blue)}
+  h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:-.02em;margin:8px 0 10px}
+  p.sub{color:var(--ink-soft);font-size:16px;max-width:580px;margin:0 0 32px}
+  .section-title{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);margin:30px 0 12px}
+  a.doc{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:border-color .15s,transform .15s,box-shadow .15s}
+  a.doc:hover{border-color:var(--brand-blue);transform:translateY(-1px);
+    box-shadow:0 6px 22px rgba(11,79,136,.10)}
+  a.doc b{font-family:var(--display);font-weight:600;font-size:16px}
+  a.doc .tag{font-size:11px;font-weight:600;color:var(--brand-blue);background:var(--mist);
+    border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle}
+  a.doc span{display:block;color:var(--ink-soft);font-size:14px;margin-top:4px}
+  .foot{color:var(--muted);font-size:13px;margin-top:44px;border-top:1px solid var(--line);padding-top:18px}
 </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="brand">
-      <div class="logo">GQ</div>
-      <b>Greyquill</b><span>· Document Center</span>
-    </div>
-    <h1>Document Center</h1>
-    <p class="sub">A curated space for proposals, estimates and shared documents.
-      Links are private by invitation — please use the specific URL shared with you.</p>
-    <div class="card">
-      Documents are organised by project:
-      <code>www.greyquill.io/dc/&lt;project&gt;/&lt;document&gt;</code>
-    </div>
-    <div class="foot">© Greyquill. Confidential — for the intended recipient only.</div>
+    <img class="logo" src="/dc/assets/greyquill-logo.png" alt="Greyquill" />
+    <div class="eyebrow">Document Center</div>
+    <h1>Greyquill Document Center</h1>
+    <p class="sub">A curated space for open Greyquill material. Browse the published
+      documents below, or open a direct link shared with you.</p>
+
+    <div class="section-title">Platform &amp; GQ Data</div>
+    <a class="doc" href="/dc/platform/">
+      <b>Platform &amp; Architecture<span class="tag">2 documents</span></b>
+      <span>Greyquill platform C4 architecture and the GQ Data build explainer.</span>
+    </a>
+
+    <div class="section-title">Decks</div>
+    <a class="doc" href="/dc/decks/greyquill-cosell-deck.pdf">
+      <b>Greyquill Co-Sell Deck<span class="tag">PDF</span></b>
+      <span>Partner co-sell overview.</span>
+    </a>
+
+    <div class="foot">© Greyquill. Open materials. Confidential client documents are not published here.</div>
   </div>
 </body>
 </html>
