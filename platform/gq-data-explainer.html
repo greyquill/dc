@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GQ Data — Build Explainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#f7f8fa; --ink:#0b1220; --ink-soft:#475067; --muted:#8b93a7;
+    --line:#e4e7ee; --accent:#1f4fe0; --accent-soft:#eef3ff;
+    --data:#2563eb; --data-bg:#eff5ff; --data-line:#c7dafe;
+    --govern:#d97706; --govern-bg:#fff7ed; --govern-line:#fcd9a8;
+    --agents:#059669; --agents-bg:#ecfdf5; --agents-line:#b3ecd5;
+    --studio:#7c3aed; --studio-bg:#f5f3ff; --studio-line:#ddd2fb;
+    --packs:#0d9488; --packs-bg:#f0fdfa; --packs-line:#b3e7e0;
+    --store:#475569; --store-bg:#f1f5f9; --store-line:#d8dfe8;
+    --ok:#059669; --ok-bg:#ecfdf5; --ok-line:#b3ecd5;
+    --stub:#d97706; --stub-bg:#fff7ed; --stub-line:#fcd9a8;
+    --plan:#64748b; --plan-bg:#f6f7f9; --plan-line:#e1e5ec;
+    --radius:12px; --shadow:0 1px 2px rgba(11,18,32,.04),0 6px 20px rgba(11,18,32,.05);
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:var(--font); color:var(--ink);
+    background:linear-gradient(180deg,#fff 0%,var(--bg-soft) 100%); line-height:1.5; }
+  .wrap { max-width:1120px; margin:0 auto; padding:0 24px; }
+
+  /* header */
+  header { padding:54px 0 30px; }
+  .brand { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .logo { width:34px; height:34px; border-radius:8px; background:var(--ink); color:#fff;
+    display:grid; place-items:center; font-weight:800; font-size:16px; }
+  .brand-name { font-size:18px; font-weight:700; } .brand-name span { color:var(--muted); font-weight:500; }
+  h1 { font-size:34px; line-height:1.15; margin:6px 0 12px; letter-spacing:-.02em; }
+  .sub { color:var(--ink-soft); font-size:16.5px; max-width:780px; margin:0 0 20px; }
+  .pills { display:flex; flex-wrap:wrap; gap:8px; }
+  .pill { font-size:12.5px; font-weight:600; color:var(--ink-soft); background:#fff;
+    border:1px solid var(--line); border-radius:999px; padding:5px 12px; }
+  .pill.ok { color:var(--ok); background:var(--ok-bg); border-color:var(--ok-line); }
+  .pill.accent { color:var(--accent); background:var(--accent-soft); border-color:var(--data-line); }
+  .pill.warn { color:var(--stub); background:var(--stub-bg); border-color:var(--stub-line); }
+
+  /* nav */
+  nav { position:sticky; top:0; z-index:10; background:rgba(255,255,255,.86);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); margin-top:24px; }
+  nav .wrap { display:flex; gap:4px; flex-wrap:wrap; padding-top:10px; padding-bottom:10px; }
+  nav a { font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none;
+    padding:6px 12px; border-radius:8px; }
+  nav a:hover { background:var(--bg-soft); color:var(--ink); }
+
+  section { padding:44px 0; border-top:1px solid var(--line); }
+  section:first-of-type { border-top:none; }
+  .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent); background:var(--accent-soft); padding:4px 10px; border-radius:6px; display:inline-block; }
+  h2 { font-size:25px; margin:14px 0 6px; letter-spacing:-.01em; }
+  .note { color:var(--ink-soft); font-size:14.5px; margin:4px 0 24px; max-width:840px; }
+  h3 { font-size:16px; margin:26px 0 12px; }
+
+  .grid { display:grid; gap:14px; }
+  .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); }
+  .g4 { grid-template-columns:repeat(4,1fr); }
+  @media(max-width:860px){ .g2,.g3,.g4{ grid-template-columns:1fr; } }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 16px 14px; box-shadow:var(--shadow); }
+  .card h4 { margin:0 0 6px; font-size:14.5px; display:flex; align-items:center; gap:8px; }
+  .card p { margin:0; font-size:12.8px; color:var(--ink-soft); }
+  .card .meta { font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-top:8px; }
+
+  /* status chips */
+  .chip { font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:2px 8px; border-radius:999px; white-space:nowrap; }
+  .chip.ok { color:var(--ok); background:var(--ok-bg); border:1px solid var(--ok-line); }
+  .chip.stub { color:var(--stub); background:var(--stub-bg); border:1px solid var(--stub-line); }
+  .chip.plan { color:var(--plan); background:var(--plan-bg); border:1px solid var(--plan-line); }
+
+  /* layer stack */
+  .layer { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:10px;
+    display:flex; align-items:center; gap:16px; background:#fff; }
+  .layer .tag { font-weight:700; font-size:14px; min-width:120px; }
+  .layer .desc { font-size:13px; color:var(--ink-soft); }
+  .layer.data { background:var(--data-bg); border-color:var(--data-line); }
+  .layer.govern { background:var(--govern-bg); border-color:var(--govern-line); }
+  .layer.agents { background:var(--agents-bg); border-color:var(--agents-line); }
+  .layer.studio { background:var(--studio-bg); border-color:var(--studio-line); }
+  .layer .now { margin-left:auto; font-size:11px; font-weight:700; color:var(--data);
+    background:#fff; border:1px solid var(--data-line); border-radius:999px; padding:3px 10px; }
+
+  /* pipeline */
+  .pipe { display:flex; align-items:stretch; gap:0; flex-wrap:wrap; }
+  .step { flex:1; min-width:120px; background:#fff; border:1px solid var(--line);
+    border-radius:10px; padding:12px; text-align:center; position:relative; }
+  .step b { font-size:13px; display:block; } .step span { font-size:11px; color:var(--muted); }
+  .arrow { display:grid; place-items:center; width:26px; color:var(--muted); font-size:18px; }
+  @media(max-width:860px){ .arrow{ width:100%; height:22px; transform:rotate(90deg);} }
+
+  /* core/pack diagram */
+  .cp { display:grid; grid-template-columns:1.3fr 1fr; gap:16px; align-items:start; }
+  @media(max-width:860px){ .cp{ grid-template-columns:1fr; } }
+  .core-box { background:var(--data-bg); border:1.5px solid var(--data-line); border-radius:12px; padding:16px; }
+  .pack-box { background:var(--packs-bg); border:1.5px dashed var(--packs); border-radius:12px; padding:16px; }
+  .core-box h4,.pack-box h4 { margin:0 0 4px; font-size:14px; }
+  .iface { font-family:var(--mono); font-size:12px; background:#fff; border:1px solid var(--data-line);
+    border-radius:7px; padding:7px 10px; margin:7px 0; color:var(--ink); }
+  .pl { font-family:var(--mono); font-size:12px; background:#fff; border:1px solid var(--packs-line);
+    border-radius:7px; padding:7px 10px; margin:7px 0; }
+
+  /* tree */
+  pre.tree { font-family:var(--mono); font-size:12.5px; line-height:1.7; background:#0b1220; color:#cfe0ff;
+    border-radius:12px; padding:18px 20px; overflow:auto; }
+  pre.tree .c { color:#5fd3a3; } /* green ok */
+  pre.tree .s { color:#f0ad4e; } /* stub */
+  pre.tree .p { color:#8b93a7; } /* plan */
+  pre.tree .d { color:#7fa8ff; font-weight:600; } /* dir */
+  pre.tree .cm { color:#6b7280; }
+
+  /* table */
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+  td.k { font-family:var(--mono); font-size:12px; white-space:nowrap; }
+
+  /* checklist */
+  .check { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); }
+  .check .mk { font-size:18px; line-height:1.2; } .check .mk.y{ color:var(--ok);} .check .mk.n{ color:var(--muted);}
+  .check b { font-size:14px; } .check p { margin:2px 0 0; font-size:13px; color:var(--ink-soft); }
+
+  .callout { background:#fff; border:1px solid var(--line); border-left:4px solid var(--accent);
+    border-radius:8px; padding:14px 16px; font-size:13.5px; color:var(--ink-soft); }
+  .callout.warn { border-left-color:var(--stub); }
+  .callout b { color:var(--ink); }
+  code { font-family:var(--mono); font-size:12px; background:var(--bg-soft); padding:1px 6px; border-radius:5px; }
+  footer { padding:40px 0 60px; color:var(--muted); font-size:12.5px; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; margin:8px 0 18px; font-size:12px; color:var(--ink-soft); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">GQ</div>
+      <div class="brand-name">Greyquill <span>/ GQ Data</span></div>
+    </div>
+    <span class="eyebrow">Build Explainer · Phase 1</span>
+    <h1>What exists today, and whether it's heading the right way.</h1>
+    <p class="sub">A visual snapshot of the GQ Data engineering scaffold — the platform vision, the
+      governed-data pipeline, the core/pack design that keeps it reusable across any vertical, and
+      exactly which pieces are <b>built &amp; compiling</b>, which are <b>scaffolded stubs</b>, and
+      which are <b>still to come</b>. Generated 2026-06-22.</p>
+    <div class="pills">
+      <span class="pill ok">● Build green on big-ubuntu (Go 1.26.4)</span>
+      <span class="pill accent">3 services compile · pytest 2/2</span>
+      <span class="pill">Vertical = Insurance Claims</span>
+      <span class="pill warn">MVP not yet functional (scaffold stage)</span>
+    </div>
+  </div>
+</header>
+
+<nav><div class="wrap">
+  <a href="#vision">Platform</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#corepack">Core vs Pack</a>
+  <a href="#tree">What's built</a>
+  <a href="#services">Services</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#build">Build status</a>
+  <a href="#direction">Right direction?</a>
+</div></nav>
+
+<!-- VISION -->
+<section id="vision"><div class="wrap">
+  <span class="eyebrow">The platform</span>
+  <h2>Four layers — a stable core, customized on top</h2>
+  <p class="note">Greyquill is an enterprise trust &amp; governance platform. GQ Data is the
+    foundation everything else depends on, so it's built first as a standalone product. The
+    other three layers talk to it only through documented contracts, so they build in parallel.</p>
+
+  <div class="layer data">
+    <div class="tag">GQ Data</div>
+    <div class="desc">Enterprise data-truth layer — ingest, resolve, classify, lineage, quality, governed API.</div>
+    <div class="now">◀ current focus</div>
+  </div>
+  <div class="layer govern">
+    <div class="tag">GQ Govern</div>
+    <div class="desc">Policies, controls, approvals, evidence + the Diagnose role. Talks to GQ Data via contracts only.</div>
+  </div>
+  <div class="layer agents">
+    <div class="tag">GQ Agents</div>
+    <div class="desc">Governed workflow execution.</div>
+  </div>
+  <div class="layer studio">
+    <div class="tag">GQStudio</div>
+    <div class="desc">Business-specific customization layer (low-code + optional code).</div>
+  </div>
+  <div class="callout" style="margin-top:16px">
+    <b>Why this matters for direction:</b> building GQ Data alone — with contracts as the boundary —
+    is what lets the rest of the platform proceed without coupling. We're working on the right layer first.
+  </div>
+</div></section>
+
+<!-- PIPELINE -->
+<section id="pipeline" style="background:var(--bg-soft)"><div class="wrap">
+  <span class="eyebrow">GQ Data</span>
+  <h2>The governed pipeline</h2>
+  <p class="note">Every record flows through the same path. Phase 1 builds the first half end-to-end
+    (Ingest → Resolve → Golden → Lineage → one-query audit); Classify / Quality / streaming come later.</p>
+  <div class="pipe">
+    <div class="step"><b>Source</b><span>any system</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Ingest</b><span>gateway + connectors</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Raw Record</b><span>immutable</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Resolve</b><span>match + merge</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Golden Record</b><span>+ field provenance</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Graph API</b><span>+ audit pack</span></div>
+  </div>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card"><h4>Six modules</h4><p>Ingest · Resolve · Classify · Lineage · Quality · Graph API.
+      Phase 1 scaffolds the first two + minimal Lineage/Graph-API for the audit demo.</p></div>
+    <div class="card"><h4>Stack (locked)</h4><p>Go 1.22+ services, Python for ML; Neo4j · PostgreSQL ·
+      MongoDB · Kafka · Redis on OpenShift. Decided in doc 05.</p></div>
+    <div class="card"><h4>MVP proof</h4><p>Ingest a duplicated policyholder from 2 sources, resolve to one
+      golden record, and answer "how did this get here?" in a single query with a signed audit pack.</p></div>
+  </div>
+</div></section>
+
+<!-- CORE / PACK -->
+<section id="corepack"><div class="wrap">
+  <span class="eyebrow">The key design decision</span>
+  <h2>Domain-agnostic core + verticals as loadable data</h2>
+  <p class="note">This is the answer to "make it reusable for any use case." The engine knows
+    <i>nothing</i> about insurance. A vertical is a <b>pack</b> — pure data declaring entity types,
+    match keys, survivorship &amp; quality rules. Adding BFSI or Healthcare = a new <code>pack.yaml</code>,
+    <b>zero service-code changes</b>.</p>
+  <div class="cp">
+    <div class="core-box">
+      <h4>🔒 Stable core <span class="chip ok" style="margin-left:6px">built</span></h4>
+      <p class="card" style="border:none;box-shadow:none;padding:0 0 8px">Generic primitives + strategy
+        interfaces, registered by id. No entity ever named here.</p>
+      <div class="iface">interface Connector &nbsp;<span style="color:var(--muted)">// csv, sap…</span></div>
+      <div class="iface">interface Matcher &nbsp;<span style="color:var(--muted)">// exact, phonetic…</span></div>
+      <div class="iface">interface SurvivorshipRule <span style="color:var(--muted)">// most_recent…</span></div>
+      <div class="iface">interface QualityRule <span style="color:var(--muted)">// not_null…</span></div>
+      <div class="iface" style="background:var(--accent-soft)">ontology.LoadPack() — validates a pack
+        against the registry</div>
+    </div>
+    <div class="pack-box">
+      <h4>🧩 Vertical pack <span class="chip ok" style="margin-left:6px">insurance live</span></h4>
+      <p class="card" style="border:none;box-shadow:none;padding:0 0 8px"><code>packs/insurance-claims/pack.yaml</code>
+        — references core strategies by id.</p>
+      <div class="pl">PolicyHolder, Policy, Claim, KYC_Document</div>
+      <div class="pl">match: national_id, email → fuzzy(name,phone,addr)</div>
+      <div class="pl">survivorship: email→most_recent …</div>
+      <div class="pl">quality: name not_null, email_format …</div>
+      <div class="pl" style="border-style:dashed;color:var(--muted)">bfsi/ → Phase 2 (same mechanism)</div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:16px"><b>Litmus test, enforced:</b> if code names
+    <code>PolicyHolder</code>, it belongs in a pack, not the core. <code>LoadPack</code> fails fast
+    if a pack references a strategy that isn't registered.</div>
+</div></section>
+
+<!-- TREE -->
+<section id="tree" style="background:var(--bg-soft)"><div class="wrap">
+  <span class="eyebrow">What's on disk</span>
+  <h2>The <code>gq-data/</code> monorepo — 47 files</h2>
+  <div class="legend">
+    <span><span class="dot" style="background:#5fd3a3"></span> built &amp; compiling</span>
+    <span><span class="dot" style="background:#f0ad4e"></span> scaffolded stub (TODO inside)</span>
+    <span><span class="dot" style="background:#8b93a7"></span> placeholder / later phase</span>
+  </div>
+<pre class="tree"><span class="d">gq-data/</span>
+├── <span class="d">libs/</span>
+│   ├── <span class="d">gq-common/</span>          <span class="cm"># domain-agnostic core</span>
+│   │   ├── models/         <span class="c">✓ SourceSystem, RawRecord, GoldenRecord, Provenance…</span>
+│   │   ├── events/ errors/ <span class="c">✓ Kafka topics + envelope; typed errors</span>
+│   │   └── ontology/       <span class="c">✓ Pack abstraction + Registry</span> · <span class="s">⚠ YAML loader stubbed</span>
+│   ├── <span class="d">gq-pb/</span>              <span class="c">✓ buf + resolve.proto (MatchService)</span>
+│   └── <span class="d">gq-sdk/</span>             <span class="c">✓ Python client (ingest/get/lineage/audit)</span>
+├── <span class="d">packs/</span>
+│   └── insurance-claims/   <span class="c">✓ pack.yaml — vertical as DATA</span>
+├── <span class="d">services/</span>
+│   ├── gq-ingest-api/      <span class="c">✓ compiles</span> · Gin: <span class="s">POST /ingest, GET /jobs (stub bodies)</span>
+│   ├── gq-ingest-worker/   <span class="c">✓ compiles · CSV connector real</span> · <span class="s">Kafka loop TODO</span>
+│   └── gq-resolve/         <span class="c">✓ compiles · matchers+survivorship real</span> · <span class="s">ML/Neo4j TODO</span>
+│       └── ml/             <span class="c">✓ Python matcher (weighted stub)</span> · <span class="p">heavy ML deps deferred</span>
+│   <span class="p">         gq-classify · gq-lineage · gq-quality · gq-graph-api → later phases</span>
+├── <span class="d">infra/</span>  helm-charts · terraform · argocd-apps   <span class="p">▷ READMEs only (E0)</span>
+├── <span class="d">tests/</span> integration · e2e · performance        <span class="p">▷ READMEs only</span>
+├── <span class="d">tools/</span> remote-bootstrap.sh · REMOTE-BUILD.md   <span class="c">✓ portable remote build</span>
+├── go.work · Makefile      <span class="c">✓ workspace + commands</span>
+└── .github/…/gq-data-ci.yml <span class="s">⚠ CI skeleton (lint·test·trivy)</span>
+</pre>
+</div></section>
+
+<!-- SERVICES -->
+<section id="services"><div class="wrap">
+  <span class="eyebrow">Service detail</span>
+  <h2>The three Phase-1 services</h2>
+  <p class="note">All three compile today. The <b>generic engine logic</b> (matchers, survivorship,
+    CSV parsing, pack loading) is real Go; the <b>I/O edges</b> (HTTP bodies, Kafka, databases, ML)
+    are wired as stubs with explicit TODOs mapped to backlog stories.</p>
+  <div class="grid g3">
+    <div class="card">
+      <h4>gq-ingest-api <span class="chip ok">compiles</span></h4>
+      <p>Gin REST gateway. Endpoints exist and validate payloads; persistence + Kafka emit are TODO.</p>
+      <div class="meta">real: routing, request binding<br>stub: job store, 202 id, status</div>
+    </div>
+    <div class="card">
+      <h4>gq-ingest-worker <span class="chip ok">compiles</span></h4>
+      <p>Connector engine. CSV connector parses files into RawRecords for any entity type.</p>
+      <div class="meta">real: CSV→RawRecord stream<br>stub: Kafka consume, Mongo store, SAP connector</div>
+    </div>
+    <div class="card">
+      <h4>gq-resolve <span class="chip ok">compiles</span></h4>
+      <p>Match + merge engine. Generic matchers &amp; survivorship rules work; ML + graph are next.</p>
+      <div class="meta">real: exact/phone match, 3 survivorship rules<br>stub: fuzzy/ML (E3-2), Neo4j, steward queue</div>
+    </div>
+  </div>
+  <h3>Status of the moving parts</h3>
+  <table>
+    <thead><tr><th>Capability</th><th>Status</th><th>Where / next</th></tr></thead>
+    <tbody>
+      <tr><td>Pack abstraction + registry + validation</td><td><span class="chip ok">built</span></td><td class="k">gq-common/ontology</td></tr>
+      <tr><td>Insurance pack (entities, rules) as data</td><td><span class="chip ok">built</span></td><td class="k">packs/insurance-claims</td></tr>
+      <tr><td>Survivorship rules (recent / frequent / confidence)</td><td><span class="chip ok">built</span></td><td class="k">gq-resolve/.../survivorship</td></tr>
+      <tr><td>CSV connector</td><td><span class="chip ok">built</span></td><td class="k">ingest-worker/.../connectors</td></tr>
+      <tr><td>YAML pack parsing</td><td><span class="chip stub">stub</span></td><td>add <code>yaml.v3</code> in loader (E0-4)</td></tr>
+      <tr><td>Fuzzy / ML matching</td><td><span class="chip stub">stub</span></td><td>E3-2 — then install ML deps</td></tr>
+      <tr><td>Kafka wiring · DB persistence (Neo4j/PG/Mongo)</td><td><span class="chip stub">stub</span></td><td>E1–E4</td></tr>
+      <tr><td>Steward review queue · audit pack</td><td><span class="chip stub">stub</span></td><td>E5 · E6</td></tr>
+      <tr><td>Graph API / Classify / Lineage / Quality services</td><td><span class="chip plan">later</span></td><td>E7 + Phase 2</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<!-- ROADMAP -->
+<section id="roadmap" style="background:var(--bg-soft)"><div class="wrap">
+  <span class="eyebrow">Phase 1 plan</span>
+  <h2>Epics &amp; sprint slicing</h2>
+  <p class="note">9 epics (E0–E8), tracked in Jira (project GQ, board 34). The scaffold delivers most of
+    E0-4 already. Critical path: <b>E0 → E1 → E3 → E4 → E6 → E7 → E8</b>.</p>
+  <div class="grid g2">
+    <div class="card"><h4>E0 — Infra &amp; CI/CD bootstrap <span class="chip stub" style="margin-left:4px">in progress</span></h4>
+      <p>OpenShift namespace, data stores, CI pipeline, monorepo scaffold. <b>Scaffold + CI skeleton done.</b></p></div>
+    <div class="card"><h4>E1 — GQ Ingest: API &amp; jobs <span class="chip plan">next</span></h4>
+      <p>POST /ingest, job lifecycle, CSV + SAP connectors, raw persistence.</p></div>
+    <div class="card"><h4>E2 — Ingest validation &amp; quarantine</h4><p>Quality rules, no silent drops.</p></div>
+    <div class="card"><h4>E3 — Resolve: matching engine</h4><p>Deterministic + fuzzy + confidence routing. The heart.</p></div>
+    <div class="card"><h4>E4 — Golden records &amp; survivorship</h4><p>Merge, stable URIs, temporal versioning.</p></div>
+    <div class="card"><h4>E5 — Steward review queue</h4><p>Below-threshold matches, audited accept/reject.</p></div>
+    <div class="card"><h4>E6 — Lineage (audit slice)</h4><p>Field provenance + signed audit pack.</p></div>
+    <div class="card"><h4>E7 — Graph API (read path)</h4><p>GET entity / lineage / audit-pack, RBAC, PII masking.</p></div>
+    <div class="card"><h4>E8 — Demo dataset &amp; E2E</h4><p>Seeded duplicates, the "one query" walkthrough.</p></div>
+    <div class="card" style="background:var(--accent-soft);border-color:var(--data-line)">
+      <h4>Sprint slicing</h4><p>S1 bootstrap (E0) · S2 ingest (E1+E2) · S3 match (E3) · S4 golden+audit+demo (E4–E8).</p></div>
+  </div>
+</div></section>
+
+<!-- BUILD STATUS -->
+<section id="build"><div class="wrap">
+  <span class="eyebrow">Verification</span>
+  <h2>Build status — compiled on real Linux</h2>
+  <p class="note">The dev Mac has no Go toolchain, so the scaffold was rsync'd to a home-lab Ubuntu host
+    and built there. This proves the code I wrote actually compiles — not just that files exist.</p>
+  <div class="grid g4">
+    <div class="card"><h4>Host</h4><p>big-ubuntu<br><span class="meta">amar@192.168.1.19 · 8 cores</span></p></div>
+    <div class="card"><h4>Toolchain</h4><p>Go 1.26.4<br><span class="meta">Python 3.12 venv</span></p></div>
+    <div class="card"><h4>Go build</h4><p><span class="chip ok">green</span><br><span class="meta">3 services + libs compile</span></p></div>
+    <div class="card"><h4>Tests</h4><p><span class="chip ok">pytest 2/2</span><br><span class="meta">go test: no failures</span></p></div>
+  </div>
+  <div class="callout warn" style="margin-top:16px"><b>Honest caveats.</b> ① The build proves
+    <i>compilation</i>, not behaviour — most logic is still stubbed. ② <b>Heavy ML deps deferred:</b>
+    recordlinkage / scikit-learn are declared but not installed (the matcher stub doesn't import them
+    yet; saves ~1–2 GB until E3-2). ③ Intended host ubuntu-01 (408 GB disk) couldn't Wake-on-LAN —
+    same portable <code>remote-bootstrap.sh</code> will build there once powered on.</div>
+</div></section>
+
+<!-- DIRECTION -->
+<section id="direction" style="background:var(--bg-soft)"><div class="wrap">
+  <span class="eyebrow">The question you asked</span>
+  <h2>Are we heading the right way?</h2>
+  <p class="note">Mapping each strategic intent to concrete evidence in the codebase today.</p>
+  <div class="check"><div class="mk y">✓</div><div>
+    <b>Reusable across any use case, not insurance-bolted</b>
+    <p>Core has zero entity names; insurance lives entirely in <code>pack.yaml</code>; loader validates packs.
+      A new vertical is a data file. <span style="color:var(--ok);font-weight:600">Directly addresses your ask.</span></p></div></div>
+  <div class="check"><div class="mk y">✓</div><div>
+    <b>Build GQ Data first, others in parallel</b>
+    <p>Only GQ Data is scaffolded; the contract boundary (doc 03 / gq-pb) is where Govern plugs in later.</p></div></div>
+  <div class="check"><div class="mk y">✓</div><div>
+    <b>Locked stack, actually compiles</b>
+    <p>Go + Python, Gin, buf, Kafka/Neo4j/PG planned per doc 05 — green build on real Linux, deps locked in go.sum.</p></div></div>
+  <div class="check"><div class="mk y">✓</div><div>
+    <b>Right first vertical for the thesis</b>
+    <p>Insurance Claims is Resolve-heavy + audit-heavy — it stresses the hardest component and is the demo centerpiece.</p></div></div>
+  <div class="check"><div class="mk n">○</div><div>
+    <b>End-to-end MVP working</b>
+    <p>Not yet — this is a scaffold. Real ingest→resolve→golden→audit is the E1–E8 work ahead. Expected at this stage.</p></div></div>
+  <div class="check"><div class="mk n">○</div><div>
+    <b>Proven on a second vertical (BFSI)</b>
+    <p>The mechanism is ready; BFSI pack is Phase 2. That's when reusability is truly demonstrated, not just designed.</p></div></div>
+  <div class="callout" style="margin-top:20px"><b>Bottom line.</b> The foundation and the
+    reusability design are in place and verified to compile. The direction is right; what remains is
+    implementing the stubbed logic story-by-story (E0→E8) and proving it on the demo dataset.</div>
+</div></section>
+
+<footer><div class="wrap">
+  Greyquill · GQ Data — generated from the repo on 2026-06-22. Sources: <code>docs/01,03,04,05,06</code>,
+  <code>gq-data/</code> scaffold, <code>CONTEXT.md</code>. Companion to the C4 diagram in
+  <code>docs/architecture/greyquill-c4-architecture.html</code>.
+</div></footer>
+
+</body>
+</html>

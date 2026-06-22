@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Greyquill Platform — C4 Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Greyquill-style light, enterprise-minimal palette */
+    --bg: #ffffff;
+    --bg-soft: #f7f8fa;
+    --ink: #0b1220;
+    --ink-soft: #475067;
+    --muted: #8b93a7;
+    --line: #e4e7ee;
+    --accent: #1f4fe0;          /* enterprise blue */
+    --accent-soft: #eef3ff;
+
+    /* C4 layer accents */
+    --data: #2563eb;   --data-bg: #eff5ff;   --data-line: #c7dafe;
+    --govern: #d97706; --govern-bg: #fff7ed; --govern-line: #fcd9a8;
+    --agents: #059669; --agents-bg: #ecfdf5; --agents-line: #b3ecd5;
+    --studio: #7c3aed; --studio-bg: #f5f3ff; --studio-line: #ddd2fb;
+    --packs: #0d9488;  --packs-bg: #f0fdfa;  --packs-line: #b3e7e0;
+    --store: #475569;  --store-bg: #f1f5f9;  --store-line: #d8dfe8;
+    --ext: #64748b;    --ext-bg: #f6f7f9;    --ext-line: #e1e5ec;
+
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(11,18,32,.04), 0 6px 20px rgba(11,18,32,.05);
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Header ---------- */
+  header.masthead {
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #ffffff 0%, var(--bg-soft) 100%);
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  .masthead .wrap { padding-top: 40px; padding-bottom: 36px; }
+  .brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .quill {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--ink); color: #fff; display: grid; place-items: center;
+    font-weight: 800; font-size: 16px; letter-spacing: -.5px;
+  }
+  .brand-name { font-weight: 700; letter-spacing: -.2px; }
+  .brand-name span { color: var(--muted); font-weight: 500; }
+  h1 { font-size: 34px; line-height: 1.15; letter-spacing: -1px; margin: 0 0 10px; font-weight: 800; }
+  .sub { color: var(--ink-soft); font-size: 16px; max-width: 760px; margin: 0; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .pill {
+    font-size: 12.5px; font-weight: 600; color: var(--ink-soft);
+    background: #fff; border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 12px;
+  }
+  .pill.accent { color: var(--accent); background: var(--accent-soft); border-color: var(--data-line); }
+
+  /* ---------- Section nav ---------- */
+  nav.levels {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(255,255,255,.86); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.levels .wrap { display: flex; gap: 4px; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+  nav.levels a {
+    font-size: 13px; font-weight: 600; color: var(--ink-soft); text-decoration: none;
+    padding: 7px 13px; border-radius: 8px;
+  }
+  nav.levels a:hover { background: var(--bg-soft); color: var(--ink); }
+
+  /* ---------- Level panels ---------- */
+  section.level { padding: 44px 0; border-bottom: 1px solid var(--line); }
+  section.level:nth-child(even) { background: var(--bg-soft); }
+  .level-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
+  .level-tag {
+    font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 6px;
+  }
+  .level-head h2 { font-size: 23px; letter-spacing: -.5px; margin: 0; font-weight: 700; }
+  .level-note { color: var(--ink-soft); font-size: 14.5px; margin: 4px 0 26px; max-width: 820px; }
+  .audience { font-size: 13px; color: var(--muted); }
+
+  /* generic card */
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 14px 16px;
+  }
+  .card h4 { margin: 0 0 4px; font-size: 14px; font-weight: 700; letter-spacing: -.2px; }
+  .card p { margin: 0; font-size: 12.5px; color: var(--ink-soft); }
+
+  /* zone (colored grouping) */
+  .zone { border-radius: var(--radius); padding: 16px; border: 1px solid; }
+  .zone-title { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14.5px; margin-bottom: 4px; }
+  .zone-title .dot { width: 10px; height: 10px; border-radius: 3px; }
+  .zone-sub { font-size: 12px; color: var(--ink-soft); margin: 0 0 14px; }
+  .chips { display: flex; flex-direction: column; gap: 8px; }
+  .chip {
+    background: #fff; border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 11px; font-size: 12.5px; font-weight: 600; color: var(--ink);
+  }
+  .chip small { display: block; font-weight: 500; color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .store-note { margin-top: 12px; font-size: 11.5px; color: var(--ink-soft); font-style: italic; }
+
+  /* layer color helpers */
+  .l-data   { background: var(--data-bg);   border-color: var(--data-line); }
+  .l-data   .dot { background: var(--data); }
+  .l-govern { background: var(--govern-bg); border-color: var(--govern-line); }
+  .l-govern .dot { background: var(--govern); }
+  .l-agents { background: var(--agents-bg); border-color: var(--agents-line); }
+  .l-agents .dot { background: var(--agents); }
+  .l-studio { background: var(--studio-bg); border-color: var(--studio-line); }
+  .l-studio .dot { background: var(--studio); }
+  .l-packs  { background: var(--packs-bg);  border-color: var(--packs-line); }
+  .l-packs  .dot { background: var(--packs); }
+  .l-store  { background: var(--store-bg);  border-color: var(--store-line); }
+  .l-store  .dot { background: var(--store); }
+
+  /* ---------- Level 1 layout ---------- */
+  .l1-grid { display: grid; grid-template-columns: 220px 1fr 220px; gap: 18px; align-items: stretch; }
+  .col-label { font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+  .stack { display: flex; flex-direction: column; gap: 10px; }
+  .platform-core {
+    border: 1.5px dashed var(--data-line); background: var(--data-bg);
+    border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .platform-core .core-title { text-align: center; }
+  .platform-core .core-title strong { font-size: 17px; letter-spacing: -.3px; }
+  .platform-core .core-title span { display: block; font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+  .layer-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .persona .card h4 { color: var(--accent); }
+  .full-span { grid-column: 1 / -1; }
+
+  /* ---------- Level 2 layout ---------- */
+  .openshift {
+    border: 1.5px dashed var(--store-line); border-radius: 16px; padding: 18px;
+    background: repeating-linear-gradient(135deg, #fbfcfe, #fbfcfe 12px, #f7f9fc 12px, #f7f9fc 24px);
+  }
+  .openshift-label {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+    color: var(--store); background: #fff; border: 1px solid var(--store-line);
+    border-radius: 999px; padding: 5px 12px; margin-bottom: 16px;
+  }
+  .containers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .stores-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 16px; }
+  .store-box { text-align: center; padding: 12px 8px; }
+  .store-box h4 { font-size: 12.5px; margin: 0; }
+  .store-box p { font-size: 11px; }
+
+  /* interfaces table */
+  .interfaces { margin-top: 22px; }
+  .interfaces h3 { font-size: 14px; margin: 0 0 12px; font-weight: 700; }
+  .iface-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
+  .iface {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px;
+  }
+  .iface .arrow { font-weight: 800; color: var(--accent); font-size: 13px; white-space: nowrap; }
+  .iface .desc { font-size: 12.5px; }
+  .iface .desc b { font-weight: 700; }
+  .iface .desc small { display: block; color: var(--muted); font-size: 11px; }
+
+  /* ---------- Level 3 layout ---------- */
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .flow .zone { position: relative; }
+  .flow .zone:not(:last-child)::after {
+    content: "→"; position: absolute; right: -11px; top: 50%; transform: translateY(-50%);
+    font-weight: 800; color: var(--muted); z-index: 2; font-size: 16px;
+  }
+  .flow-caption { text-align: center; font-size: 12.5px; color: var(--ink-soft); margin-top: 16px; }
+  .flow-caption b { color: var(--ink); }
+
+  /* ---------- Legend / footer ---------- */
+  footer { padding: 40px 0 64px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 30px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-soft); }
+  .legend-item .sw { width: 22px; height: 12px; border-radius: 4px; border: 1px solid var(--line); }
+  .docmap { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 8px; }
+  .docmap th, .docmap td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  .docmap th { color: var(--muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; }
+  .docmap code { background: var(--bg-soft); padding: 2px 6px; border-radius: 5px; font-size: 11.5px; }
+  .foot-note { font-size: 12px; color: var(--muted); margin-top: 26px; }
+
+  h3.block { font-size: 14px; font-weight: 700; margin: 0 0 14px; }
+
+  @media (max-width: 900px) {
+    .l1-grid { grid-template-columns: 1fr; }
+    .containers { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow .zone:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -14px; transform: translateX(50%); }
+    .stores-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="brand-row">
+      <div class="quill">GQ</div>
+      <div class="brand-name">Greyquill <span>· Governed AI for regulated enterprises</span></div>
+    </div>
+    <h1>Greyquill Platform — C4 Architecture</h1>
+    <p class="sub">Compliant AI · Trusted Data. One platform with a stable governed core and a
+      deep customization layer on top — deployed in your environment, with the audit trail as a
+      first-class outcome. <em>"How did this number get here?"</em> is one query, not three weeks.</p>
+    <div class="pills">
+      <span class="pill accent">Built on IBM, owned by you</span>
+      <span class="pill">GQ Data · trusted data &amp; lineage</span>
+      <span class="pill">GQ Govern · diagnose, policy &amp; evidence</span>
+      <span class="pill">GQ Agents · governed execution</span>
+      <span class="pill">GQStudio · business customization</span>
+      <span class="pill">Vertical Packs · Insurance · BFSI</span>
+    </div>
+  </div>
+</header>
+
+<nav class="levels">
+  <div class="wrap">
+    <a href="#l1">Level 1 · System Context</a>
+    <a href="#l2">Level 2 · Containers</a>
+    <a href="#l3">Level 3 · Components (GQ Data)</a>
+    <a href="#legend">Legend &amp; Doc Map</a>
+  </div>
+</nav>
+
+<!-- ============ LEVEL 1 ============ -->
+<section class="level" id="l1">
+  <div class="wrap">
+    <div class="level-head">
+      <span class="level-tag">C4 · Level 1</span>
+      <h2>System Context</h2>
+      <span class="audience">Audience: CEO / Board · CISO / Procurement</span>
+    </div>
+    <p class="level-note">Where Greyquill fits in the enterprise landscape — who uses it, what
+      feeds it, and who consumes its governed output — without exposing internals.</p>
+
+    <div class="l1-grid">
+      <!-- Personas -->
+      <div>
+        <p class="col-label">Users</p>
+        <div class="stack">
+          <div class="card persona"><h4>CDO / Data Steward</h4><p>Manages trusted master data &amp; resolution.</p></div>
+          <div class="card persona"><h4>Compliance Officer</h4><p>Needs evidence, lineage &amp; audit answers.</p></div>
+          <div class="card persona"><h4>AI Engineer</h4><p>Builds on governed, AI-ready context.</p></div>
+        </div>
+      </div>
+
+      <!-- Platform core -->
+      <div>
+        <p class="col-label" style="text-align:center">Greyquill Platform · Governed AI Foundation</p>
+        <div class="platform-core">
+          <div class="core-title"><strong>Greyquill Platform</strong>
+            <span>Stable governed core + customization layer · in your OpenShift cluster</span></div>
+          <div class="layer-row">
+            <div class="zone l-data" style="padding:12px"><div class="zone-title"><span class="dot"></span>GQ Data</div><p class="zone-sub" style="margin:0">Master data, resolution, lineage, quality.</p></div>
+            <div class="zone l-govern" style="padding:12px"><div class="zone-title"><span class="dot"></span>GQ Govern</div><p class="zone-sub" style="margin:0">Diagnose, policy, controls, evidence.</p></div>
+            <div class="zone l-agents" style="padding:12px"><div class="zone-title"><span class="dot"></span>GQ Agents</div><p class="zone-sub" style="margin:0">Governed workflow execution + runtime evidence.</p></div>
+            <div class="zone l-studio" style="padding:12px"><div class="zone-title"><span class="dot"></span>GQStudio</div><p class="zone-sub" style="margin:0">Low-code / pro-code business customization.</p></div>
+          </div>
+          <div class="zone l-packs" style="padding:12px"><div class="zone-title"><span class="dot"></span>Vertical Packs</div><p class="zone-sub" style="margin:0">Pre-built domain models &amp; rules — Insurance (first), BFSI — the "velocity pack" go-to-market.</p></div>
+        </div>
+      </div>
+
+      <!-- Consumers -->
+      <div>
+        <p class="col-label">Consumers</p>
+        <div class="stack">
+          <div class="card"><h4>BI &amp; Analytics</h4><p>Tableau, Power BI, Looker via JDBC/ODBC.</p></div>
+          <div class="card"><h4>Audit / GRC</h4><p>ServiceNow, RSA Archer — signed audit packs.</p></div>
+          <div class="card"><h4>Regulators</h4><p>EU AI Act, GDPR, fair-lending evidence.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- sources & docs -->
+    <div class="l1-grid" style="margin-top:18px">
+      <div class="full-span">
+        <p class="col-label">Data Sources (in) &amp; Unstructured Input</p>
+        <div class="stores-row">
+          <div class="card store-box"><h4>SAP / Oracle ERP</h4></div>
+          <div class="card store-box"><h4>Core Banking</h4></div>
+          <div class="card store-box"><h4>Salesforce CRM</h4></div>
+          <div class="card store-box"><h4>S3 / Blob / GCS</h4></div>
+          <div class="card store-box"><h4>Kafka / Streams</h4></div>
+          <div class="card store-box"><h4>PDFs · Scans · Email</h4></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEVEL 2 ============ -->
+<section class="level" id="l2">
+  <div class="wrap">
+    <div class="level-head">
+      <span class="level-tag">C4 · Level 2</span>
+      <h2>Containers — on Red Hat OpenShift</h2>
+      <span class="audience">Audience: CTO / Enterprise Architect · CISO</span>
+    </div>
+    <p class="level-note">The applications and data stores inside the OpenShift boundary, and the
+      contract-only interfaces between layers (no shared code, no shared database).</p>
+
+    <div class="openshift">
+      <span class="openshift-label">⬡ Red Hat OpenShift 4.x · namespace-per-tenant isolation</span>
+
+      <div class="containers">
+        <div class="zone l-data">
+          <div class="zone-title"><span class="dot"></span>GQ Data</div>
+          <p class="zone-sub">Governed data foundation</p>
+          <div class="chips">
+            <div class="chip">GQ Ingest <small>Connectors · batch + CDC · quarantine</small></div>
+            <div class="chip">GQ Resolve <small>Match · merge · golden records</small></div>
+            <div class="chip">GQ Classify <small>PII · financial · custom tags</small></div>
+            <div class="chip">GQ Lineage <small>Provenance · temporal versioning</small></div>
+            <div class="chip">GQ Quality <small>6-dimension scoring · drift</small></div>
+            <div class="chip">GQ Graph API <small>REST + GraphQL · OAuth2/RBAC</small></div>
+          </div>
+        </div>
+
+        <div class="zone l-govern">
+          <div class="zone-title"><span class="dot"></span>GQ Govern</div>
+          <p class="zone-sub">Diagnose · compliance · risk</p>
+          <div class="chips">
+            <div class="chip">Assess <small>AI-maturity &amp; readiness diagnosis</small></div>
+            <div class="chip">Policy <small>Authoring · push to GQ Data</small></div>
+            <div class="chip">Inventory <small>Model &amp; AI-asset register</small></div>
+            <div class="chip">Diagnose <small>Unstructured document intelligence</small></div>
+            <div class="chip">Evidence <small>Factsheets · audit assembly</small></div>
+          </div>
+        </div>
+
+        <div class="zone l-agents">
+          <div class="zone-title"><span class="dot"></span>GQ Agents</div>
+          <p class="zone-sub">Governed activation</p>
+          <div class="chips">
+            <div class="chip">Agent Runtime <small>Prebuilt + custom agents</small></div>
+            <div class="chip">Evidence Stream <small>Real-time runtime audit capture</small></div>
+            <div class="chip">Human Oversight <small>Approve · hold · override (logged)</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customization + packs band -->
+      <div class="containers" style="grid-template-columns: 2fr 1fr; margin-top:16px">
+        <div class="zone l-studio">
+          <div class="zone-title"><span class="dot"></span>GQStudio — Customization Layer <small style="font-weight:500;color:var(--ink-soft)">&nbsp;(the "Salesforce move")</small></div>
+          <p class="zone-sub">Clicks → code spectrum, layered on the stable core</p>
+          <div class="chips" style="flex-direction:row; flex-wrap:wrap">
+            <div class="chip" style="flex:1; min-width:150px">No-code Config <small>Workflows · validation · dashboards</small></div>
+            <div class="chip" style="flex:1; min-width:150px">Low-code Extend <small>Custom entities · connectors</small></div>
+            <div class="chip" style="flex:1; min-width:150px">Pro-code SDK <small>Custom agents · frameworks</small></div>
+            <div class="chip" style="flex:1; min-width:150px">GQ Workspaces <small>Role-based views (CISO/CRO/CDO)</small></div>
+          </div>
+        </div>
+        <div class="zone l-packs">
+          <div class="zone-title"><span class="dot"></span>Vertical Packs</div>
+          <p class="zone-sub">Pre-built domain models on the core ontology</p>
+          <div class="chips">
+            <div class="chip">Insurance Pack <small>First — claims, KYC, policy</small></div>
+            <div class="chip">BFSI Pack <small>Accounts, loans, AML, cards</small></div>
+            <div class="chip" style="color:var(--muted)">+ future verticals <small>Telecom · Retail · Health</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data stores -->
+      <p class="col-label" style="margin:20px 0 10px">Shared Data Stores</p>
+      <div class="stores-row">
+        <div class="zone l-store store-box"><h4>Neo4j</h4><p>Entity graph · lineage</p></div>
+        <div class="zone l-store store-box"><h4>PostgreSQL</h4><p>Relational index · scores</p></div>
+        <div class="zone l-store store-box"><h4>MongoDB</h4><p>Raw records · packs</p></div>
+        <div class="zone l-store store-box"><h4>Kafka</h4><p>Event bus</p></div>
+        <div class="zone l-store store-box"><h4>Redis</h4><p>Cache · policy state</p></div>
+        <div class="zone l-store store-box"><h4>Elasticsearch</h4><p>Search · fuzzy match</p></div>
+      </div>
+    </div>
+
+    <!-- Interfaces -->
+    <div class="interfaces">
+      <h3>Key Interfaces — contract-only (see <code>03-interface-contracts.md</code>)</h3>
+      <div class="iface-grid">
+        <div class="iface"><span class="arrow">GQ Data → GQ Govern</span><span class="desc"><b>Events</b><small>quality.violation · lineage.updated · ingestion.completed</small></span></div>
+        <div class="iface"><span class="arrow">GQ Govern → GQ Data</span><span class="desc"><b>Policies</b><small>policy.push · policy.deactivate · assessment.request</small></span></div>
+        <div class="iface"><span class="arrow">GQ Data → GQ Agents</span><span class="desc"><b>Governed Context</b><small>GraphQL / REST entity + lineage queries</small></span></div>
+        <div class="iface"><span class="arrow">GQ Agents → GQ Data</span><span class="desc"><b>Evidence Stream</b><small>runtime audit events for pack assembly</small></span></div>
+        <div class="iface"><span class="arrow">GQ Govern → GQ Agents</span><span class="desc"><b>Agent Policy</b><small>guardrail directives for execution</small></span></div>
+        <div class="iface"><span class="arrow">GQStudio → all layers</span><span class="desc"><b>Config &amp; extensions</b><small>declarative config + SDK against public APIs</small></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEVEL 3 ============ -->
+<section class="level" id="l3">
+  <div class="wrap">
+    <div class="level-head">
+      <span class="level-tag">C4 · Level 3</span>
+      <h2>Components — GQ Data Internal Flow</h2>
+      <span class="audience">Audience: Engineering · Sprint planning (Phase 1 build)</span>
+    </div>
+    <p class="level-note">The internal flow of GQ Data — the first product being built (Phase 1:
+      <b>GQ Ingest + GQ Resolve</b>). Raw records become governed, queryable context.</p>
+
+    <div class="flow">
+      <div class="zone l-agents">
+        <div class="zone-title"><span class="dot"></span>INGEST</div>
+        <div class="chips">
+          <div class="chip">Connector Engine</div>
+          <div class="chip">Schema Discovery</div>
+          <div class="chip">Quarantine Manager</div>
+        </div>
+        <p class="store-note">→ MongoDB (raw records)</p>
+      </div>
+      <div class="zone l-govern">
+        <div class="zone-title"><span class="dot"></span>RESOLVE</div>
+        <div class="chips">
+          <div class="chip">Match Engine</div>
+          <div class="chip">Merge Engine</div>
+          <div class="chip">Golden Record Store</div>
+        </div>
+        <p class="store-note">→ Neo4j + PostgreSQL</p>
+      </div>
+      <div class="zone l-data">
+        <div class="zone-title"><span class="dot"></span>CLASSIFY</div>
+        <div class="chips">
+          <div class="chip">PII Detector</div>
+          <div class="chip">Financial Classifier</div>
+          <div class="chip">Custom Taxonomy</div>
+        </div>
+        <p class="store-note">→ PostgreSQL (tags)</p>
+      </div>
+      <div class="zone l-studio">
+        <div class="zone-title"><span class="dot"></span>QUALITY</div>
+        <div class="chips">
+          <div class="chip">Rule Engine</div>
+          <div class="chip">Score Aggregator</div>
+          <div class="chip">Drift Detector</div>
+        </div>
+        <p class="store-note">→ PostgreSQL + Kafka</p>
+      </div>
+      <div class="zone l-store">
+        <div class="zone-title"><span class="dot"></span>SERVE</div>
+        <div class="chips">
+          <div class="chip">REST Gateway</div>
+          <div class="chip">GraphQL Engine</div>
+          <div class="chip">Audit Pack Assembler</div>
+        </div>
+        <p class="store-note">reads Neo4j + PostgreSQL + MongoDB</p>
+      </div>
+    </div>
+    <p class="flow-caption">Flow: <b>Raw Records → Golden Records → Tagged Entities → Scored Entities → Governed Context API</b>
+      &nbsp;·&nbsp; boundaries: external systems feed in (top) · GQ Govern (policy push / events out) &amp; GQ Agents (context API / evidence in) on the right.</p>
+  </div>
+</section>
+
+<!-- ============ LEGEND + DOC MAP ============ -->
+<footer id="legend">
+  <div class="wrap">
+    <h3 class="block">Legend</h3>
+    <div class="legend">
+      <div class="legend-item"><span class="sw" style="background:var(--data-bg);border-color:var(--data-line)"></span> GQ Data</div>
+      <div class="legend-item"><span class="sw" style="background:var(--govern-bg);border-color:var(--govern-line)"></span> GQ Govern</div>
+      <div class="legend-item"><span class="sw" style="background:var(--agents-bg);border-color:var(--agents-line)"></span> GQ Agents</div>
+      <div class="legend-item"><span class="sw" style="background:var(--studio-bg);border-color:var(--studio-line)"></span> GQStudio (customization)</div>
+      <div class="legend-item"><span class="sw" style="background:var(--packs-bg);border-color:var(--packs-line)"></span> Vertical Packs</div>
+      <div class="legend-item"><span class="sw" style="background:var(--store-bg);border-color:var(--store-line)"></span> Data stores / external</div>
+    </div>
+
+    <h3 class="block">How the diagram maps to the specs</h3>
+    <table class="docmap">
+      <thead><tr><th>Level</th><th>Maps to</th></tr></thead>
+      <tbody>
+        <tr><td>Level 1 — System Context</td><td><code>01-gq-data-spec.md</code> §1 Positioning + §7 Integration Points</td></tr>
+        <tr><td>Level 2 — Containers</td><td><code>01-gq-data-spec.md</code> §3 Core Modules + §5 Deployment</td></tr>
+        <tr><td>Level 3 — Components</td><td><code>01-gq-data-spec.md</code> §3 (detailed module specs)</td></tr>
+        <tr><td>Interfaces (all arrows)</td><td><code>03-interface-contracts.md</code> — event topology, API contracts</td></tr>
+        <tr><td>Entity shapes (Neo4j)</td><td><code>04-entity-ontology.md</code> — nodes, edges, vertical packs</td></tr>
+      </tbody>
+    </table>
+
+    <p class="foot-note">Greyquill Platform · C4 architecture (Context · Container · Component).
+      Canonical taxonomy: <b>GQ Data · GQ Govern · GQ Agents · GQStudio</b>. GQStudio and
+      Vertical Packs are shown as platform layers (build sequenced after GQ Data Phase 1).
+      Maintained alongside <code>docs/architecture/GQ-architecuture-explanation.md</code>.</p>
+  </div>
+</footer>
+
+</body>
+</html>

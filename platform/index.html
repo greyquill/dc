@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Greyquill · Platform & GQ Data</title>
+<style>
+  :root{--ink:#0b1220;--ink-soft:#475067;--muted:#8b93a7;--line:#e4e7ee;--accent:#1f4fe0;--bg-soft:#f7f8fa;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+  *{box-sizing:border-box} body{margin:0;font-family:var(--font);color:var(--ink);
+    background:linear-gradient(180deg,#fff,var(--bg-soft));line-height:1.55}
+  .wrap{max-width:760px;margin:0 auto;padding:72px 24px}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+  .logo{width:34px;height:34px;border-radius:8px;background:var(--ink);color:#fff;
+    display:grid;place-items:center;font-weight:800;font-size:15px}
+  .brand b{font-size:17px}.brand span{color:var(--muted)}
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}
+  p.sub{color:var(--ink-soft);font-size:15.5px;margin:0 0 28px}
+  a.doc{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin-bottom:14px;box-shadow:0 1px 2px rgba(11,18,32,.04),0 6px 20px rgba(11,18,32,.05);
+    transition:border-color .15s,transform .15s}
+  a.doc:hover{border-color:var(--accent);transform:translateY(-1px)}
+  a.doc b{font-size:16px} a.doc span{display:block;color:var(--ink-soft);font-size:14px;margin-top:4px}
+  .foot{color:var(--muted);font-size:13px;margin-top:36px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand"><div class="logo">GQ</div><b>Greyquill</b><span>· Platform & GQ Data</span></div>
+    <h1>Platform &amp; Architecture</h1>
+    <p class="sub">Architecture and build overviews for the Greyquill platform and GQ Data.</p>
+    <a class="doc" href="./greyquill-c4-architecture.html">
+      <b>Greyquill — C4 Architecture</b>
+      <span>System context, containers and components of the Greyquill platform.</span>
+    </a>
+    <a class="doc" href="./gq-data-explainer.html">
+      <b>GQ Data — Build Explainer</b>
+      <span>What GQ Data is, its modules, and how the build is structured.</span>
+    </a>
+    <div class="foot">© Greyquill.</div>
+  </div>
+</body>
+</html>
