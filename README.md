@@ -1,7 +1,13 @@
 # dc — Greyquill Document Center
 
-Public document publishing space for Greyquill. Anything committed here is served
-statically over HTTPS via GitHub Pages, behind the `www.greyquill.io` custom domain.
+**Public** document publishing space for Greyquill — for *open*, non-confidential
+material only (platform overviews, architecture, blogs, public one-pagers).
+Anything committed here is served statically over HTTPS via GitHub Pages, behind
+the `www.greyquill.io` custom domain.
+
+> **Do not publish client proposals, estimates, or any confidential material here.**
+> This is a public repo with no access control. Confidential client documents belong
+> in the planned **Secure DC** (private repo + gated access), not in `dc`.
 
 ## URL scheme
 
@@ -9,15 +15,15 @@ statically over HTTPS via GitHub Pages, behind the `www.greyquill.io` custom dom
 https://www.greyquill.io/dc/<project>/<document>.<ext>
 ```
 
-- `<project>` — one folder per client / engagement / topic (kebab-case).
+- `<project>` — one folder per topic / overview (kebab-case).
 - `<document>` — the file itself: `.html`, `.pdf`, images, etc.
 - The apex `greyquill.io/dc/...` redirects to the `www` canonical.
 
 Example:
 
 ```
-https://www.greyquill.io/dc/acme-corp/proposal-2026.pdf
-https://www.greyquill.io/dc/acme-corp/estimate-q3.html
+https://www.greyquill.io/dc/platform/greyquill-c4-architecture.html
+https://www.greyquill.io/dc/platform/gq-data-explainer.html
 ```
 
 ## Publishing a document
@@ -26,8 +32,8 @@ https://www.greyquill.io/dc/acme-corp/estimate-q3.html
 git clone https://github.com/greyquill/dc.git
 cd dc
 mkdir -p <project>
-cp ~/path/to/proposal.pdf <project>/
-git add <project> && git commit -m "Add <project> proposal" && git push
+cp ~/path/to/overview.pdf <project>/
+git add <project> && git commit -m "Add <project> overview" && git push
 ```
 
 Pages rebuilds within ~1 minute. The URL is live immediately after.
