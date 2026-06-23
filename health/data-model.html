@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greyquill Health Platform — Database Schema (Enterprise / FHIR)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --p50:#EFF6FF;--p100:#DBEAFE;--p200:#BFDBFE;--p500:#2563EB;--p600:#1D4ED8;--p700:#1E40AF;--p900:#172554;
+    --accent:#15AABF;--critical:#B42318;--warning:#B54708;--success:#067647;--info:#175CD3;--violet:#7E56D9;
+    --n0:#FFFFFF;--n25:#FCFCFD;--n50:#F8FAFC;--n100:#F1F5F9;--n200:#E2E8F0;--n300:#CBD5E1;
+    --n400:#94A3B8;--n500:#64748B;--n600:#475569;--n700:#334155;--n800:#1E293B;--n900:#0F172A;
+    --sans:'Inter',system-ui,-apple-system,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--sans);color:var(--n700);background:var(--n50);font-size:14px;line-height:1.5}
+  code{font-family:var(--mono)}
+  header.top{position:sticky;top:0;z-index:20;background:var(--n0);border-bottom:1px solid var(--n200);padding:14px 24px}
+  .top h1{margin:0;font-size:17px;color:var(--n900);font-weight:700;display:flex;align-items:center;gap:10px}
+  .logo{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--p500),var(--p700));display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+  .sub{color:var(--n500);font-size:12.5px;margin-top:2px}
+  .legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;align-items:center}
+  .filters{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .filters button{font:inherit;font-size:12px;font-weight:500;border:1px solid var(--n300);background:var(--n0);color:var(--n600);padding:5px 11px;border-radius:9999px;cursor:pointer}
+  .filters button:hover{background:var(--p50);border-color:var(--p200)}
+  .filters button.active{background:var(--p600);border-color:var(--p600);color:#fff}
+  main{padding:22px;max-width:1320px;margin:0 auto}
+  .map{background:var(--p50);border:1px solid var(--p200);border-radius:10px;padding:14px 18px;margin-bottom:22px}
+  .map h3{margin:0 0 8px;font-size:14px;color:var(--p900)}
+  .map table{border-collapse:collapse;font-size:12.5px;width:100%}
+  .map td{padding:3px 10px 3px 0;vertical-align:top}
+  .map td:first-child{color:var(--n600);white-space:nowrap}
+  .map td:last-child{color:var(--n800)}
+  .map .ar{color:var(--p600);font-weight:700}
+  .domain{margin-bottom:38px}
+  .domain h2{font-size:16px;color:var(--n900);margin:0 0 4px;display:flex;align-items:center;gap:9px}
+  .dot{width:11px;height:11px;border-radius:9999px;display:inline-block}
+  .domain .note{color:var(--n500);font-size:12.5px;margin:0 0 13px}
+  .diagram{background:var(--n0);border:1px solid var(--n200);border-radius:10px;padding:12px;margin-bottom:14px;overflow:auto}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+  .entity{background:var(--n0);border:1px solid var(--n200);border-radius:10px;overflow:hidden}
+  .entity-h{background:var(--p50);border-bottom:1px solid var(--p100);padding:8px 11px;font-weight:600;color:var(--p900);font-family:var(--mono);font-size:12.5px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .fhir{font-family:var(--sans);font-weight:600;font-size:9px;letter-spacing:.02em;background:#EFE6FD;color:#5925DC;border:1px solid #D9C9FB;padding:1px 5px;border-radius:4px;white-space:nowrap}
+  .cols{list-style:none;margin:0;padding:5px 0}
+  .cols li{display:flex;align-items:center;gap:5px;padding:3px 11px;font-size:12px}
+  .cols li:nth-child(even){background:var(--n25)}
+  .col{font-family:var(--mono);color:var(--n800);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .b{font-size:9px;font-weight:700;letter-spacing:.02em;padding:1px 4px;border-radius:3px;text-transform:uppercase;border:1px solid transparent}
+  .PK{background:var(--p100);color:var(--p900);border-color:var(--p200)}
+  .FK{background:#D1E9FF;color:#1849A9;border-color:#B2DDFF}
+  .UK{background:#ECE9FE;color:#5925DC;border-color:#D9D6FE}
+  .EN{background:#FEF0C7;color:#854D0E;border-color:#FEDF89}
+  .JS{background:var(--n100);color:var(--n600);border-color:var(--n200)}
+  .DEC{background:#DCFAE6;color:#0E9F6E;border-color:#A6F4C5}
+  .PHI{background:#FEE4E2;color:#912018;border-color:#FECDCA}
+  .TN{background:#F8FAFC;color:#475569;border-color:#E2E8F0}
+  footer{color:var(--n400);font-size:12px;text-align:center;padding:24px}
+  .offline{display:none;background:#FFFAEB;border:1px solid #FEDF89;color:#854D0E;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:12.5px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1><span class="logo">G</span> Database Schema — Enterprise / FHIR R4-aligned</h1>
+  <div class="sub">Multi-tenant Postgres · <b id="ecount">0</b> entities · 17 domains · source of truth: <code>prisma/schema.prisma</code> · theme Medical Blue</div>
+  <div class="legend">
+    <span class="b PK">PK</span><span class="b FK">FK</span><span class="b UK">UK</span><span class="b EN">enum</span>
+    <span class="b JS">json</span><span class="b DEC">decimal</span><span class="b PHI">PHI</span><span class="b TN">tenant</span>
+    <span class="fhir">FHIR</span><span style="font-size:11px;color:var(--n500)">= maps to a FHIR R4 resource</span>
+  </div>
+  <div class="filters" id="filters"></div>
+</header>
+<main>
+  <div class="offline" id="offline">Diagrams need internet (Mermaid via CDN). The table catalogue below works offline.</div>
+
+  <div class="map">
+    <h3>Where are “Doctor”, “Nurse”, “Hospital”? — real-world concepts → entities</h3>
+    <table>
+      <tr><td>Hospital / clinic group</td><td class="ar">→</td><td><code>Organization</code> (legal entity) + <code>Location</code> (facility→building→ward→room→bed)</td></tr>
+      <tr><td>Doctor</td><td class="ar">→</td><td><code>Practitioner</code> + <code>PractitionerRole</code> <code>(roleCode = doctor)</code></td></tr>
+      <tr><td>Nurse / Head Nurse</td><td class="ar">→</td><td><code>Practitioner</code> + <code>PractitionerRole</code> <code>(nurse / head-nurse)</code></td></tr>
+      <tr><td>Pharmacist / Lab tech / Technician / Maintenance / Ambulance crew</td><td class="ar">→</td><td><code>Practitioner</code> + <code>PractitionerRole</code> (one table, role is data — no table per job title)</td></tr>
+      <tr><td>Patient</td><td class="ar">→</td><td><code>Patient</code> (+ <code>PatientIdentifier</code>, <code>RelatedPerson</code>, <code>Coverage</code>)</td></tr>
+      <tr><td>A visit / admission</td><td class="ar">→</td><td><code>Encounter</code> (+ <code>Admission</code>, <code>Bed</code> for inpatient)</td></tr>
+      <tr><td>Prescription</td><td class="ar">→</td><td><code>MedicationRequest</code> → <code>MedicationDispense</code> → <code>MedicationAdministration</code> (eMAR)</td></tr>
+      <tr><td>Lab / imaging order</td><td class="ar">→</td><td><code>ServiceRequest</code> → <code>Specimen</code> → <code>DiagnosticReport</code> / <code>Observation</code> / <code>ImagingStudy</code></td></tr>
+      <tr><td>Diagnosis / vitals / lab value</td><td class="ar">→</td><td><code>Condition</code> / <code>Observation</code> (FHIR uses one Observation for vitals & labs)</td></tr>
+    </table>
+  </div>
+
+  <div id="root"></div>
+  <footer>Greyquill Health Platform · enterprise schema preview · generated from <code>prisma/schema.prisma</code></footer>
+</main>
+
+<script type="module">
+const D = [
+ {id:'admin',label:'1 · Tenancy & Platform Admin',color:'var(--p600)',
+  note:'One tenant can run many Organizations and Facilities (Locations). Department/HealthcareService/Endpoint round out the org graph.',
+  mermaid:`erDiagram
+  TENANT ||--o{ ORGANIZATION : runs
+  ORGANIZATION ||--o{ LOCATION : "has facilities"
+  LOCATION ||--o{ LOCATION : "ward/room/bed"
+  ORGANIZATION ||--o{ HEALTHCARE_SERVICE : offers`,
+  ents:[
+   {n:'Tenant',flds:['id|PK','slug|UK','displayName','deploymentModel|EN','config|JS']},
+   {n:'Organization',f:'Organization',flds:['id|PK','tenantId|TN','name','type','parentId|FK']},
+   {n:'Location',f:'Location',flds:['id|PK','organizationId|FK','name','type','parentId|FK','geo|JS']},
+   {n:'Department',flds:['id|PK','tenantId|TN','name|UK','type']},
+   {n:'HealthcareService',f:'HealthcareService',flds:['id|PK','name','specialty|JS','active']},
+   {n:'Endpoint',f:'Endpoint',flds:['id|PK','connectionType','address','status']},
+  ]},
+ {id:'iam',label:'2 · Identity, Access & Security',color:'var(--info)',
+  note:'Platform login/RBAC plus FHIR security resources (AuditEvent, Consent, Provenance). Break-the-glass access is audited.',
+  mermaid:`erDiagram
+  USER ||--o{ USER_ROLE : has
+  ROLE ||--o{ USER_ROLE : grants
+  USER ||--o{ SESSION : opens
+  PATIENT ||--o{ CONSENT : grants`,
+  ents:[
+   {n:'User',flds:['id|PK','tenantId|TN','email|UK','fullName','status|EN','mfaEnabled','phone|PHI']},
+   {n:'Role',flds:['id|PK','key|UK','label','permissions|JS','isSystem']},
+   {n:'UserRole',flds:['id|PK','userId|FK','roleId|FK','scope']},
+   {n:'Session',flds:['id|PK','userId|FK','token|UK','expiresAt']},
+   {n:'AuditEvent',f:'AuditEvent',flds:['id|PK','actorUserId','action','entityType','reason']},
+   {n:'Consent',f:'Consent',flds:['id|PK','patientId|FK','scope','status|EN']},
+   {n:'Provenance',f:'Provenance',flds:['id|PK','targetType','targetId','agentUserId']},
+  ]},
+ {id:'staff',label:'3 · Workforce / Practitioners',color:'var(--violet)',
+  note:'Every staff member (clinical or not) is ONE Practitioner; their job(s) are PractitionerRole rows. Credentials, shifts, attendance, leave hang off Practitioner.',
+  mermaid:`erDiagram
+  PRACTITIONER ||--o{ PRACTITIONER_ROLE : "works as"
+  PRACTITIONER ||--o{ CREDENTIAL : holds
+  PRACTITIONER ||--o{ SHIFT : works
+  PRACTITIONER ||--o{ ATTENDANCE : logs
+  USER ||--o| PRACTITIONER : "logs in as"`,
+  ents:[
+   {n:'Practitioner',f:'Practitioner',flds:['id|PK','tenantId|TN','userId|FK UK','givenName','familyName','contact|PHI']},
+   {n:'PractitionerRole',f:'PractitionerRole',flds:['id|PK','practitionerId|FK','roleCode','locationId|FK','specialty|JS']},
+   {n:'Credential',flds:['id|PK','practitionerId|FK','type|EN','expiresAt','status|EN']},
+   {n:'Shift',flds:['id|PK','practitionerId|FK','locationId|FK','startAt','endAt']},
+   {n:'Roster',flds:['id|PK','tenantId|TN','periodFrom','periodTo','published']},
+   {n:'Attendance',flds:['id|PK','practitionerId|FK','checkInAt','method']},
+   {n:'LeaveRequest',flds:['id|PK','practitionerId|FK','fromDate','toDate','status']},
+  ]},
+ {id:'padmin',label:'4 · Patient Administration',color:'var(--accent)',
+  note:'Patient with multiple identifiers (MRN, ABHA, Aadhaar, payer id), kin, insurance coverage, and longitudinal episodes.',
+  mermaid:`erDiagram
+  PATIENT ||--o{ PATIENT_IDENTIFIER : "identified by"
+  PATIENT ||--o{ RELATED_PERSON : "kin"
+  PATIENT ||--o{ COVERAGE : "insured by"
+  PATIENT ||--o{ EPISODE_OF_CARE : "episodes"`,
+  ents:[
+   {n:'Patient',f:'Patient',flds:['id|PK','tenantId|TN','mrn|UK','givenName|PHI','familyName|PHI','dob|PHI','gender|EN','address|JS PHI']},
+   {n:'PatientIdentifier',flds:['id|PK','patientId|FK','system','value|PHI']},
+   {n:'RelatedPerson',f:'RelatedPerson',flds:['id|PK','patientId|FK','name|PHI','relationship','phone|PHI']},
+   {n:'Coverage',f:'Coverage',flds:['id|PK','patientId|FK','payerId|FK','memberId|PHI','status']},
+   {n:'InsurancePlan',f:'InsurancePlan',flds:['id|PK','payerId|FK','name','type']},
+   {n:'EpisodeOfCare',f:'EpisodeOfCare',flds:['id|PK','patientId|FK','status','careManagerId|FK']},
+  ]},
+ {id:'sched',label:'5 · Scheduling & Access',color:'var(--success)',
+  note:'FHIR scheduling: Schedule→Slot→Appointment, omnichannel (incl. WhatsApp), with responses and waitlist.',
+  mermaid:`erDiagram
+  SCHEDULE ||--o{ SLOT : provides
+  PATIENT ||--o{ APPOINTMENT : books
+  PRACTITIONER ||--o{ APPOINTMENT : serves
+  APPOINTMENT ||--o{ APPOINTMENT_RESPONSE : "answered by"`,
+  ents:[
+   {n:'Schedule',f:'Schedule',flds:['id|PK','actorType','actorId|FK','planningFrom']},
+   {n:'Slot',f:'Slot',flds:['id|PK','scheduleId|FK','start','end','status|EN']},
+   {n:'Appointment',f:'Appointment',flds:['id|PK','patientId|FK','practitionerId|FK','start','status|EN','channel|EN','reason|PHI']},
+   {n:'AppointmentResponse',f:'AppointmentResponse',flds:['id|PK','appointmentId|FK','actorId|FK','status']},
+   {n:'WaitlistEntry',flds:['id|PK','patientId|FK','practitionerId|FK','priority']},
+  ]},
+ {id:'enc',label:'6 · Encounters & Inpatient (ADT)',color:'var(--warning)',
+  note:'Encounter is the spine of every visit (OPD/IPD/ER/virtual). Inpatient adds Ward→Room→Bed, Admission, bed transfers, diet orders.',
+  mermaid:`erDiagram
+  PATIENT ||--o{ ENCOUNTER : has
+  ENCOUNTER ||--o{ ENCOUNTER_PARTICIPANT : "staffed by"
+  WARD ||--o{ ROOM : contains
+  ROOM ||--o{ BED : contains
+  PATIENT ||--o{ ADMISSION : "admitted via"
+  BED ||--o{ ADMISSION : assigned
+  ADMISSION ||--o{ BED_TRANSFER : "moves"`,
+  ents:[
+   {n:'Encounter',f:'Encounter',flds:['id|PK','patientId|FK','class|EN','status|EN','locationId|FK','reason|PHI']},
+   {n:'EncounterParticipant',flds:['id|PK','encounterId|FK','practitionerId|FK','role']},
+   {n:'Ward',flds:['id|PK','tenantId|TN','locationId|FK','name']},
+   {n:'Room',flds:['id|PK','wardId|FK','code','type']},
+   {n:'Bed',flds:['id|PK','roomId|FK','code|UK','status|EN']},
+   {n:'Admission',flds:['id|PK','patientId|FK','encounterId|FK UK','bedId|FK','status|EN']},
+   {n:'BedTransfer',flds:['id|PK','admissionId|FK','bedId|FK','fromAt','reason']},
+   {n:'DietOrder',flds:['id|PK','patientId|FK','dietType','active']},
+  ]},
+ {id:'clin',label:'7 · Clinical Records',color:'var(--critical)',
+  note:'The chart. FHIR Condition/Observation/AllergyIntolerance/Procedure/etc. SOAP notes, scans and consents are DocumentReference.',
+  mermaid:`erDiagram
+  PATIENT ||--o{ CONDITION : has
+  PATIENT ||--o{ OBSERVATION : has
+  PATIENT ||--o{ ALLERGY_INTOLERANCE : has
+  PATIENT ||--o{ PROCEDURE : has
+  PATIENT ||--o{ CARE_PLAN : has
+  PATIENT ||--o{ DOCUMENT_REFERENCE : has`,
+  ents:[
+   {n:'Condition',f:'Condition',flds:['id|PK','patientId|FK','code|JS','clinicalStatus|EN','onsetDate']},
+   {n:'Observation',f:'Observation',flds:['id|PK','patientId|FK','category|EN','code|JS','valueQuantity','valueString|PHI','interpretation']},
+   {n:'AllergyIntolerance',f:'AllergyIntolerance',flds:['id|PK','patientId|FK','code|JS','criticality|EN']},
+   {n:'Procedure',f:'Procedure',flds:['id|PK','patientId|FK','code|JS','status','performedAt']},
+   {n:'Immunization',f:'Immunization',flds:['id|PK','patientId|FK','vaccineCode|JS','occurrence']},
+   {n:'FamilyMemberHistory',f:'FamilyMemberHistory',flds:['id|PK','patientId|FK','relationship','note|PHI']},
+   {n:'ClinicalImpression',f:'ClinicalImpression',flds:['id|PK','patientId|FK','summary|PHI','assessorId|FK']},
+   {n:'CarePlan',f:'CarePlan',flds:['id|PK','patientId|FK','title','status']},
+   {n:'CareTeam',f:'CareTeam',flds:['id|PK','patientId|FK','members|JS']},
+   {n:'Goal',f:'Goal',flds:['id|PK','patientId|FK','description','status']},
+   {n:'DocumentReference',f:'DocumentReference',flds:['id|PK','patientId|FK','type','contentText|PHI','signedAt']},
+  ]},
+ {id:'orders',label:'8 · Orders & Results (CPOE)',color:'var(--violet)',
+  note:'ServiceRequest is the universal order (lab/imaging/procedure/referral). Specimen→DiagnosticReport→Observation; ImagingStudy for DICOM.',
+  mermaid:`erDiagram
+  PATIENT ||--o{ SERVICE_REQUEST : "ordered for"
+  SERVICE_REQUEST ||--o{ SPECIMEN : "collects"
+  SERVICE_REQUEST ||--o{ DIAGNOSTIC_REPORT : yields
+  SERVICE_REQUEST ||--o{ IMAGING_STUDY : yields
+  OBSERVATION_DEFINITION ||--o{ OBSERVATION : "defines"`,
+  ents:[
+   {n:'ServiceRequest',f:'ServiceRequest',flds:['id|PK','patientId|FK','category|EN','code|JS','status|EN','priority|EN','requesterId|FK']},
+   {n:'ObservationDefinition',f:'ObservationDefinition',flds:['id|PK','code|JS','name','refLow','refHigh','criticalHigh']},
+   {n:'Specimen',f:'Specimen',flds:['id|PK','serviceRequestId|FK','accessionNumber|UK','status|EN']},
+   {n:'DiagnosticReport',f:'DiagnosticReport',flds:['id|PK','patientId|FK','category','status|EN','conclusion|PHI']},
+   {n:'ImagingStudy',f:'ImagingStudy',flds:['id|PK','patientId|FK','modality','studyUid','status']},
+  ]},
+ {id:'rx',label:'9 · Medication & Pharmacy',color:'var(--p500)',
+  note:'FHIR medication lifecycle: Request (prescribe) → Dispense (pharmacy) → Administration (eMAR). Formulary + interaction rules for CDS.',
+  mermaid:`erDiagram
+  PATIENT ||--o{ MEDICATION_REQUEST : prescribed
+  MEDICATION ||--o{ MEDICATION_REQUEST : "of"
+  MEDICATION_REQUEST ||--o{ MEDICATION_DISPENSE : "dispensed"
+  MEDICATION_REQUEST ||--o{ MEDICATION_ADMINISTRATION : "administered"`,
+  ents:[
+   {n:'Medication',f:'Medication',flds:['id|PK','code|JS','name','genericName','scheduleClass']},
+   {n:'MedicationRequest',f:'MedicationRequest',flds:['id|PK','patientId|FK','medicationId|FK','status|EN','dosage']},
+   {n:'MedicationDispense',f:'MedicationDispense',flds:['id|PK','medicationRequestId|FK','quantity','batchId|FK','status|EN']},
+   {n:'MedicationAdministration',f:'MedicationAdministration',flds:['id|PK','patientId|FK','status|EN','dose','administeredAt']},
+   {n:'MedicationStatement',f:'MedicationStatement',flds:['id|PK','patientId|FK','status','text|PHI']},
+   {n:'FormularyItem',flds:['id|PK','medicationId|FK','preferred']},
+   {n:'DrugInteraction',flds:['id|PK','drugACode','drugBCode','severity']},
+  ]},
+ {id:'ot',label:'10 · Surgery / Operating Theatre',color:'var(--info)',
+  note:'OR scheduling and surgical case with team and anesthesia record.',
+  mermaid:`erDiagram
+  OPERATING_ROOM ||--o{ SURGICAL_CASE : hosts
+  PATIENT ||--o{ SURGICAL_CASE : "undergoes"
+  SURGICAL_CASE ||--o{ SURGICAL_TEAM_MEMBER : "staffed by"
+  SURGICAL_CASE ||--o| ANESTHESIA_RECORD : "records"`,
+  ents:[
+   {n:'OperatingRoom',flds:['id|PK','tenantId|TN','locationId|FK','name']},
+   {n:'SurgicalCase',flds:['id|PK','patientId|FK','operatingRoomId|FK','status|EN','procedureCode|JS']},
+   {n:'SurgicalTeamMember',flds:['id|PK','surgicalCaseId|FK','practitionerId|FK','role']},
+   {n:'AnesthesiaRecord',flds:['id|PK','surgicalCaseId|FK UK','type','notes|PHI']},
+  ]},
+ {id:'er',label:'11 · Emergency & Ambulance',color:'var(--critical)',
+  note:'ER triage (ESI levels), ambulance fleet, dispatch and pre-hospital records.',
+  mermaid:`erDiagram
+  EMERGENCY_VISIT ||--o| TRIAGE_ASSESSMENT : triaged
+  AMBULANCE_UNIT ||--o{ DISPATCH_CALL : "responds to"
+  PATIENT ||--o{ DISPATCH_CALL : involves
+  DISPATCH_CALL ||--o| PRE_HOSPITAL_RECORD : captures`,
+  ents:[
+   {n:'EmergencyVisit',flds:['id|PK','patientId|FK','arrivalMode','chiefComplaint|PHI']},
+   {n:'TriageAssessment',flds:['id|PK','emergencyVisitId|FK UK','level|EN','vitals|JS PHI']},
+   {n:'AmbulanceUnit',flds:['id|PK','code|UK','type','status|EN','currentLocation|JS']},
+   {n:'DispatchCall',flds:['id|PK','unitId|FK','patientId|FK','priority|EN','status|EN','location|JS']},
+   {n:'PreHospitalRecord',flds:['id|PK','dispatchCallId|FK UK','vitals|JS PHI','interventions|PHI']},
+  ]},
+ {id:'bill',label:'12 · Billing, RCM & Finance',color:'var(--warning)',
+  note:'FHIR finance: Account→ChargeItem→Invoice→Payment, and Claim→ClaimResponse→EOB for insurance. Chargemaster + health packages.',
+  mermaid:`erDiagram
+  PATIENT ||--o{ ACCOUNT : holds
+  ACCOUNT ||--o{ CHARGE_ITEM : accrues
+  ACCOUNT ||--o{ INVOICE : "billed on"
+  INVOICE ||--o{ PAYMENT : "settled by"
+  INVOICE ||--o{ CLAIM : "claimed via"
+  CLAIM ||--o{ CLAIM_RESPONSE : adjudicated`,
+  ents:[
+   {n:'Payer',flds:['id|PK','tenantId|TN','name','type']},
+   {n:'HealthPackage',flds:['id|PK','name','price|DEC','items|JS']},
+   {n:'ChargeItemDefinition',f:'ChargeItemDefinition',flds:['id|PK','code|JS','name','basePrice|DEC','taxRate|DEC']},
+   {n:'Account',f:'Account',flds:['id|PK','patientId|FK','status|EN','balance|DEC']},
+   {n:'ChargeItem',f:'ChargeItem',flds:['id|PK','patientId|FK','code|JS','amount|DEC']},
+   {n:'Invoice',f:'Invoice',flds:['id|PK','patientId|FK','number|UK','status|EN','total|DEC']},
+   {n:'InvoiceLineItem',flds:['id|PK','invoiceId|FK','code','amount|DEC']},
+   {n:'Payment',flds:['id|PK','invoiceId|FK','amount|DEC','method|EN','status|EN']},
+   {n:'PaymentReconciliation',f:'PaymentReconciliation',flds:['id|PK','payerId|FK','totalAmount|DEC']},
+   {n:'Claim',f:'Claim',flds:['id|PK','invoiceId|FK','payerId|FK','status|EN','totalClaimed|DEC']},
+   {n:'ClaimResponse',f:'ClaimResponse',flds:['id|PK','claimId|FK','outcome','denialReason']},
+   {n:'ExplanationOfBenefit',f:'ExplanationOfBenefit',flds:['id|PK','patientId|FK','claimId|FK','outcome']},
+  ]},
+ {id:'scm',label:'13 · Supply Chain & Inventory',color:'var(--n600)',
+  note:'Materials management: items, batches with expiry, stock movements, suppliers, purchase orders, receipts, internal requisitions.',
+  mermaid:`erDiagram
+  ITEM_MASTER ||--o{ STOCK_BATCH : "stocked as"
+  STOCK_BATCH ||--o{ STOCK_MOVEMENT : "ledger"
+  SUPPLIER ||--o{ PURCHASE_ORDER : fulfills
+  PURCHASE_ORDER ||--o{ PURCHASE_ORDER_LINE : contains
+  PURCHASE_ORDER ||--o{ GOODS_RECEIPT : "received via"`,
+  ents:[
+   {n:'ItemMaster',flds:['id|PK','sku|UK','name','category','medicationId|FK']},
+   {n:'InventoryStore',flds:['id|PK','name','locationId|FK','type']},
+   {n:'StockBatch',flds:['id|PK','itemId|FK','batchNo','expiryDate','quantityOnHand']},
+   {n:'StockMovement',flds:['id|PK','batchId|FK','type|EN','quantity']},
+   {n:'Supplier',flds:['id|PK','name','contact|JS']},
+   {n:'PurchaseOrder',flds:['id|PK','supplierId|FK','number|UK','status|EN','total|DEC']},
+   {n:'PurchaseOrderLine',flds:['id|PK','purchaseOrderId|FK','itemId|FK','quantity']},
+   {n:'GoodsReceipt',flds:['id|PK','purchaseOrderId|FK','receivedAt']},
+   {n:'Requisition',flds:['id|PK','status|EN','items|JS']},
+  ]},
+ {id:'fac',label:'14 · Facilities, Assets & Biomedical',color:'var(--accent)',
+  note:'Equipment as FHIR Device, with work orders, preventive maintenance, calibration, and service contracts (AMC/warranty).',
+  mermaid:`erDiagram
+  DEVICE ||--o{ WORK_ORDER : "subject of"
+  DEVICE ||--o{ MAINTENANCE_SCHEDULE : has
+  DEVICE ||--o{ CALIBRATION_RECORD : "calibrated"
+  DEVICE ||--o{ SERVICE_CONTRACT : "covered by"`,
+  ents:[
+   {n:'Device',f:'Device',flds:['id|PK','name','type','serialNo','status|EN']},
+   {n:'WorkOrder',flds:['id|PK','deviceId|FK','type|EN','status|EN','title','assignedToId|FK']},
+   {n:'MaintenanceSchedule',flds:['id|PK','deviceId|FK','frequency','nextDueAt']},
+   {n:'CalibrationRecord',flds:['id|PK','deviceId|FK','result','nextDueAt']},
+   {n:'ServiceContract',flds:['id|PK','deviceId|FK','type','endDate']},
+  ]},
+ {id:'comm',label:'15 · Communications & Engagement',color:'var(--violet)',
+  note:'Omnichannel notifications (SMS/email/push/WhatsApp/IVR), FHIR Communication, campaigns, NPS feedback, telemedicine sessions.',
+  mermaid:`erDiagram
+  TENANT ||--o{ NOTIFICATION : sends
+  TENANT ||--o{ NOTIFICATION_TEMPLATE : defines
+  PATIENT ||--o{ COMMUNICATION : "messaged"
+  ENCOUNTER ||--o| TELEMED_SESSION : hosts`,
+  ents:[
+   {n:'NotificationTemplate',flds:['id|PK','key','channel|EN']},
+   {n:'Notification',flds:['id|PK','recipientUserId|FK','recipientPatientId|FK','channel|EN','status|EN']},
+   {n:'Communication',f:'Communication',flds:['id|PK','patientId|FK','channel|EN','payload|PHI']},
+   {n:'CommunicationRequest',f:'CommunicationRequest',flds:['id|PK','patientId|FK','channel|EN','status']},
+   {n:'Campaign',flds:['id|PK','name','channel|EN','audience|JS']},
+   {n:'FeedbackSurvey',flds:['id|PK','patientId|FK','score','comment']},
+   {n:'TelemedSession',flds:['id|PK','encounterId|FK UK','roomUrl','startedAt']},
+  ]},
+ {id:'term',label:'16 · Terminology & Interoperability',color:'var(--info)',
+  note:'FHIR foundation for the interop layer: code systems (ICD-10/LOINC/SNOMED/RxNorm/CPT), value sets, maps, the internal↔FHIR bridge, and HL7/FHIR message logs.',
+  mermaid:`erDiagram
+  CODE_SYSTEM ||--o{ CONCEPT : defines
+  INTEGRATION_ENDPOINT ||--o{ MESSAGE_LOG : "logs"`,
+  ents:[
+   {n:'CodeSystem',f:'CodeSystem',flds:['id|PK','url|UK','name','version']},
+   {n:'Concept',flds:['id|PK','codeSystemId|FK','code','display']},
+   {n:'ValueSet',f:'ValueSet',flds:['id|PK','url|UK','name','compose|JS']},
+   {n:'ConceptMap',f:'ConceptMap',flds:['id|PK','sourceUrl','targetUrl','mappings|JS']},
+   {n:'FhirResourceMap',flds:['id|PK','resourceType','internalId','fhirId']},
+   {n:'IntegrationEndpoint',flds:['id|PK','name','protocol','direction']},
+   {n:'MessageLog',flds:['id|PK','messageType','status','payload|PHI']},
+  ]},
+ {id:'auto',label:'17 · Automation & Workflow',color:'var(--p600)',
+  note:'The automation surface: FHIR Task, PlanDefinition/ActivityDefinition (care pathways & order sets), a rules engine, scheduled jobs, and CDS clinical alerts.',
+  mermaid:`erDiagram
+  PLAN_DEFINITION ||--o{ CARE_PATHWAY_INSTANCE : "instantiated as"
+  PATIENT ||--o{ CARE_PATHWAY_INSTANCE : "on pathway"
+  AUTOMATION_RULE ||--o{ RULE_EXECUTION_LOG : "fires"
+  PATIENT ||--o{ TASK : "work for"`,
+  ents:[
+   {n:'Task',f:'Task',flds:['id|PK','code','status|EN','priority|EN','forPatientId|FK','dueAt']},
+   {n:'PlanDefinition',f:'PlanDefinition',flds:['id|PK','name','type','actions|JS']},
+   {n:'ActivityDefinition',f:'ActivityDefinition',flds:['id|PK','name','kind','template|JS']},
+   {n:'CarePathwayInstance',flds:['id|PK','planDefinitionId|FK','patientId|FK','currentStep']},
+   {n:'AutomationRule',flds:['id|PK','triggerEvent','condition|JS','actions|JS','enabled']},
+   {n:'RuleExecutionLog',flds:['id|PK','ruleId|FK','outcome','executedAt']},
+   {n:'ScheduledJob',flds:['id|PK','name','cron','jobType','enabled']},
+   {n:'ClinicalAlert',flds:['id|PK','patientId|FK','type','severity','acknowledged']},
+  ]},
+];
+
+// ---- render ----
+function fieldRow(s){const [name,badges]=s.split('|');const bs=(badges||'').split(' ').filter(Boolean);
+  return `<li><span class="col">${name}</span>${bs.map(b=>`<span class="b ${b}">${b==='DEC'?'dec':b.toLowerCase()}</span>`).join('')}</li>`;}
+function entityCard(e){
+  return `<div class="entity"><div class="entity-h"><span>${e.n}</span>${e.f?`<span class="fhir">${e.f}</span>`:''}</div>
+    <ul class="cols">${e.flds.map(fieldRow).join('')}</ul></div>`;}
+let total=0;
+const root=document.getElementById('root');
+const filters=document.getElementById('filters');
+filters.innerHTML=`<button data-d="all" class="active">All</button>`+D.map(d=>`<button data-d="${d.id}">${d.label.split(' · ')[0]}</button>`).join('')+`<button data-d="enums">⚑ Enums</button>`;
+root.innerHTML=D.map(d=>{
+  total+=d.ents.length;
+  return `<section class="domain" data-d="${d.id}">
+    <h2><span class="dot" style="background:${d.color}"></span> ${d.label} <span style="color:var(--n400);font-weight:500;font-size:12px">(${d.ents.length})</span></h2>
+    <p class="note">${d.note}</p>
+    <div class="diagram"><pre class="mermaid">${d.mermaid}</pre></div>
+    <div class="cards">${d.ents.map(entityCard).join('')}</div>
+  </section>`;}).join('');
+document.getElementById('ecount').textContent=total;
+
+// ---- Enumerations reference (allowed values for every `enum` field) ----
+const ENUMS={
+ DeploymentModel:['SAAS_MULTI_TENANT','PRIVATE_CLOUD','ON_PREM'],
+ UserStatus:['ACTIVE','INVITED','SUSPENDED'],
+ Gender:['MALE','FEMALE','OTHER','UNKNOWN'],
+ EncounterClass:['AMBULATORY','INPATIENT','EMERGENCY','VIRTUAL','HOME_HEALTH','OBSERVATION'],
+ EncounterStatus:['PLANNED','ARRIVED','TRIAGED','IN_PROGRESS','ON_LEAVE','DISCHARGED','FINISHED','CANCELLED'],
+ AppointmentStatus:['PROPOSED','PENDING','BOOKED','ARRIVED','CHECKED_IN','FULFILLED','CANCELLED','NOSHOW','WAITLIST'],
+ AppointmentChannel:['WEB','APP','WHATSAPP','PHONE','WALK_IN','KIOSK'],
+ SlotStatus:['FREE','BUSY','BUSY_TENTATIVE','BLOCKED'],
+ BedStatus:['AVAILABLE','OCCUPIED','RESERVED','CLEANING','MAINTENANCE','BLOCKED'],
+ AdmissionStatus:['PREADMIT','ADMITTED','ON_LEAVE','DISCHARGED'],
+ ConditionClinicalStatus:['ACTIVE','RECURRENCE','RELAPSE','INACTIVE','REMISSION','RESOLVED'],
+ ObservationStatus:['REGISTERED','PRELIMINARY','FINAL','AMENDED','CORRECTED','CANCELLED'],
+ ObservationCategory:['VITAL_SIGNS','LABORATORY','IMAGING','SOCIAL_HISTORY','EXAM','SURVEY','PROCEDURE'],
+ AllergyCriticality:['LOW','HIGH','UNABLE_TO_ASSESS'],
+ ServiceRequestStatus:['DRAFT','ACTIVE','ON_HOLD','REVOKED','COMPLETED','ENTERED_IN_ERROR'],
+ ServiceRequestPriority:['ROUTINE','URGENT','ASAP','STAT'],
+ ServiceCategory:['LABORATORY','IMAGING','PROCEDURE','REFERRAL','NURSING','DIET'],
+ SpecimenStatus:['AVAILABLE','UNAVAILABLE','UNSATISFACTORY','ENTERED_IN_ERROR'],
+ DiagnosticReportStatus:['REGISTERED','PARTIAL','PRELIMINARY','FINAL','AMENDED','CORRECTED','CANCELLED'],
+ MedicationRequestStatus:['ACTIVE','ON_HOLD','CANCELLED','COMPLETED','STOPPED','DRAFT'],
+ MedicationRequestIntent:['PROPOSAL','PLAN','ORDER'],
+ MedicationDispenseStatus:['PREPARATION','IN_PROGRESS','ON_HOLD','COMPLETED','CANCELLED'],
+ MedicationAdminStatus:['IN_PROGRESS','ON_HOLD','COMPLETED','ENTERED_IN_ERROR','STOPPED','NOT_DONE'],
+ AccountStatus:['ACTIVE','INACTIVE','ON_HOLD','CLOSED'],
+ InvoiceStatus:['DRAFT','ISSUED','BALANCED','PARTIAL','PAID','CANCELLED'],
+ PaymentMethod:['CASH','CARD','UPI','WALLET','NETBANKING','INSURANCE','ONLINE'],
+ PaymentStatus:['PENDING','SUCCEEDED','FAILED','REFUNDED'],
+ ClaimStatus:['DRAFT','SUBMITTED','IN_REVIEW','ACCEPTED','PARTIAL','DENIED','PAID','APPEALED'],
+ TaskStatus:['DRAFT','REQUESTED','RECEIVED','ACCEPTED','IN_PROGRESS','ON_HOLD','COMPLETED','CANCELLED','FAILED'],
+ TaskPriority:['ROUTINE','URGENT','ASAP','STAT'],
+ CredentialType:['MEDICAL_LICENSE','DEA','BOARD_CERT','MALPRACTICE','REGISTRATION','NURSING_LICENSE','OTHER'],
+ CredentialStatus:['VALID','EXPIRING','EXPIRED','REVOKED'],
+ WorkOrderType:['CORRECTIVE','PREVENTIVE','INSPECTION','CALIBRATION'],
+ WorkOrderStatus:['OPEN','ASSIGNED','IN_PROGRESS','ON_HOLD','CLOSED'],
+ AssetStatus:['OPERATIONAL','DOWN','MAINTENANCE','RETIRED'],
+ AmbulanceStatus:['AVAILABLE','DISPATCHED','ENROUTE','AT_SCENE','TRANSPORTING','OUT_OF_SERVICE'],
+ DispatchStatus:['RECEIVED','DISPATCHED','ENROUTE','AT_SCENE','TRANSPORTING','CLOSED'],
+ TriageLevel:['ESI_1','ESI_2','ESI_3','ESI_4','ESI_5'],
+ NotificationChannel:['SMS','EMAIL','PUSH','WHATSAPP','IVR','IN_APP'],
+ NotificationStatus:['QUEUED','SENT','DELIVERED','READ','FAILED'],
+ ConsentStatus:['DRAFT','ACTIVE','REJECTED','INACTIVE'],
+ POStatus:['DRAFT','SUBMITTED','APPROVED','PARTIAL','RECEIVED','CLOSED','CANCELLED'],
+ RequisitionStatus:['DRAFT','SUBMITTED','APPROVED','FULFILLED','CANCELLED'],
+ StockMovementType:['RECEIPT','ISSUE','TRANSFER','ADJUSTMENT','RETURN','WASTAGE'],
+ SurgeryStatus:['SCHEDULED','PRE_OP','IN_PROGRESS','RECOVERY','COMPLETED','CANCELLED'],
+};
+root.insertAdjacentHTML('beforeend', `<section class="domain" data-d="enums">
+  <h2><span class="dot" style="background:var(--warning)"></span> ⚑ Enumerations <span style="color:var(--n400);font-weight:500;font-size:12px">(${Object.keys(ENUMS).length} enums)</span></h2>
+  <p class="note">Allowed values for every field tagged <span class="b EN">enum</span>. Defined in <code>prisma/schema.prisma</code>; FHIR-aligned where applicable.</p>
+  <div class="cards">${Object.entries(ENUMS).map(([k,v])=>`<div class="entity"><div class="entity-h"><span>${k}</span><span class="fhir">${v.length}</span></div><ul class="cols">${v.map(x=>`<li><span class="col">${x}</span></li>`).join('')}</ul></div>`).join('')}</div>
+</section>`);
+
+filters.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  [...filters.children].forEach(x=>x.classList.toggle('active',x===b));
+  const d=b.dataset.d;
+  root.querySelectorAll('.domain').forEach(s=>s.style.display=(d==='all'||s.dataset.d===d)?'':'none');});
+
+try{
+  const m=await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+  m.default.initialize({startOnLoad:true,theme:'base',themeVariables:{
+    primaryColor:'#DBEAFE',primaryBorderColor:'#1D4ED8',primaryTextColor:'#172554',
+    lineColor:'#64748B',fontFamily:'Inter, system-ui, sans-serif',fontSize:'13px'}});
+}catch(err){document.getElementById('offline').style.display='block';}
+</script>
+</body>
+</html>
