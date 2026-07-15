@@ -10,23 +10,29 @@ structure**; that prompt governs **words**.
 
 Clean, senior, enterprise. Restraint is the brand — these are regulated-enterprise buyers
 (auditors, risk officers, CDOs), not a consumer feed. Deliberately **not** the cream /
-serif "editorial" aesthetic.
+serif "editorial" aesthetic. Colors and type match **greyquill.io** exactly.
 
 - **Canvas:** white, one readable column (~700px), generous line spacing.
-- **Brand color:** primary-dark navy `#083D6A` for the wordmark and every heading.
-- **Accent:** blue `#5A9FD4` / `#2F7FC4` for links, rules, and callout edges. Used
-  sparingly.
-- **Type:** a system sans stack (no web fonts, no CDNs — nothing external to break).
-- **Dark mode:** automatic via `prefers-color-scheme`. Don't hard-code colors in a post;
-  use the elements/classes below and they adapt.
+- **Brand blue:** `#0B4F88` (from the site) for the wordmark, headings, and links; hover
+  and decorative accents use `#1a6bb5`.
+- **Ink:** `#0A1628` (the site's brand ink) for body text.
+- **Mist:** `#EEFBFF` light wash for callout boxes.
+- **Type (self-hosted, matching the site):** **Sora** for headings/display, **Inter** for
+  body. The woff2 files live in `assets/fonts/` — no CDN, nothing external to break.
+- **Light + dark mode:** a real toggle sits in the site bar on every blog screen. It
+  defaults to the reader's OS setting and remembers their choice (localStorage). Both
+  themes are driven by CSS tokens — don't hard-code colors in a post; use the
+  elements/classes below and they adapt to whichever theme is active.
 
-All of this lives in one file: [`assets/blog.css`](assets/blog.css). A post never carries
-its own `<style>` block or inline colors — that's what keeps the blog consistent.
+All of this lives in one file: [`assets/blog.css`](assets/blog.css), with the toggle logic
+in [`assets/theme.js`](assets/theme.js). A post never carries its own `<style>` block,
+inline colors, or scripts — that's what keeps the blog consistent.
 
 ## How a post is assembled
 
 1. Copy [`_template.html`](_template.html) to `blogs/<slug>.html` (kebab-case slug).
-2. Fill the placeholders: `{{TITLE}}`, `{{DECK}}` (one-line takeaway), `{{DATE}}`,
+2. Fill the placeholders: `{{TITLE}}`, `{{DECK}}` (one-line takeaway), `{{AUTHOR}}`
+   (**default: Amarnath Bagineni** — always shown in the byline), `{{DATE}}`,
    `{{READING_TIME}}`, `{{SLUG}}` (must equal the filename), and `{{BODY}}`.
 3. Write the body as plain semantic HTML using the vocabulary below.
 4. Served at `https://www.greyquill.io/dc/blogs/<slug>.html`.
@@ -64,8 +70,10 @@ Use these and only these — they're all styled by `blog.css`:
 
 - **No `<style>` blocks, no inline `style=""`, no hard-coded colors in a post.** The whole
   point is consistency — the shared stylesheet owns all of that.
-- **No external resources** (fonts, scripts, trackers, remote images). Images are local
-  files under `blogs/assets/`.
+- **No external resources** (remote fonts, CDNs, trackers, remote images). Everything is
+  local under `blogs/assets/` — the fonts, the stylesheet, and the one shared `theme.js`.
+  The only scripts a post carries are the shared theme toggle (the `theme.js` link and the
+  tiny inline no-flash snippet, both already in `_template.html`) — never a per-post script.
 - **Every image has meaningful `alt` text**, and is a licensed / original / generated
   asset (never client or copyrighted imagery). Charts use real, grounded data.
 - The copy rules still apply: **no em-dashes**, no invented metrics, no named clients or
