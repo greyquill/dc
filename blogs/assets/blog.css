@@ -75,12 +75,14 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
 }
 .theme-toggle:hover { border-color: var(--brand-lit); color: var(--brand-lit); }
 .theme-toggle svg { width: 1.05rem; height: 1.05rem; }
-.theme-toggle .i-moon { display: none; }
-:root[data-theme="dark"] .theme-toggle .i-sun { display: none; }
-:root[data-theme="dark"] .theme-toggle .i-moon { display: inline; }
+/* show the icon of the mode you'll switch TO: moon in light, sun in dark */
+.theme-toggle .i-sun { display: none; }
+.theme-toggle .i-moon { display: inline; }
+:root[data-theme="dark"] .theme-toggle .i-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .i-sun { display: inline; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .theme-toggle .i-sun { display: none; }
-  :root:not([data-theme]) .theme-toggle .i-moon { display: inline; }
+  :root:not([data-theme]) .theme-toggle .i-moon { display: none; }
+  :root:not([data-theme]) .theme-toggle .i-sun { display: inline; }
 }
 
 /* ---- shared bits ---- */
