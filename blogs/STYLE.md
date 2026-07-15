@@ -89,6 +89,16 @@ Extend the list as real topics appear; keep labels business-legible, not interna
 
 Paste these blocks into the body and fill the content — the shared CSS/JS renders them.
 
+**Header / cover image** (optional; sits under the header, above the body — the slot is
+commented in `_template.html`):
+
+```html
+<figure class="post__cover"><!-- add "post__cover--bleed" for a full-width banner -->
+  <img alt="Describe the cover" src="assets/<slug>-cover.jpg">
+  <figcaption>Optional caption.</figcaption>
+</figure>
+```
+
 **Image** (with caption):
 
 ```html
