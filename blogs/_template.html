@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Fill these per post. Keep {{SLUG}} identical to the filename (blogs/{{SLUG}}.html). -->
+  <title>{{TITLE}} — Greyquill</title>
+  <meta name="description" content="{{DECK}}">
+  <link rel="canonical" href="https://www.greyquill.io/dc/blogs/{{SLUG}}.html">
+
+  <!-- Open Graph: controls how the link previews when shared (LinkedIn, etc.) -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{DECK}}">
+  <meta property="og:url" content="https://www.greyquill.io/dc/blogs/{{SLUG}}.html">
+  <meta property="og:site_name" content="Greyquill">
+  <!-- Optional share image (1200x630). Drop it in blogs/assets/ and set the path, or delete these two lines. -->
+  <meta property="og:image" content="https://www.greyquill.io/dc/blogs/assets/{{SLUG}}-og.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="assets/blog.css">
+</head>
+<body>
+  <header class="site-bar">
+    <div class="site-bar__inner">
+      <a class="wordmark" href="https://www.greyquill.io/">Greyquill</a>
+      <span class="site-bar__tag">Software Investments That Actually Deliver.</span>
+    </div>
+  </header>
+
+  <main class="post">
+    <h1 class="post__title">{{TITLE}}</h1>
+    <p class="post__deck">{{DECK}}</p>
+    <div class="post__meta">By Greyquill &middot; {{DATE}} &middot; {{READING_TIME}} min read</div>
+
+    <article class="post__body">
+      <!-- BODY START -->
+      {{BODY}}
+      <!-- BODY END -->
+    </article>
+  </main>
+
+  <footer class="post-footer">
+    <strong>Greyquill</strong> helps regulated enterprises get AI to actually work:
+    structure and clean data for AI compatibility first, then deploy governed,
+    domain-specific agents on top. <a href="https://www.greyquill.io/">greyquill.io</a>
+  </footer>
+</body>
+</html>
