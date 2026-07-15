@@ -58,9 +58,14 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
   max-width: var(--maxw-wide); margin: 0 auto; padding: 1rem 1.5rem;
   display: flex; align-items: center; gap: 0.6rem;
 }
-.site-bar__brand { display: flex; align-items: baseline; gap: 0.6rem; }
-.wordmark { font-weight: 700; letter-spacing: -0.01em; color: var(--brand); text-decoration: none; font-size: 1.05rem; }
-.wordmark:hover { color: var(--brand-lit); }
+.site-bar__brand { display: flex; align-items: center; gap: 0.75rem; }
+.brand-logo { display: inline-flex; align-items: center; }
+.brand-logo img { height: 1.55rem; width: auto; display: block; }
+/* dark mode: the navy wordmark would vanish on dark, so render it light */
+:root[data-theme="dark"] .brand-logo img { filter: brightness(0) invert(1); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .brand-logo img { filter: brightness(0) invert(1); }
+}
 .site-bar__tag { color: var(--ink-soft); font-size: 0.82rem; }
 
 .theme-toggle {
@@ -183,6 +188,28 @@ th { background: var(--surface); color: var(--brand); }
 .video__play:hover { background: var(--brand-lit); }
 .video[style*="background-image"] .video__play:hover { background: rgba(10,22,40,0.15); }
 .video__play svg { width: 4rem; height: 4rem; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); }
+
+/* ---- component: quote with attribution ---- */
+.quote { margin: 2.25rem 0; padding: 1.4rem 1.5rem; background: var(--mist); border-left: 3px solid var(--brand-lit); border-radius: 4px; }
+.quote p { font-size: 1.25rem; line-height: 1.5; color: var(--brand); margin: 0 0 0.8rem; }
+.quote__by { display: block; font-style: normal; font-size: 0.9rem; color: var(--ink-soft); }
+.quote__by::before { content: "— "; }
+
+/* ---- component: end-of-post CTA card ---- */
+.cta { margin: 3rem 0 1rem; padding: 1.75rem 1.9rem; border: 1px solid var(--border); border-top: 3px solid var(--brand); border-radius: 4px; background: var(--surface); }
+.cta__lead { font-family: "Sora", "Inter", sans-serif; font-size: 1.25rem; line-height: 1.35; color: var(--brand); margin: 0 0 0.5rem; }
+.cta__body { color: var(--ink); margin: 0 0 1rem; }
+.cta__link { display: inline-block; font-weight: 600; color: var(--brand); text-decoration: none; border-bottom: 1px solid var(--brand-lit); }
+.cta__link:hover { color: var(--brand-lit); }
+
+/* ---- component: references / sources ---- */
+sup.ref { font-size: 0.7em; line-height: 0; }
+sup.ref a { color: var(--brand); text-decoration: none; border: 0; }
+.references { margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.references__title { font-size: 1.1rem; color: var(--brand); margin: 0 0 0.75rem; }
+.references__list { color: var(--ink-soft); font-size: 0.9rem; padding-left: 1.3rem; margin: 0; }
+.references__list li { margin: 0.4rem 0; }
+.references__list a { color: var(--brand); }
 
 /* ================= INDEX (Deloitte grid + IBM structure) ================= */
 .blog-index { max-width: var(--maxw-wide); margin: 0 auto; padding: 2.75rem 1.5rem 1rem; }

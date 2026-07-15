@@ -133,6 +133,40 @@ embed** — an explicit exception to "no external resources", because video need
 local `data-poster` keeps the pre-click state fully self-contained; omit it for a plain
 brand panel.
 
+**Pull quote** (the author's own sharp line, no attribution): a plain `<blockquote>…</blockquote>`.
+
+**Quote with attribution** (someone else's words):
+
+```html
+<blockquote class="quote">
+  <p>The quoted sentence.</p>
+  <cite class="quote__by">Name, Role, Company</cite>
+</blockquote>
+```
+
+**End-of-post CTA** (soft, pull-not-push — words come from the Voice):
+
+```html
+<aside class="cta">
+  <p class="cta__lead">Curious how peers in your sector are handling this?</p>
+  <p class="cta__body">One-line, low-friction offer. No pitch.</p>
+  <a class="cta__link" href="https://www.greyquill.io/">Start a conversation →</a>
+</aside>
+```
+
+**References / sources** (makes §6A grounding visible; cite inline with a `<sup class="ref">`):
+
+```html
+<p>… a claim that needs a source.<sup class="ref"><a href="#ref-1">1</a></sup></p>
+...
+<section class="references" aria-label="Sources">
+  <h2 class="references__title">Sources</h2>
+  <ol class="references__list">
+    <li id="ref-1">Author or organization. "Title." Publication, date. <a href="URL">link</a></li>
+  </ol>
+</section>
+```
+
 ## Rules
 
 - **No `<style>` blocks, no inline `style=""`, no hard-coded colors in a post.** The shared
