@@ -95,7 +95,10 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
   color: var(--ink); font-size: clamp(1.9rem, 4.2vw, 2.6rem);
   line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 0.7rem;
 }
-.post__deck { color: var(--ink-soft); font-size: 1.2rem; line-height: 1.5; margin: 0 0 1.6rem; }
+.post__deck {
+  color: var(--ink-soft); font-size: 1.06rem; line-height: 1.55;
+  font-weight: 600; font-style: italic; margin: 0 0 1.6rem;
+}
 
 /* header meta row: date/time on the left, share on the right, divider under */
 .post__headmeta {
@@ -215,7 +218,7 @@ sup.ref a { color: var(--brand); text-decoration: none; border: 0; }
 .blog-index { max-width: var(--maxw-wide); margin: 0 auto; padding: 2.75rem 1.5rem 1rem; }
 .blog-hero { padding-bottom: 2rem; margin-bottom: 2.25rem; border-bottom: 1px solid var(--border); }
 .blog-hero h1 { color: var(--ink); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 0.7rem; }
-.blog-hero p { color: var(--ink-soft); font-size: 1.2rem; line-height: 1.5; margin: 0; max-width: 40rem; }
+.blog-hero p { color: var(--ink-soft); font-size: 1.06rem; line-height: 1.55; font-weight: 600; font-style: italic; margin: 0; max-width: 40rem; }
 
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1.5rem; }
 .card {

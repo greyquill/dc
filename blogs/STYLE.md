@@ -31,7 +31,8 @@ Top of every article, in this order — **no author byline is shown** (see below
 
 1. **Category eyebrow** — `<p class="eyebrow">{{CATEGORY}}</p>` (what the piece is about).
 2. **Title** — `<h1 class="post__title">`.
-3. **Deck** — one-line standfirst, `<p class="post__deck">`.
+3. **Deck** — one-line standfirst, `<p class="post__deck">`. Styled to stand out from the
+   body: smaller, semibold, and italic. Same treatment on the index hero subtitle.
 4. **Meta row** — date & time of posting on the left, **share buttons** on the right,
    with a **divider** underneath (`.post__headmeta`).
 5. **Body** — `<article class="post__body">`.
