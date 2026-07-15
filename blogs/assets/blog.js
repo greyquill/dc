@@ -47,19 +47,58 @@
     var copyBtn = document.querySelector('[data-share="copy"]');
     if (copyBtn) {
       copyBtn.addEventListener("click", function () {
-        function done() {
-          copyBtn.classList.add("share__btn--copied");
-          setTimeout(function () { copyBtn.classList.remove("share__btn--copied"); }, 1600);
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).then(done, done);
-        } else {
-          var ta = document.createElement("textarea");
-          ta.value = url; document.body.appendChild(ta); ta.select();
-          try { document.execCommand("copy"); } catch (e) {}
-          document.body.removeChild(ta); done();
-        }
+        copyText(url, copyBtn, "share__btn--copied");
       });
     }
+
+    /* ---- component: YouTube embed (click-to-load facade) ---- */
+    var PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+    document.querySelectorAll(".video[data-yt]").forEach(function (box) {
+      var id = box.getAttribute("data-yt");
+      var title = box.getAttribute("data-title") || "Video";
+      var poster = box.getAttribute("data-poster");
+      if (poster) box.style.backgroundImage = "url('" + poster + "')";
+      var btn = document.createElement("button");
+      btn.className = "video__play";
+      btn.type = "button";
+      btn.setAttribute("aria-label", "Play video: " + title);
+      btn.innerHTML = PLAY;
+      box.appendChild(btn);
+      btn.addEventListener("click", function () {
+        var f = document.createElement("iframe");
+        f.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0";
+        f.title = title;
+        f.allow = "autoplay; encrypted-media; picture-in-picture";
+        f.setAttribute("allowfullscreen", "");
+        f.loading = "lazy";
+        box.innerHTML = "";
+        box.style.backgroundImage = "";
+        box.appendChild(f);
+      });
+    });
+
+    /* ---- component: copy button on code blocks ---- */
+    document.querySelectorAll(".code__copy").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var block = btn.closest(".code");
+        var pre = block && block.querySelector("pre");
+        if (pre) copyText(pre.innerText, btn, "code__copy--copied");
+      });
+    });
   });
+
+  function copyText(text, el, cls) {
+    function done() {
+      el.classList.add(cls);
+      setTimeout(function () { el.classList.remove(cls); }, 1600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, done);
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta); done();
+    }
+  }
 })();

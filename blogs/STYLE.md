@@ -82,8 +82,46 @@ Extend the list as real topics appear; keep labels business-legible, not interna
 | `<blockquote>` | A pull quote |
 | `<figure><img alt="…"><figcaption>…</figcaption></figure>` | Images (alt required) |
 | `<aside class="callout"><div class="callout__label">Key takeaways</div>…</aside>` | Callout box |
-| `<pre><code>…</code></pre>` / `<code>` | Code |
+| `<pre><code>…</code></pre>` / `<code>` | Inline or simple code |
 | `<table>` | Tabular data |
+
+## Drop-in components
+
+Paste these blocks into the body and fill the content — the shared CSS/JS renders them.
+
+**Image** (with caption):
+
+```html
+<figure>
+  <img alt="Meaningful description" src="assets/<slug>-figure.png">
+  <figcaption>Caption.</figcaption>
+</figure>
+```
+
+**Code snippet** (language label + copy button, handled by `blog.js`):
+
+```html
+<figure class="code">
+  <figcaption class="code__bar">
+    <span class="code__lang">python</span>
+    <button class="code__copy" type="button" aria-label="Copy code">Copy</button>
+  </figcaption>
+  <pre><code>print("hello")</code></pre>
+</figure>
+```
+
+**YouTube video** (click-to-load; author supplies only the video id):
+
+```html
+<div class="video" data-yt="VIDEO_ID" data-title="Short title"
+     data-poster="assets/<slug>-poster.jpg"><!-- data-poster optional --></div>
+```
+
+The video shows a branded play panel and loads nothing from YouTube until the reader
+clicks; it then embeds via `youtube-nocookie.com`. **This is the one sanctioned external
+embed** — an explicit exception to "no external resources", because video needs it. A
+local `data-poster` keeps the pre-click state fully self-contained; omit it for a plain
+brand panel.
 
 ## Rules
 
@@ -91,7 +129,9 @@ Extend the list as real topics appear; keep labels business-legible, not interna
   stylesheet owns all of that, in both light and dark themes.
 - **No external resources** (remote fonts, CDNs, trackers, remote images). Everything is
   local under `blogs/assets/`. The only scripts are the shared `blog.js` and the tiny
-  inline no-flash snippet, both already in the template — never a per-post script.
+  inline no-flash snippet, both already in the template — never a per-post script. The one
+  sanctioned exception is the **YouTube component**, which loads `youtube-nocookie.com`
+  only after the reader clicks play.
 - **Every image has meaningful `alt`**, and is licensed / original / generated (never client
   or copyrighted). Charts use real, grounded data.
 - Copy rules still apply: **no em-dashes**, no invented metrics, no named clients or
