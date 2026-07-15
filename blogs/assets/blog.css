@@ -16,28 +16,28 @@
 }
 
 /* ---- theme tokens ---- */
-:root {                     /* light (default) — warm, high-contrast */
-  --bg:        #faf9f7;
-  --surface:   #f0eeeb;
-  --mist:      #f6ede4;     /* warm accent wash (callouts, quotes) */
-  --ink:       #2c2a25;     /* near-black warm text + headings */
-  --ink-soft:  #5c584f;
-  --brand:     #c4683c;     /* terracotta accent */
-  --brand-lit: #a8512a;     /* darker terracotta (hover) */
-  --border:    #e6e0d8;
+:root {                     /* light (default) — brand blue, high-contrast */
+  --bg:        #ffffff;
+  --surface:   #f2f7fc;
+  --mist:      #eaf4fc;     /* light blue wash (callouts, quotes) */
+  --ink:       #0a1628;     /* near-black navy — text AND headings */
+  --ink-soft:  #4a5a70;
+  --brand:     #0b4f88;     /* Greyquill brand blue (matches the logo) */
+  --brand-lit: #1a6bb5;     /* hover / decorative */
+  --border:    #e2e8ef;
   --maxw:      44rem;       /* article reading column */
   --maxw-wide: 68rem;       /* index / header */
 }
-:root[data-theme="dark"] {  /* near-black */
-  --bg: #0c0c0c; --surface: #141414; --mist: #1a1611;
-  --ink: #e8e4de; --ink-soft: #a09a8e;
-  --brand: #e2a66e; --brand-lit: #edb786; --border: #2a2a2a;   /* amber accent */
+:root[data-theme="dark"] {  /* near-black; brighter blue so it pops on black */
+  --bg: #0c0c0c; --surface: #15181d; --mist: #12161c;
+  --ink: #eef2f7; --ink-soft: #9aa7b6;
+  --brand: #4d9be8; --brand-lit: #6fb0ef; --border: #262b33;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #0c0c0c; --surface: #141414; --mist: #1a1611;
-    --ink: #e8e4de; --ink-soft: #a09a8e;
-    --brand: #e2a66e; --brand-lit: #edb786; --border: #2a2a2a;
+    --bg: #0c0c0c; --surface: #15181d; --mist: #12161c;
+    --ink: #eef2f7; --ink-soft: #9aa7b6;
+    --brand: #4d9be8; --brand-lit: #6fb0ef; --border: #262b33;
   }
 }
 
