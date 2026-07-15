@@ -16,28 +16,28 @@
 }
 
 /* ---- theme tokens ---- */
-:root {                     /* light (default) */
-  --bg:        #ffffff;
-  --surface:   #f2f8fd;
-  --mist:      #eefbff;
-  --ink:       #0a1628;
-  --ink-soft:  #4a5a70;
-  --brand:     #0b4f88;
-  --brand-lit: #1a6bb5;
-  --border:    #dce6f0;
+:root {                     /* light (default) — warm, high-contrast */
+  --bg:        #faf9f7;
+  --surface:   #f0eeeb;
+  --mist:      #f6ede4;     /* warm accent wash (callouts, quotes) */
+  --ink:       #2c2a25;     /* near-black warm text + headings */
+  --ink-soft:  #5c584f;
+  --brand:     #c4683c;     /* terracotta accent */
+  --brand-lit: #a8512a;     /* darker terracotta (hover) */
+  --border:    #e6e0d8;
   --maxw:      44rem;       /* article reading column */
   --maxw-wide: 68rem;       /* index / header */
 }
-:root[data-theme="dark"] {
-  --bg: #0a1628; --surface: #10233b; --mist: #10233b;
-  --ink: #e8eef6; --ink-soft: #9db0c6;
-  --brand: #6db3ee; --brand-lit: #8cc6f5; --border: #21384f;
+:root[data-theme="dark"] {  /* near-black */
+  --bg: #0c0c0c; --surface: #141414; --mist: #1a1611;
+  --ink: #e8e4de; --ink-soft: #a09a8e;
+  --brand: #e2a66e; --brand-lit: #edb786; --border: #2a2a2a;   /* amber accent */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #0a1628; --surface: #10233b; --mist: #10233b;
-    --ink: #e8eef6; --ink-soft: #9db0c6;
-    --brand: #6db3ee; --brand-lit: #8cc6f5; --border: #21384f;
+    --bg: #0c0c0c; --surface: #141414; --mist: #1a1611;
+    --ink: #e8e4de; --ink-soft: #a09a8e;
+    --brand: #e2a66e; --brand-lit: #edb786; --border: #2a2a2a;
   }
 }
 
@@ -92,7 +92,7 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
 /* ================= ARTICLE ================= */
 .post { max-width: var(--maxw); margin: 0 auto; padding: 2.75rem 1.25rem 1rem; }
 .post__title {
-  color: var(--brand); font-size: clamp(1.9rem, 4.2vw, 2.6rem);
+  color: var(--ink); font-size: clamp(1.9rem, 4.2vw, 2.6rem);
   line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 0.7rem;
 }
 .post__deck { color: var(--ink-soft); font-size: 1.2rem; line-height: 1.5; margin: 0 0 1.6rem; }
@@ -130,8 +130,8 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
 .post__cover--bleed img { border-radius: 0; border-left: 0; border-right: 0; max-width: 100vw; }
 
 .post__body > * { margin-top: 0; }
-.post__body h2 { color: var(--brand); font-size: 1.5rem; letter-spacing: -0.01em; margin: 2.6rem 0 0.8rem; }
-.post__body h3 { color: var(--brand); font-size: 1.2rem; margin: 2rem 0 0.6rem; }
+.post__body h2 { color: var(--ink); font-size: 1.5rem; letter-spacing: -0.01em; margin: 2.6rem 0 0.8rem; }
+.post__body h3 { color: var(--ink); font-size: 1.2rem; margin: 2rem 0 0.6rem; }
 .post__body p { margin: 0 0 1.2rem; }
 .post__body a { color: var(--brand); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--brand) 40%, transparent); }
 .post__body a:hover { color: var(--brand-lit); border-bottom-color: var(--brand-lit); }
@@ -139,7 +139,7 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
 .post__body li { margin: 0.35rem 0; }
 .post__body blockquote {
   margin: 1.8rem 0; padding: 0.4rem 0 0.4rem 1.25rem; border-left: 3px solid var(--brand-lit);
-  color: var(--brand); font-size: 1.28rem; line-height: 1.45; font-style: normal;
+  color: var(--ink); font-size: 1.28rem; line-height: 1.45; font-style: normal;
 }
 .callout { background: var(--mist); border: 1px solid var(--border); border-left: 3px solid var(--brand-lit); border-radius: 4px; padding: 1.1rem 1.3rem; margin: 2rem 0; }
 .callout > :first-child { margin-top: 0; }
@@ -155,7 +155,7 @@ pre code { background: none; padding: 0; }
 hr { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 table { width: 100%; border-collapse: collapse; margin: 1.6rem 0; font-size: 0.95rem; display: block; overflow-x: auto; }
 th, td { border: 1px solid var(--border); padding: 0.55rem 0.8rem; text-align: left; }
-th { background: var(--surface); color: var(--brand); }
+th { background: var(--surface); color: var(--ink); }
 
 /* ---- components: code block (with language label + copy) ---- */
 .code { margin: 2rem 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
@@ -191,7 +191,7 @@ th { background: var(--surface); color: var(--brand); }
 
 /* ---- component: quote with attribution ---- */
 .quote { margin: 2.25rem 0; padding: 1.4rem 1.5rem; background: var(--mist); border-left: 3px solid var(--brand-lit); border-radius: 4px; }
-.quote p { font-size: 1.25rem; line-height: 1.5; color: var(--brand); margin: 0 0 0.8rem; }
+.quote p { font-size: 1.25rem; line-height: 1.5; color: var(--ink); margin: 0 0 0.8rem; }
 .quote__by { display: block; font-style: normal; font-size: 0.9rem; color: var(--ink-soft); }
 .quote__by::before { content: "— "; }
 
@@ -206,7 +206,7 @@ th { background: var(--surface); color: var(--brand); }
 sup.ref { font-size: 0.7em; line-height: 0; }
 sup.ref a { color: var(--brand); text-decoration: none; border: 0; }
 .references { margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-.references__title { font-size: 1.1rem; color: var(--brand); margin: 0 0 0.75rem; }
+.references__title { font-size: 1.1rem; color: var(--ink); margin: 0 0 0.75rem; }
 .references__list { color: var(--ink-soft); font-size: 0.9rem; padding-left: 1.3rem; margin: 0; }
 .references__list li { margin: 0.4rem 0; }
 .references__list a { color: var(--brand); }
@@ -214,7 +214,7 @@ sup.ref a { color: var(--brand); text-decoration: none; border: 0; }
 /* ================= INDEX (Deloitte grid + IBM structure) ================= */
 .blog-index { max-width: var(--maxw-wide); margin: 0 auto; padding: 2.75rem 1.5rem 1rem; }
 .blog-hero { padding-bottom: 2rem; margin-bottom: 2.25rem; border-bottom: 1px solid var(--border); }
-.blog-hero h1 { color: var(--brand); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 0.7rem; }
+.blog-hero h1 { color: var(--ink); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 0.7rem; }
 .blog-hero p { color: var(--ink-soft); font-size: 1.2rem; line-height: 1.5; margin: 0; max-width: 40rem; }
 
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1.5rem; }
@@ -232,7 +232,7 @@ sup.ref a { color: var(--brand); text-decoration: none; border: 0; }
   letter-spacing: 0.07em; color: var(--brand-lit); background: var(--mist);
   padding: 0.2rem 0.5rem; border-radius: 2px;
 }
-.card__title { font-size: 1.15rem; line-height: 1.28; color: var(--brand); margin: 0; }
+.card__title { font-size: 1.15rem; line-height: 1.28; color: var(--ink); margin: 0; }
 .card:hover .card__title { color: var(--brand-lit); }
 .card__meta { margin-top: auto; color: var(--ink-soft); font-size: 0.82rem; }
 

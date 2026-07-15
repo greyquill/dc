@@ -6,14 +6,19 @@ prompt governs **words** (voice, no em-dashes, no overclaiming, escalation gates
 
 ## The look (decided)
 
-Clean, senior, enterprise. Restraint is the brand — these are regulated-enterprise buyers
-(auditors, risk officers, CDOs), not a consumer feed. Colors and type match **greyquill.io**
-exactly; structure borrows from professional-services references (Deloitte, McKinsey) with
-**IBM Carbon** cues (sharp 2px corners, category chips, grid).
+Clean, senior, editorial, high-contrast. Restraint is the brand — these are
+regulated-enterprise buyers (auditors, risk officers, CDOs), not a consumer feed. The
+palette is warm and blackish (from amarnathbagineni.com); the type stays greyquill.io's;
+structure borrows from Deloitte/McKinsey with **IBM Carbon** cues (sharp 2px corners,
+category chips, grid).
 
-- **Brand blue** `#0B4F88` (wordmark, headings, links), hover/accent `#1a6bb5`.
-- **Ink** `#0A1628` for body text; **mist** `#EEFBFF` for callouts.
-- **Type (self-hosted):** **Sora** headings, **Inter** body — the site's fonts, in
+- **Warm accent** — terracotta `#C4683C` (light) / amber `#E2A66E` (dark) for links, the
+  eyebrow, chips, and interactive bits. Used as spice, not everywhere.
+- **Headings are text-colored, not accent** — near-black warm `#2C2A25` (light) /
+  off-white `#E8E4DE` (dark), for maximum contrast.
+- **Dark theme is near-black:** bg `#0C0C0C`, surface `#141414`. Light: warm off-white
+  `#FAF9F7`.
+- **Type (self-hosted):** **Sora** headings, **Inter** body — greyquill.io's fonts, in
   `assets/fonts/`. No CDNs, nothing external.
 - **Light + dark toggle** in the site bar on every blog screen; defaults to the OS setting,
   remembers the reader's choice. Both themes come from CSS tokens — never hard-code a color.
