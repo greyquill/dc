@@ -95,6 +95,12 @@ h1, h2, h3, .wordmark, .card__title { font-family: "Sora", "Inter", -apple-syste
 
 /* ================= ARTICLE ================= */
 .post { max-width: var(--maxw); margin: 0 auto; padding: 2.75rem 1.25rem 1rem; }
+.post__back {
+  display: inline-block; margin-bottom: 1.5rem;
+  font-size: 0.85rem; color: var(--brand); text-decoration: none;
+}
+.post__back::before { content: "\2190\00a0"; }   /* left arrow + space */
+.post__back:hover { color: var(--brand-lit); }
 .post__title {
   color: var(--ink); font-size: clamp(1.9rem, 4.2vw, 2.6rem);
   line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 0.7rem;
