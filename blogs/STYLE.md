@@ -1,85 +1,98 @@
 # Greyquill blog — style & authoring guide
 
 Scope: the `blogs/` folder only. Every post here shares one look so the blog reads as a
-single senior voice. This doc is the source of truth for that look and for how a post is
-assembled. It pairs with the *copy* rules in the marketing spokesperson prompt (voice,
-no em-dashes, no overclaiming, escalation gates) — this file governs **design and
-structure**; that prompt governs **words**.
+single senior voice. This doc governs **design and structure**; the marketing spokesperson
+prompt governs **words** (voice, no em-dashes, no overclaiming, escalation gates).
 
 ## The look (decided)
 
 Clean, senior, enterprise. Restraint is the brand — these are regulated-enterprise buyers
-(auditors, risk officers, CDOs), not a consumer feed. Deliberately **not** the cream /
-serif "editorial" aesthetic. Colors and type match **greyquill.io** exactly.
+(auditors, risk officers, CDOs), not a consumer feed. Colors and type match **greyquill.io**
+exactly; structure borrows from professional-services references (Deloitte, McKinsey) with
+**IBM Carbon** cues (sharp 2px corners, category chips, grid).
 
-- **Canvas:** white, one readable column (~700px), generous line spacing.
-- **Brand blue:** `#0B4F88` (from the site) for the wordmark, headings, and links; hover
-  and decorative accents use `#1a6bb5`.
-- **Ink:** `#0A1628` (the site's brand ink) for body text.
-- **Mist:** `#EEFBFF` light wash for callout boxes.
-- **Type (self-hosted, matching the site):** **Sora** for headings/display, **Inter** for
-  body. The woff2 files live in `assets/fonts/` — no CDN, nothing external to break.
-- **Light + dark mode:** a real toggle sits in the site bar on every blog screen. It
-  defaults to the reader's OS setting and remembers their choice (localStorage). Both
-  themes are driven by CSS tokens — don't hard-code colors in a post; use the
-  elements/classes below and they adapt to whichever theme is active.
+- **Brand blue** `#0B4F88` (wordmark, headings, links), hover/accent `#1a6bb5`.
+- **Ink** `#0A1628` for body text; **mist** `#EEFBFF` for callouts.
+- **Type (self-hosted):** **Sora** headings, **Inter** body — the site's fonts, in
+  `assets/fonts/`. No CDNs, nothing external.
+- **Light + dark toggle** in the site bar on every blog screen; defaults to the OS setting,
+  remembers the reader's choice. Both themes come from CSS tokens — never hard-code a color.
 
-All of this lives in one file: [`assets/blog.css`](assets/blog.css), with the toggle logic
-in [`assets/theme.js`](assets/theme.js). A post never carries its own `<style>` block,
-inline colors, or scripts — that's what keeps the blog consistent.
+Everything lives in `assets/blog.css` (styles) and `assets/blog.js` (theme toggle + share).
+A post carries no `<style>` block, no inline colors, and no scripts of its own.
+
+## Article page structure (McKinsey-style header)
+
+Top of every article, in this order — **no author byline is shown** (see below):
+
+1. **Category eyebrow** — `<p class="eyebrow">{{CATEGORY}}</p>` (what the piece is about).
+2. **Title** — `<h1 class="post__title">`.
+3. **Deck** — one-line standfirst, `<p class="post__deck">`.
+4. **Meta row** — date & time of posting on the left, **share buttons** on the right,
+   with a **divider** underneath (`.post__headmeta`).
+5. **Body** — `<article class="post__body">`.
+
+**Author:** every post still carries the author in metadata (`<meta name="author">` and
+`article:author`, default **Amarnath Bagineni**) for attribution and link previews, but it
+is **not shown** in the header. Matches the McKinsey pattern.
+
+**Share:** LinkedIn, X, Facebook, Email, and Copy-link. The buttons are in the template;
+`blog.js` wires them at runtime from the canonical URL and title. No third-party scripts.
+
+## Index page structure (Deloitte / McKinsey grid)
+
+`index.html` is a **wide** hero + a card grid (`.blog-index`, `.blog-hero`, `.card-grid`):
+
+- A **featured** card (`.card.card--featured`, media beside body on wide screens) for the
+  latest post.
+- A responsive grid of `.card`s, each with `.card__media` (image), a `.card__cat` category
+  chip, `.card__title`, and `.card__meta` (date). Newest first.
+- On publish, add a card for the new post and rotate the featured slot.
+
+## Categories (McKinsey-style taxonomy)
+
+One primary category per post, shown in the eyebrow and the index chip. Pick from
+**industries** or **capabilities** — whatever an industry or business reader relates to:
+
+- **Industries:** Financial Services · Healthcare & Life Sciences · Retail & Consumer ·
+  Telecommunications, Media & Technology · Public Sector · Energy & Materials ·
+  Travel, Logistics & Infrastructure · Manufacturing
+- **Capabilities:** AI & Analytics · Data & Governance · Risk & Resilience ·
+  Digital & Technology Transformation · Operations · Strategy & Corporate Finance ·
+  Sustainability
+
+Extend the list as real topics appear; keep labels business-legible, not internal jargon.
 
 ## How a post is assembled
 
-1. Copy [`_template.html`](_template.html) to `blogs/<slug>.html` (kebab-case slug).
-2. Fill the placeholders: `{{TITLE}}`, `{{DECK}}` (one-line takeaway), `{{AUTHOR}}`
-   (**default: Amarnath Bagineni** — always shown in the byline), `{{DATE}}`,
-   `{{READING_TIME}}`, `{{SLUG}}` (must equal the filename), and `{{BODY}}`.
-3. Write the body as plain semantic HTML using the vocabulary below.
-4. Served at `https://www.greyquill.io/dc/blogs/<slug>.html`.
-
-The template already includes the canonical URL and Open Graph tags, so the link previews
-correctly when the matching LinkedIn post is shared.
+1. Copy `_template.html` to `blogs/<slug>.html` (kebab-case slug).
+2. Fill placeholders: `{{CATEGORY}}`, `{{TITLE}}`, `{{DECK}}`, `{{DATETIME}}` (date **and**
+   time of posting), `{{SLUG}}` (must equal the filename), `{{BODY}}`, and `{{AUTHOR}}`
+   (metadata only, default Amarnath Bagineni).
+3. Write the body with the vocabulary below.
+4. Add the post's card to `index.html` (featured or grid).
 
 ## Body markup vocabulary
 
-Use these and only these — they're all styled by `blog.css`:
-
 | Element | Use for |
 |---|---|
-| `<h2>` / `<h3>` | Section and sub-section headers (descriptive, so a skimmer gets the arc) |
-| `<p>` | One idea per paragraph; break up walls of text |
+| `<h2>` / `<h3>` | Section and sub-section headers |
+| `<p>` | One idea per paragraph |
 | `<ul>` / `<ol>` | Lists |
-| `<blockquote>` | A pull quote — one of the sharpest lines, for rhythm |
-| `<figure><img alt="…"><figcaption>…</figcaption></figure>` | Images. `alt` is required; caption optional |
-| `<pre><code>…</code></pre>` / `<code>` | Code or fixed-width content |
-| `<table>` | Tabular data (scrolls on mobile automatically) |
-| Key-takeaways box | See below |
-
-**Key-takeaways / callout box** (near the top or bottom of a longer piece):
-
-```html
-<aside class="callout">
-  <div class="callout__label">Key takeaways</div>
-  <ul>
-    <li>…</li>
-  </ul>
-</aside>
-```
+| `<blockquote>` | A pull quote |
+| `<figure><img alt="…"><figcaption>…</figcaption></figure>` | Images (alt required) |
+| `<aside class="callout"><div class="callout__label">Key takeaways</div>…</aside>` | Callout box |
+| `<pre><code>…</code></pre>` / `<code>` | Code |
+| `<table>` | Tabular data |
 
 ## Rules
 
-- **No `<style>` blocks, no inline `style=""`, no hard-coded colors in a post.** The whole
-  point is consistency — the shared stylesheet owns all of that.
+- **No `<style>` blocks, no inline `style=""`, no hard-coded colors in a post.** The shared
+  stylesheet owns all of that, in both light and dark themes.
 - **No external resources** (remote fonts, CDNs, trackers, remote images). Everything is
-  local under `blogs/assets/` — the fonts, the stylesheet, and the one shared `theme.js`.
-  The only scripts a post carries are the shared theme toggle (the `theme.js` link and the
-  tiny inline no-flash snippet, both already in `_template.html`) — never a per-post script.
-- **Every image has meaningful `alt` text**, and is a licensed / original / generated
-  asset (never client or copyrighted imagery). Charts use real, grounded data.
-- The copy rules still apply: **no em-dashes**, no invented metrics, no named clients or
-  competitors, escalation-gated claims held for sign-off. See the spokesperson prompt.
-
-## Adding a post to the index
-
-`index.html` lists posts. When publishing, prepend one card (newest first) — the markup to
-copy is in an HTML comment at the top of the post list in `index.html`.
+  local under `blogs/assets/`. The only scripts are the shared `blog.js` and the tiny
+  inline no-flash snippet, both already in the template — never a per-post script.
+- **Every image has meaningful `alt`**, and is licensed / original / generated (never client
+  or copyrighted). Charts use real, grounded data.
+- Copy rules still apply: **no em-dashes**, no invented metrics, no named clients or
+  competitors, escalation-gated claims held for sign-off.

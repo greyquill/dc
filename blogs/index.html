@@ -28,18 +28,61 @@
     </div>
   </header>
 
-  <main class="post">
-    <h1 class="post__title">Blog</h1>
-    <p class="post__deck">Notes on making AI actually work in the enterprise. Foundation first: structure and clean data, then governed, domain-specific agents on top.</p>
-    <div class="post__meta">Greyquill</div>
+  <main class="blog-index">
+    <div class="blog-hero">
+      <h1>The Greyquill Blog</h1>
+      <p>Notes on making AI actually work in the enterprise. Foundation first: structure and clean data, then governed, domain-specific agents on top.</p>
+    </div>
 
-    <article class="post__body">
-      <!-- POST LIST. When publishing, prepend one card here (newest first):
-      <h2><a href="SLUG.html">Post title</a></h2>
-      <p>One-line deck. <span class="post__meta">Date</span></p>
-      -->
-      <p>No posts yet. The first one is on its way.</p>
-    </article>
+    <div class="card-grid">
+      <!-- FEATURED (latest). Replace/rotate as new posts publish. -->
+      <a class="card card--featured" href="ai-pilots-stall-in-production.html">
+        <div class="card__media"><img alt="" src="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20400'%3E%3Crect%20width='640'%20height='400'%20fill='%230b4f88'/%3E%3Ccircle%20cx='520'%20cy='90'%20r='150'%20fill='%231a6bb5'%20opacity='0.55'/%3E%3Crect%20x='48'%20y='250'%20width='320'%20height='18'%20rx='4'%20fill='%23ffffff'%20opacity='0.9'/%3E%3Crect%20x='48'%20y='284'%20width='210'%20height='12'%20rx='4'%20fill='%23ffffff'%20opacity='0.55'/%3E%3C/svg%3E"></div>
+        <div class="card__body">
+          <span class="card__cat">AI &amp; Analytics</span>
+          <h2 class="card__title">Your AI pilot works in the demo and stalls in production</h2>
+          <span class="card__meta">15 July 2026</span>
+        </div>
+      </a>
+
+      <!-- SAMPLE CARDS — placeholders to show the grid. The Designer replaces these
+           with real published posts (newest first). -->
+      <a class="card" href="#">
+        <div class="card__media"><img alt="" src="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20360'%3E%3Crect%20width='640'%20height='360'%20fill='%2310233b'/%3E%3Crect%20x='360'%20y='40'%20width='240'%20height='240'%20rx='6'%20fill='%231a6bb5'%20opacity='0.4'/%3E%3Crect%20x='48'%20y='250'%20width='260'%20height='14'%20rx='4'%20fill='%23ffffff'%20opacity='0.85'/%3E%3C/svg%3E"></div>
+        <div class="card__body">
+          <span class="card__cat">Data &amp; Governance</span>
+          <h2 class="card__title">Why your data catalog keeps going stale</h2>
+          <span class="card__meta">Coming soon</span>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="card__media"><img alt="" src="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20360'%3E%3Crect%20width='640'%20height='360'%20fill='%230b4f88'/%3E%3Cpath%20d='M0%20280%20L160%20200%20L320%20240%20L480%20140%20L640%20190%20L640%20360%20L0%20360%20Z'%20fill='%231a6bb5'%20opacity='0.5'/%3E%3C/svg%3E"></div>
+        <div class="card__body">
+          <span class="card__cat">Financial Services</span>
+          <h2 class="card__title">Model risk teams are the real gatekeepers of enterprise AI</h2>
+          <span class="card__meta">Coming soon</span>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="card__media"><img alt="" src="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20360'%3E%3Crect%20width='640'%20height='360'%20fill='%2310233b'/%3E%3Ccircle%20cx='320'%20cy='180'%20r='120'%20fill='none'%20stroke='%231a6bb5'%20stroke-width='24'%20opacity='0.6'/%3E%3C/svg%3E"></div>
+        <div class="card__body">
+          <span class="card__cat">Healthcare &amp; Life Sciences</span>
+          <h2 class="card__title">What clinical-grade data quality asks of an AI program</h2>
+          <span class="card__meta">Coming soon</span>
+        </div>
+      </a>
+
+      <a class="card" href="#">
+        <div class="card__media"><img alt="" src="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20360'%3E%3Crect%20width='640'%20height='360'%20fill='%230b4f88'/%3E%3Crect%20x='80'%20y='90'%20width='140'%20height='180'%20rx='6'%20fill='%231a6bb5'%20opacity='0.55'/%3E%3Crect%20x='250'%20y='140'%20width='140'%20height='130'%20rx='6'%20fill='%231a6bb5'%20opacity='0.4'/%3E%3Crect%20x='420'%20y='60'%20width='140'%20height='210'%20rx='6'%20fill='%231a6bb5'%20opacity='0.7'/%3E%3C/svg%3E"></div>
+        <div class="card__body">
+          <span class="card__cat">Operations</span>
+          <h2 class="card__title">The quiet cost of a demo that never reaches production</h2>
+          <span class="card__meta">Coming soon</span>
+        </div>
+      </a>
+    </div>
   </main>
 
   <footer class="post-footer">
@@ -47,6 +90,6 @@
     <a href="https://www.greyquill.io/">greyquill.io</a>
   </footer>
 
-  <script src="assets/theme.js"></script>
+  <script src="assets/blog.js"></script>
 </body>
 </html>
