@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Swarm Architecture — Champ</title>
+<title>Agent Swarm Architecture, Champ</title>
 <style>
   :root {
     --bg: #0a0e17;
@@ -692,18 +692,18 @@
     .dag-agents { flex-direction: column; align-items: center; }
     .dag-agent-card { max-width: 100%; }
   }
-</style>
+</style>style
 </head>
 <body>
 
 <div class="header">
   <h1>Agent Swarm Architecture</h1>
-  <p>Peer-based agent swarm for end-to-end software delivery. Agents communicate via work packets through a shared board &mdash; no hierarchy, just structured collaboration.</p>
+  <p>Peer-based agent swarm for end-to-end software delivery. Agents communicate via work packets through a shared board, no hierarchy, just structured collaboration.</p>
   <div style="margin-top:16px;">
     <a href="system-internals.html" style="color:var(--cyan); text-decoration:none; font-size:12px; padding:4px 12px; border:1px solid rgba(34,211,238,0.4); border-radius:12px; transition:all 0.2s;"
        onmouseover="this.style.background='rgba(34,211,238,0.1)'; this.style.borderColor='var(--cyan)';"
        onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(34,211,238,0.4)';">
-      System Internals &mdash; Modules, Functions, Data Flow &rarr;
+      System Internals, Modules, Functions, Data Flow &rarr;
     </a>
     <a href="event-log-viewer.html" style="color:var(--green); text-decoration:none; font-size:12px; padding:4px 12px; border:1px solid rgba(52,211,153,0.4); border-radius:12px; transition:all 0.2s; margin-left:8px;"
        onmouseover="this.style.background='rgba(52,211,153,0.1)'; this.style.borderColor='var(--green)';"
@@ -737,7 +737,7 @@
     <div class="arch-label" style="color:var(--accent);">ORCHESTRATOR TIER</div>
     <div class="arch-tier">
       <div class="agent-node" style="border-color:var(--accent); width:280px; cursor:pointer;" data-explorer="champ" onclick="switchExplorer('champ'); document.getElementById('pane-champ').scrollIntoView({behavior:'smooth', block:'start'});">
-        <div class="agent-icon">🧠</div>
+        <div class="agent-icon"></div>
         <div class="agent-name"><span class="status-dot" style="background:var(--green)"></span> Champ (Orchestrator)</div>
         <div class="agent-desc">Master coordinator. Decomposes PRDs into work packets, dispatches to agents, monitors progress via shared board. Mini-swarm: 3 pre-planning sub-agents.</div>
         <span class="agent-type type-orchestrator">Mini-Swarm &middot; Opus</span>
@@ -747,90 +747,90 @@
     <div class="arch-connector">&#x2502; &#x2502; &#x2502; &#x2502; &#x2502;</div>
 
     <!-- TIER 2: Peer Agents -->
-    <div class="arch-label" style="color:var(--green);">PEER AGENTS — Invoked via Work Packets</div>
+    <div class="arch-label" style="color:var(--green);">PEER AGENTS, Invoked via Work Packets</div>
     <div class="arch-tier">
       <div class="agent-node" style="border-color:var(--accent2); cursor:pointer;" data-explorer="architect" onclick="switchExplorer('architect'); document.getElementById('pane-architect').scrollIntoView({behavior:'smooth', block:'start'});">
-        <div class="agent-icon">🏛️</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Architect Agent</div>
         <div class="agent-desc">Mini-swarm: 13 sub-agents across 4 phases. System design, API, DB, security, cloud, IA, UX research, and more.</div>
         <span class="agent-type type-architect">Mini-Swarm &middot; Opus</span>
       </div>
       <div class="agent-node" style="border-color:var(--green); cursor:pointer;" data-explorer="dev" onclick="switchExplorer('dev'); document.getElementById('pane-dev').scrollIntoView({behavior:'smooth', block:'start'});">
-        <div class="agent-icon">💻</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Dev Agent</div>
         <div class="agent-desc">Mini-swarm: 12 sub-agents across 4 phases. Design, visual analysis, backend, frontend, quality &amp; testing.</div>
         <span class="agent-type type-dev">Mini-Swarm &middot; Opus</span>
       </div>
       <div class="agent-node" style="border-color:var(--amber); cursor:pointer;" data-explorer="qa" onclick="switchExplorer('qa'); document.getElementById('pane-qa').scrollIntoView({behavior:'smooth', block:'start'});">
-        <div class="agent-icon">🧪</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">QA / Test Agent</div>
         <div class="agent-desc">Mini-swarm: 11 sub-agents across 4 phases. Unit, integration, API, contract, load, security, E2E &amp; architecture review.</div>
         <span class="agent-type type-qa">Mini-Swarm &middot; Opus</span>
       </div>
       <div class="agent-node" style="border-color:var(--orange); cursor:pointer;" data-explorer="deploy" onclick="switchExplorer('deploy'); document.getElementById('pane-deploy').scrollIntoView({behavior:'smooth', block:'start'});">
-        <div class="agent-icon">🚀</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Deploy Agent</div>
         <div class="agent-desc">Mini-swarm: 11 sub-agents across 4 phases. Packaging, infrastructure, orchestration, deploy &amp; validation.</div>
         <span class="agent-type type-infra">Mini-Swarm &middot; Opus</span>
       </div>
       <div class="agent-node" style="border-color:var(--cyan); cursor:pointer;" data-explorer="pr-review" onclick="switchExplorer('pr-review'); document.getElementById('pane-pr-review').scrollIntoView({behavior:'smooth', block:'start'});">
-        <div class="agent-icon">🔍</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">PR Review Agent</div>
         <div class="agent-desc">Mini-swarm: 12 sub-agents across 4 phases. Code quality, security, API, DB, tests, docs, style, architecture &amp; integration review.</div>
         <span class="agent-type type-human">Mini-Swarm &middot; Opus</span>
       </div>
       <div class="agent-node">
-        <div class="agent-icon">🎬</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Demo Prep Agent</div>
         <div class="agent-desc">Prepares demo environment, seed data, script, screenshots. Planned.</div>
         <span class="agent-type type-human" style="opacity:0.5;">Planned</span>
       </div>
       <div class="agent-node" style="border-color:var(--red);cursor:pointer;" onclick="showStandaloneAgent('debugger')">
-        <div class="agent-icon">🐛</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Debugger</div>
-        <div class="agent-desc">Systematic bug investigation — error traces, reproduction steps, root cause analysis.</div>
+        <div class="agent-desc">Systematic bug investigation, error traces, reproduction steps, root cause analysis.</div>
         <span class="agent-type type-dev">Sonnet &middot; Medium</span>
       </div>
       <div class="agent-node" style="border-color:var(--purple);cursor:pointer;" onclick="showStandaloneAgent('dependency-expert')">
-        <div class="agent-icon">📦</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Dependency Expert</div>
         <div class="agent-desc">Package auditing, vulnerability scanning, dependency graph analysis, upgrade safety.</div>
         <span class="agent-type type-cron">Sonnet &middot; Medium</span>
       </div>
       <div class="agent-node" style="border-color:var(--accent);cursor:pointer;" onclick="showStandaloneAgent('researcher')">
-        <div class="agent-icon">🔎</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Researcher</div>
         <div class="agent-desc">Technology research, documentation lookup, pattern investigation, evidence summarization.</div>
         <span class="agent-type type-orchestrator">Haiku &middot; Simple</span>
       </div>
       <div class="agent-node" style="border-color:var(--green);cursor:pointer;" onclick="showStandaloneAgent('explore')">
-        <div class="agent-icon">🗺️</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Explore</div>
         <div class="agent-desc">Codebase exploration, file discovery, architecture mapping, dependency tracing.</div>
         <span class="agent-type type-dev">Haiku &middot; Simple</span>
       </div>
       <div class="agent-node" style="border-color:var(--pink);cursor:pointer;" onclick="showStandaloneAgent('product-manager')">
-        <div class="agent-icon">📋</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Product Manager</div>
         <div class="agent-desc">PRD authoring, feature prioritization, user story writing, roadmap planning.</div>
         <span class="agent-type type-event">Opus &middot; Complex</span>
       </div>
       <div class="agent-node" style="border-color:var(--amber);cursor:pointer;" onclick="showStandaloneAgent('build-fixer')">
-        <div class="agent-icon">🔧</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Build Fixer</div>
         <div class="agent-desc">Build failure diagnosis, compiler error resolution, dependency conflict fixing.</div>
         <span class="agent-type type-qa">Sonnet &middot; Medium</span>
       </div>
       <div class="agent-node" style="border-color:var(--cyan);cursor:pointer;" onclick="showStandaloneAgent('code-simplifier')">
-        <div class="agent-icon">✂️</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Code Simplifier</div>
         <div class="agent-desc">Complexity reduction, dead code removal, refactoring to cleaner patterns.</div>
         <span class="agent-type type-human">Sonnet &middot; Medium</span>
       </div>
       <div class="agent-node" style="border-color:var(--orange);cursor:pointer;" onclick="showStandaloneAgent('git-master')">
-        <div class="agent-icon">🌿</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">Git Master</div>
-        <div class="agent-desc">Git operations — branching, merging, conflict resolution, history management.</div>
+        <div class="agent-desc">Git operations, branching, merging, conflict resolution, history management.</div>
         <span class="agent-type type-third">Haiku &middot; Simple</span>
       </div>
     </div>
@@ -842,7 +842,7 @@
       <div class="agent-node wide" style="background:linear-gradient(135deg, rgba(96,165,250,0.06), rgba(167,139,250,0.06)); border-color:rgba(96,165,250,0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
           <div>
-            <div class="agent-icon" style="display:inline; margin-right:6px;">📦</div>
+            <div class="agent-icon" style="display:inline; margin-right:6px;"></div>
             <span class="agent-name" style="display:inline;">Shared Board (shared/)</span>
           </div>
           <span class="agent-type type-orchestrator">Central State &middot; JSON/JSONL</span>
@@ -918,7 +918,7 @@
       <div class="architect-intro-left">
         <h3 style="font-size:16px; font-weight:600; margin-bottom:8px;">Mini-Swarm: 13 Specialized Sub-Agents</h3>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
-          The Architect is not a single agent &mdash; it's a master orchestrator that coordinates 13 domain-specific sub-agents across a 4-phase DAG. Each sub-agent produces structured output (MD or JSON), receives shared architecture context, and has its own knowledge base.
+          The Architect is not a single agent, it's a master orchestrator that coordinates 13 domain-specific sub-agents across a 4-phase DAG. Each sub-agent produces structured output (MD or JSON), receives shared architecture context, and has its own knowledge base.
         </p>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
           <strong style="color:var(--text);">Execution flow:</strong> IntentGate classifies which domains are needed &rarr; DAG runs sub-agents in phase order &rarr; Contradiction Detection checks consistency &rarr; Ralph Loop ensures completeness.
@@ -958,7 +958,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--red); color:var(--red);">Phase 1</span>
-          <span class="dag-phase-label">Foundation &mdash; runs first, everything depends on this</span>
+          <span class="dag-phase-label">Foundation, runs first, everything depends on this</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -980,7 +980,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--amber); color:var(--amber);">Phase 2</span>
-          <span class="dag-phase-label">Contracts &mdash; parallel, depends on system-designer</span>
+          <span class="dag-phase-label">Contracts, parallel, depends on system-designer</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1038,7 +1038,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--green); color:var(--green);">Phase 3</span>
-          <span class="dag-phase-label">Cross-cutting &mdash; parallel, depends on Phase 2 agents</span>
+          <span class="dag-phase-label">Cross-cutting, parallel, depends on Phase 2 agents</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1078,7 +1078,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--accent); color:var(--accent);">Phase 4</span>
-          <span class="dag-phase-label">Operational &mdash; parallel, depends on Phase 3 agents</span>
+          <span class="dag-phase-label">Operational, parallel, depends on Phase 3 agents</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1138,7 +1138,7 @@
       <div class="architect-intro-left">
         <h3 style="font-size:16px; font-weight:600; margin-bottom:8px;">Mini-Swarm: 12 Implementation Sub-Agents</h3>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
-          The Dev agent orchestrates 12 specialized sub-agents that cover the full implementation stack &mdash; from design interpretation through backend, frontend, mobile, testing, and documentation. Each sub-agent produces structured output and declares its exports for downstream consumers.
+          The Dev agent orchestrates 12 specialized sub-agents that cover the full implementation stack, from design interpretation through backend, frontend, mobile, testing, and documentation. Each sub-agent produces structured output and declares its exports for downstream consumers.
         </p>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
           <strong style="color:var(--text);">Execution flow:</strong> IntentGate selects needed domains &rarr; feature-context.json initialized &rarr; DAG runs sub-agents in 4 phases &rarr; Contradiction Detection checks integration &rarr; Ralph Loop validates lint + tests.
@@ -1178,7 +1178,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--pink); color:var(--pink);">Phase 1</span>
-          <span class="dag-phase-label">Design Foundation &mdash; runs first, interprets wireframes into component specs</span>
+          <span class="dag-phase-label">Design Foundation, runs first, interprets wireframes into component specs</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1193,7 +1193,7 @@
           </div>
           <div class="dag-agent-card" data-dev-agent="vision" onclick="selectDevAgent('vision')">
             <div class="dag-agent-name">vision</div>
-            <div class="dag-agent-role">Visual/image analyzer — wireframes, screenshots, charts, diagrams, PDFs</div>
+            <div class="dag-agent-role">Visual/image analyzer, wireframes, screenshots, charts, diagrams, PDFs</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-md">MD</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1209,7 +1209,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--amber); color:var(--amber);">Phase 2</span>
-          <span class="dag-phase-label">Data + Backend &mdash; parallel, depends on design-dev</span>
+          <span class="dag-phase-label">Data + Backend, parallel, depends on design-dev</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1267,7 +1267,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--green); color:var(--green);">Phase 3</span>
-          <span class="dag-phase-label">Frontend + Mobile &mdash; parallel, consumes backend exports</span>
+          <span class="dag-phase-label">Frontend + Mobile, parallel, consumes backend exports</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1298,7 +1298,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--accent); color:var(--accent);">Phase 4</span>
-          <span class="dag-phase-label">Quality + Polish &mdash; parallel, validates and documents everything</span>
+          <span class="dag-phase-label">Quality + Polish, parallel, validates and documents everything</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1349,7 +1349,7 @@
       <div class="architect-intro-left">
         <h3 style="font-size:16px; font-weight:600; margin-bottom:8px;">Mini-Swarm: 12 QA &amp; Validation Sub-Agents</h3>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
-          The QA agent orchestrates 12 specialized sub-agents that cover the full quality spectrum &mdash; unit tests, integration tests, API validation, contract tests, schema validation, architecture review, load/stress/spike testing, security scanning, E2E user journeys, visual verification, and coverage analysis. Consumes both architecture-context.json and feature-context.json from upstream agents.
+          The QA agent orchestrates 12 specialized sub-agents that cover the full quality spectrum, unit tests, integration tests, API validation, contract tests, schema validation, architecture review, load/stress/spike testing, security scanning, E2E user journeys, visual verification, and coverage analysis. Consumes both architecture-context.json and feature-context.json from upstream agents.
         </p>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
           <strong style="color:var(--text);">Execution flow:</strong> IntentGate selects test domains &rarr; qa-context.json initialized &rarr; DAG runs sub-agents in 4 phases &rarr; Contradiction Detection checks cross-agent consistency &rarr; Ralph Loop validates quality gate.
@@ -1389,7 +1389,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--red); color:var(--red);">Phase 1</span>
-          <span class="dag-phase-label">Foundation &mdash; analyzes context, produces test strategy and risk map</span>
+          <span class="dag-phase-label">Foundation, analyzes context, produces test strategy and risk map</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1411,13 +1411,13 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--amber); color:var(--amber);">Phase 2</span>
-          <span class="dag-phase-label">Core Testing &mdash; parallel, depends on test-strategist</span>
+          <span class="dag-phase-label">Core Testing, parallel, depends on test-strategist</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
           <div class="dag-agent-card" data-qa-agent="unit-tester" onclick="selectQaAgent('unit-tester')">
             <div class="dag-agent-name">unit-tester</div>
-            <div class="dag-agent-role">Unit tests for all code modules &mdash; functions, classes, services</div>
+            <div class="dag-agent-role">Unit tests for all code modules, functions, classes, services</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1426,7 +1426,7 @@
           </div>
           <div class="dag-agent-card" data-qa-agent="integration-tester" onclick="selectQaAgent('integration-tester')">
             <div class="dag-agent-name">integration-tester</div>
-            <div class="dag-agent-role">Cross-service integration tests &mdash; workflows, events, transactions</div>
+            <div class="dag-agent-role">Cross-service integration tests, workflows, events, transactions</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1435,7 +1435,7 @@
           </div>
           <div class="dag-agent-card" data-qa-agent="api-tester" onclick="selectQaAgent('api-tester')">
             <div class="dag-agent-name">api-tester</div>
-            <div class="dag-agent-role">API endpoint validation &mdash; schemas, status codes, auth scenarios</div>
+            <div class="dag-agent-role">API endpoint validation, schemas, status codes, auth scenarios</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1444,7 +1444,7 @@
           </div>
           <div class="dag-agent-card" data-qa-agent="contract-tester" onclick="selectQaAgent('contract-tester')">
             <div class="dag-agent-name">contract-tester</div>
-            <div class="dag-agent-role">Consumer-driven contract tests &mdash; API compatibility between services</div>
+            <div class="dag-agent-role">Consumer-driven contract tests, API compatibility between services</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1453,7 +1453,7 @@
           </div>
           <div class="dag-agent-card" data-qa-agent="schema-validator" onclick="selectQaAgent('schema-validator')">
             <div class="dag-agent-name">schema-validator</div>
-            <div class="dag-agent-role">DB, API, ORM schema consistency &mdash; drift detection across layers</div>
+            <div class="dag-agent-role">DB, API, ORM schema consistency, drift detection across layers</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1478,13 +1478,13 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--green); color:var(--green);">Phase 3</span>
-          <span class="dag-phase-label">Cross-Cutting &mdash; parallel, synthesizes across Phase 2 outputs</span>
+          <span class="dag-phase-label">Cross-Cutting, parallel, synthesizes across Phase 2 outputs</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
           <div class="dag-agent-card" data-qa-agent="load-tester" onclick="selectQaAgent('load-tester')">
             <div class="dag-agent-name">load-tester</div>
-            <div class="dag-agent-role">Load, stress, spike, soak &mdash; performance scenarios with k6/Locust</div>
+            <div class="dag-agent-role">Load, stress, spike, soak, performance scenarios with k6/Locust</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1502,7 +1502,7 @@
           </div>
           <div class="dag-agent-card" data-qa-agent="e2e-tester" onclick="selectQaAgent('e2e-tester')">
             <div class="dag-agent-name">e2e-tester</div>
-            <div class="dag-agent-role">End-to-end user journey tests &mdash; Playwright, smoke suites</div>
+            <div class="dag-agent-role">End-to-end user journey tests, Playwright, smoke suites</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-json">JSON</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -1527,7 +1527,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--accent); color:var(--accent);">Phase 4</span>
-          <span class="dag-phase-label">Quality Gate &mdash; aggregates all results, produces PASS/FAIL verdict</span>
+          <span class="dag-phase-label">Quality Gate, aggregates all results, produces PASS/FAIL verdict</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1600,7 +1600,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--red); color:var(--red);">Phase 1</span>
-          <span class="dag-phase-label">Analysis &mdash; reads upstream context, produces deployment manifest</span>
+          <span class="dag-phase-label">Analysis, reads upstream context, produces deployment manifest</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1622,7 +1622,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--amber); color:var(--amber);">Phase 2</span>
-          <span class="dag-phase-label">Preparation &mdash; parallel, packaging + config + infra + migrations</span>
+          <span class="dag-phase-label">Preparation, parallel, packaging + config + infra + migrations</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1671,7 +1671,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--green); color:var(--green);">Phase 3</span>
-          <span class="dag-phase-label">Strategy &mdash; deployment orchestration + quality gate validation</span>
+          <span class="dag-phase-label">Strategy, deployment orchestration + quality gate validation</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1702,7 +1702,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--accent); color:var(--accent);">Phase 4</span>
-          <span class="dag-phase-label">Execution &mdash; deploy, validate, plan rollback, report</span>
+          <span class="dag-phase-label">Execution, deploy, validate, plan rollback, report</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1800,7 +1800,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--red); color:var(--red);">Phase 1</span>
-          <span class="dag-phase-label">Foundation &mdash; analyzes PR diff, classifies changes, assesses risk, determines review scope</span>
+          <span class="dag-phase-label">Foundation, analyzes PR diff, classifies changes, assesses risk, determines review scope</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1822,7 +1822,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--amber); color:var(--amber);">Phase 2</span>
-          <span class="dag-phase-label">Core Review &mdash; parallel, domain-specific review of changed files</span>
+          <span class="dag-phase-label">Core Review, parallel, domain-specific review of changed files</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1898,7 +1898,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--green); color:var(--green);">Phase 3</span>
-          <span class="dag-phase-label">Cross-Cutting &mdash; parallel, synthesizes across Phase 2 outputs</span>
+          <span class="dag-phase-label">Cross-Cutting, parallel, synthesizes across Phase 2 outputs</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1938,7 +1938,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--accent); color:var(--accent);">Phase 4</span>
-          <span class="dag-phase-label">Quality Gate &mdash; aggregates all findings, produces final review verdict</span>
+          <span class="dag-phase-label">Quality Gate, aggregates all findings, produces final review verdict</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -1972,7 +1972,7 @@
       <div class="architect-intro-left">
         <h3 style="font-size:16px; font-weight:600; margin-bottom:8px;">Mini-Swarm: 3 Pre-Planning Sub-Agents</h3>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
-          Champ's orchestration is backed by 3 pre-planning sub-agents that run before work packets are dispatched. They validate requirements, design success metrics, and gate the work plan — preventing downstream failures caused by ambiguous or incomplete specifications.
+          Champ's orchestration is backed by 3 pre-planning sub-agents that run before work packets are dispatched. They validate requirements, design success metrics, and gate the work plan, preventing downstream failures caused by ambiguous or incomplete specifications.
         </p>
         <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
           <strong style="color:var(--text);">Execution flow:</strong> analyst audits requirements &rarr; product-analyst designs KPI/measurement plan &rarr; critic gates the full work plan with OKAY/REJECT verdict before dispatch.
@@ -2002,7 +2002,7 @@
       <div class="dag-phase">
         <div class="dag-phase-header">
           <span class="dag-phase-badge" style="border-color:var(--accent); color:var(--accent);">Phase 1</span>
-          <span class="dag-phase-label">Pre-Planning &mdash; all three run before champ dispatches any work packets</span>
+          <span class="dag-phase-label">Pre-Planning, all three run before champ dispatches any work packets</span>
           <span class="dag-phase-line"></span>
         </div>
         <div class="dag-agents">
@@ -2026,7 +2026,7 @@
           </div>
           <div class="dag-agent-card" data-champ-agent="critic" onclick="selectChampAgent('critic')">
             <div class="dag-agent-name">critic</div>
-            <div class="dag-agent-role">Work plan gatekeeper — clarity, verifiability, completeness, OKAY/REJECT verdict</div>
+            <div class="dag-agent-role">Work plan gatekeeper, clarity, verifiability, completeness, OKAY/REJECT verdict</div>
             <div class="dag-agent-tags">
               <span class="dag-tag dag-tag-format-md">MD</span>
               <span class="dag-tag dag-tag-complexity-medium">Medium</span>
@@ -2046,7 +2046,7 @@
   </div><!-- /pane-champ -->
 
   <!-- ===== PROJECT LIFECYCLE PIPELINE ===== -->
-  <div class="section-title"><span class="dot" style="background:var(--green)"></span> Project Lifecycle — Agent-Driven Pipeline</div>
+  <div class="section-title"><span class="dot" style="background:var(--green)"></span> Project Lifecycle, Agent-Driven Pipeline</div>
 
   <div class="pipeline">
     <div class="pipeline-stage" style="border-left-color:var(--accent); border-left-width:3px;">
@@ -2129,13 +2129,13 @@
   <!-- ===== DETAIL GRIDS ===== -->
   <div class="flow-grid">
     <div class="flow-card">
-      <h3>Agent Anatomy — Each Agent Has</h3>
+      <h3>Agent Anatomy, Each Agent Has</h3>
       <table class="agent-table">
         <tr><th>Component</th><th>Purpose</th></tr>
-        <tr><td><code>agent.yaml</code></td><td>Manifest — name, model, complexity, capabilities, dependencies</td></tr>
-        <tr><td><code>prompt.md</code></td><td>System prompt / persona (updated by feedback loop)</td></tr>
-        <tr><td><code>knowledge/</code></td><td>Domain knowledge files (.md) injected into prompts</td></tr>
-        <tr><td><code>sub-agents/</code></td><td>Optional — nested agents for mini-swarm patterns (e.g., Architect)</td></tr>
+        <tr><td><code>agent.yaml</code>code</td><td>Manifest, name, model, complexity, capabilities, dependencies</td></tr>
+        <tr><td><code>prompt.md</code>code</td><td>System prompt / persona (updated by feedback loop)</td></tr>
+        <tr><td><code>knowledge/</code>code</td><td>Domain knowledge files (.md) injected into prompts</td></tr>
+        <tr><td><code>sub-agents/</code>code</td><td>Optional, nested agents for mini-swarm patterns (e.g. Architect)</td></tr>
       </table>
     </div>
 
@@ -2143,46 +2143,46 @@
       <h3>Shared Board Schema (shared/)</h3>
       <table class="agent-table">
         <tr><th>Store</th><th>Format</th><th>Updated By</th></tr>
-        <tr><td>packets.json</td><td>JSON — work packets with status</td><td>All agents</td></tr>
-        <tr><td>results/</td><td>JSON — per-packet results</td><td>Completing agent</td></tr>
-        <tr><td>memory/</td><td>JSON — key-value persistent store</td><td>Any agent</td></tr>
+        <tr><td>packets.json</td><td>JSON, work packets with status</td><td>All agents</td></tr>
+        <tr><td>results/</td><td>JSON, per-packet results</td><td>Completing agent</td></tr>
+        <tr><td>memory/</td><td>JSON, key-value persistent store</td><td>Any agent</td></tr>
         <tr><td>event_log.jsonl</td><td>Append-only JSONL</td><td>Harness (auto)</td></tr>
       </table>
     </div>
 
     <div class="flow-card">
-      <h3>Harness Modules (src/harness/) &mdash; 24 Modules</h3>
+      <h3>Harness Modules (the harness), 24 Modules</h3>
       <table class="agent-table">
         <tr><th>Module</th><th>Purpose</th></tr>
-        <tr><td><code>protocol.ts</code></td><td>WorkPacket &amp; WorkResult types, FSM transitions, packet creation</td></tr>
-        <tr><td><code>board.ts</code></td><td>Read/write shared board (packets, results, events, memory)</td></tr>
-        <tr><td><code>registry.ts</code></td><td>Agent discovery, Zod-validated manifest parsing</td></tr>
-        <tr><td><code>runner.ts</code></td><td>Execute agents via Claude Code CLI with fix loop &amp; worktree isolation</td></tr>
-        <tr><td><code>sub-registry.ts</code></td><td>Sub-agent discovery for mini-swarms</td></tr>
-        <tr><td><code>sub-runner.ts</code></td><td>Sub-agent execution with architecture context injection</td></tr>
-        <tr><td><code>prompt-utils.ts</code></td><td>Prompt assembly, anti-scope injection, workresult parsing</td></tr>
-        <tr><td><code>prompt-enricher.ts</code></td><td>Enrich prompts with verification feedback, memory, board context, sibling status</td></tr>
-        <tr><td><code>model-resolver.ts</code></td><td>Complexity &rarr; model mapping (simple&rarr;haiku, medium&rarr;sonnet, complex&rarr;opus)</td></tr>
-        <tr><td><code>tmux-runner.ts</code></td><td>Async tmux pane execution, DAG-based parallel sub-agent orchestration</td></tr>
-        <tr><td><code>planner.ts</code></td><td>Plan creation, approval/rejection, codebase mapping</td></tr>
-        <tr><td><code>pipeline.ts</code></td><td>Multi-stage pipeline execution &amp; resume</td></tr>
-        <tr><td><code>verifier.ts</code></td><td>Run verification checks on agent outputs</td></tr>
-        <tr><td><code>role-router.ts</code></td><td>Score-based task routing to best-fit agent</td></tr>
-        <tr><td><code>task-classifier.ts</code></td><td>Classify task size (trivial/explore/small/medium/large)</td></tr>
-        <tr><td><code>skill-loader.ts</code></td><td>Load &amp; resolve {{skill:name}} template refs in prompts</td></tr>
-        <tr><td><code>cost-tracker.ts</code></td><td>Parse token usage, calculate cost per invocation</td></tr>
-        <tr><td><code>session-metrics.ts</code></td><td>Compute session-level metrics &amp; summaries</td></tr>
-        <tr><td><code>worktree.ts</code></td><td>Git worktree create/remove for agent isolation</td></tr>
-        <tr><td><code>mcp-registry.ts</code></td><td>Load MCP server registry, validate availability</td></tr>
-        <tr><td><code>concurrency.ts</code></td><td>Slot-based concurrency cap (default 4 parallel agents)</td></tr>
-        <tr><td><code>contracts.ts</code></td><td>Derive contracts, validate inputs/outputs per agent manifest</td></tr>
-        <tr><td><code>stall-detector.ts</code></td><td>Detect stalled agents, nudge or block</td></tr>
-        <tr><td><code>escalation.ts</code></td><td>Create &amp; execute escalation plans for blocked agents</td></tr>
-        <tr><td><code>turn-tracker.ts</code></td><td>Append &amp; summarize conversation turns per packet</td></tr>
-        <tr><td><code>team-state.ts</code></td><td>Per-agent state writes, team-wide state aggregation</td></tr>
-        <tr><td><code>progress-ledger.ts</code></td><td>Append-only progress ledger with trim support</td></tr>
-        <tr><td><code>stage-roster.ts</code></td><td>Load pipeline stage rosters &amp; config</td></tr>
-        <tr><td><code>notify.ts</code></td><td>Notification dispatch for agent events</td></tr>
+        <tr><td><code>protocol.ts</code>code</td><td>WorkPacket &amp; WorkResult types, FSM transitions, packet creation</td></tr>
+        <tr><td><code>board.ts</code>code</td><td>Read/write shared board (packets, results, events, memory)</td></tr>
+        <tr><td><code>registry.ts</code>code</td><td>Agent discovery, Zod-validated manifest parsing</td></tr>
+        <tr><td><code>runner.ts</code>code</td><td>Execute agents via Claude Code CLI with fix loop &amp; worktree isolation</td></tr>
+        <tr><td><code>sub-registry.ts</code>code</td><td>Sub-agent discovery for mini-swarms</td></tr>
+        <tr><td><code>sub-runner.ts</code>code</td><td>Sub-agent execution with architecture context injection</td></tr>
+        <tr><td><code>prompt-utils.ts</code>code</td><td>Prompt assembly, anti-scope injection, workresult parsing</td></tr>
+        <tr><td><code>prompt-enricher.ts</code>code</td><td>Enrich prompts with verification feedback, memory, board context, sibling status</td></tr>
+        <tr><td><code>model-resolver.ts</code>code</td><td>Complexity &rarr; model mapping (simple&rarr;haiku, medium&rarr;sonnet, complex&rarr;opus)</td></tr>
+        <tr><td><code>tmux-runner.ts</code>code</td><td>Async tmux pane execution, DAG-based parallel sub-agent orchestration</td></tr>
+        <tr><td><code>planner.ts</code>code</td><td>Plan creation, approval/rejection, codebase mapping</td></tr>
+        <tr><td><code>pipeline.ts</code>code</td><td>Multi-stage pipeline execution &amp; resume</td></tr>
+        <tr><td><code>verifier.ts</code>code</td><td>Run verification checks on agent outputs</td></tr>
+        <tr><td><code>role-router.ts</code>code</td><td>Score-based task routing to best-fit agent</td></tr>
+        <tr><td><code>task-classifier.ts</code>code</td><td>Classify task size (trivial/explore/small/medium/large)</td></tr>
+        <tr><td><code>skill-loader.ts</code>code</td><td>Load &amp; resolve {{skill:name}} template refs in prompts</td></tr>
+        <tr><td><code>cost-tracker.ts</code>code</td><td>Parse token usage, calculate cost per invocation</td></tr>
+        <tr><td><code>session-metrics.ts</code>code</td><td>Compute session-level metrics &amp; summaries</td></tr>
+        <tr><td><code>worktree.ts</code>code</td><td>Git worktree create/remove for agent isolation</td></tr>
+        <tr><td><code>mcp-registry.ts</code>code</td><td>Load MCP server registry, validate availability</td></tr>
+        <tr><td><code>concurrency.ts</code>code</td><td>Slot-based concurrency cap (default 4 parallel agents)</td></tr>
+        <tr><td><code>contracts.ts</code>code</td><td>Derive contracts, validate inputs/outputs per agent manifest</td></tr>
+        <tr><td><code>stall-detector.ts</code>code</td><td>Detect stalled agents, nudge or block</td></tr>
+        <tr><td><code>escalation.ts</code>code</td><td>Create &amp; execute escalation plans for blocked agents</td></tr>
+        <tr><td><code>turn-tracker.ts</code>code</td><td>Append &amp; summarize conversation turns per packet</td></tr>
+        <tr><td><code>team-state.ts</code>code</td><td>Per-agent state writes, team-wide state aggregation</td></tr>
+        <tr><td><code>progress-ledger.ts</code>code</td><td>Append-only progress ledger with trim support</td></tr>
+        <tr><td><code>stage-roster.ts</code>code</td><td>Load pipeline stage rosters &amp; config</td></tr>
+        <tr><td><code>notify.ts</code>code</td><td>Notification dispatch for agent events</td></tr>
       </table>
     </div>
 
@@ -2203,7 +2203,7 @@
   <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:48px;">
     <div class="flow-card">
       <h3 style="font-size:14px;">1. No Hierarchy</h3>
-      <p style="font-size:12px; color:var(--text-dim);">All agents are independent peers. They invoke each other via work packets &mdash; structured envelopes with instruction, context, and success criteria.</p>
+      <p style="font-size:12px; color:var(--text-dim);">All agents are independent peers. They invoke each other via work packets, structured envelopes with instruction, context, and success criteria.</p>
     </div>
     <div class="flow-card">
       <h3 style="font-size:14px;">2. Shared Board as Truth</h3>
@@ -2237,7 +2237,7 @@
 const AGENTS = {
   "system-designer": {
     name: "system-designer",
-    role: "High-level system design — boundaries, data flow, tech stack, deployment topology",
+    role: "High-level system design, boundaries, data flow, tech stack, deployment topology",
     phase: 1,
     phaseName: "Foundation",
     complexity: "complex",
@@ -2254,7 +2254,7 @@ const AGENTS = {
     ],
     sections: ["Overview", "System Context", "Component Boundaries", "Data Flow", "Technology Stack", "Deployment Topology", "Constraints", "Decisions Log", "Open Questions"],
     criteria: [
-      "Component boundaries are clear — no overlapping responsibilities",
+      "Component boundaries are clear, no overlapping responsibilities",
       "Data flow covers all primary user journeys",
       "Technology choices have explicit rationale",
       "Constraints are concrete and measurable",
@@ -2263,7 +2263,7 @@ const AGENTS = {
   },
   "api-designer": {
     name: "api-designer",
-    role: "API contract design — endpoints, schemas, versioning, error handling",
+    role: "API contract design, endpoints, schemas, versioning, error handling",
     phase: 2,
     phaseName: "Contracts",
     complexity: "medium",
@@ -2288,7 +2288,7 @@ const AGENTS = {
   },
   "db-architect": {
     name: "db-architect",
-    role: "Database architecture — entities, relationships, migrations, data lifecycle",
+    role: "Database architecture, entities, relationships, migrations, data lifecycle",
     phase: 2,
     phaseName: "Contracts",
     complexity: "medium",
@@ -2313,7 +2313,7 @@ const AGENTS = {
   },
   "component-architect": {
     name: "component-architect",
-    role: "Component architecture — modules, layers, dependencies, state management",
+    role: "Component architecture, modules, layers, dependencies, state management",
     phase: 2,
     phaseName: "Contracts",
     complexity: "medium",
@@ -2332,13 +2332,13 @@ const AGENTS = {
       "Every component has a single, clear responsibility",
       "No circular dependencies in the dependency graph",
       "Layer boundaries are respected (no upward dependencies)",
-      "Shared libraries are justified — used by 2+ components",
+      "Shared libraries are justified, used by 2+ components",
       "State management strategy covers all stateful components"
     ]
   },
   "information-architect": {
     name: "information-architect",
-    role: "Product information structure — taxonomy, navigation models, naming consistency, findability assessment",
+    role: "Product information structure, taxonomy, navigation models, naming consistency, findability assessment",
     phase: 2,
     phaseName: "Contracts",
     complexity: "medium",
@@ -2364,7 +2364,7 @@ const AGENTS = {
   },
   "ux-researcher": {
     name: "ux-researcher",
-    role: "Usability research — heuristic evaluation, WCAG 2.1 AA accessibility audits, evidence-grounded findings",
+    role: "Usability research, heuristic evaluation, WCAG 2.1 AA accessibility audits, evidence-grounded findings",
     phase: 2,
     phaseName: "Contracts",
     complexity: "medium",
@@ -2390,7 +2390,7 @@ const AGENTS = {
   },
   "integration-architect": {
     name: "integration-architect",
-    role: "Integration architecture — patterns, events, messaging, sync/async boundaries",
+    role: "Integration architecture, patterns, events, messaging, sync/async boundaries",
     phase: 3,
     phaseName: "Cross-cutting",
     complexity: "complex",
@@ -2415,7 +2415,7 @@ const AGENTS = {
   },
   "security-architect": {
     name: "security-architect",
-    role: "Security architecture — auth, authorization, threat modeling, compliance",
+    role: "Security architecture, auth, authorization, threat modeling, compliance",
     phase: 3,
     phaseName: "Cross-cutting",
     complexity: "complex",
@@ -2441,7 +2441,7 @@ const AGENTS = {
   },
   "performance-architect": {
     name: "performance-architect",
-    role: "Performance architecture — budgets, caching, scaling, bottleneck analysis",
+    role: "Performance architecture, budgets, caching, scaling, bottleneck analysis",
     phase: 3,
     phaseName: "Cross-cutting",
     complexity: "medium",
@@ -2467,7 +2467,7 @@ const AGENTS = {
   },
   "cloud-architect": {
     name: "cloud-architect",
-    role: "Cloud architecture — provider, compute, storage, networking, IAM, cost",
+    role: "Cloud architecture, provider, compute, storage, networking, IAM, cost",
     phase: 4,
     phaseName: "Operational",
     complexity: "medium",
@@ -2492,7 +2492,7 @@ const AGENTS = {
   },
   "devops-architect": {
     name: "devops-architect",
-    role: "DevOps architecture — CI/CD, environments, deployment, IaC, branching",
+    role: "DevOps architecture, CI/CD, environments, deployment, IaC, branching",
     phase: 4,
     phaseName: "Operational",
     complexity: "medium",
@@ -2518,7 +2518,7 @@ const AGENTS = {
   },
   "data-pipeline-architect": {
     name: "data-pipeline-architect",
-    role: "Data pipeline architecture — ETL, streaming, transformations, data quality",
+    role: "Data pipeline architecture, ETL, streaming, transformations, data quality",
     phase: 4,
     phaseName: "Operational",
     complexity: "medium",
@@ -2543,7 +2543,7 @@ const AGENTS = {
   },
   "observability-architect": {
     name: "observability-architect",
-    role: "Observability architecture — logging, metrics, tracing, alerting, SLOs",
+    role: "Observability architecture, logging, metrics, tracing, alerting, SLOs",
     phase: 4,
     phaseName: "Operational",
     complexity: "medium",
@@ -2721,7 +2721,7 @@ const DEV_AGENTS = {
     schema: '{\n  "pages": [\n    { "name": "", "route": "", "layout": "",\n      "components": ["string"], "data_requirements": ["string"] }\n  ],\n  "components": [\n    { "name": "", "type": "atom | molecule | organism | template",\n      "props": [{ "name": "", "type": "", "required": false }],\n      "children": [], "state": [], "events": [],\n      "data_sources": ["string"] }\n  ],\n  "composition_map": [\n    { "page": "", "layout": "", "components": [] }\n  ],\n  "design_tokens_needed": ["string"],\n  "decisions": [], "open_questions": []\n}',
     criteria: [
       "Every page has a route and layout assigned",
-      "Component hierarchy is complete — no orphan components",
+      "Component hierarchy is complete, no orphan components",
       "Props typed for every component",
       "Data requirements link to backend endpoints or models",
       "Design tokens cover colors, spacing, and typography"
@@ -2729,7 +2729,7 @@ const DEV_AGENTS = {
   },
   "vision": {
     name: "vision",
-    role: "Visual and media file analyzer — images, diagrams, screenshots, wireframes, charts, and PDFs",
+    role: "Visual and media file analyzer, images, diagrams, screenshots, wireframes, charts, and PDFs",
     phase: 1,
     phaseName: "Design Foundation",
     complexity: "medium",
@@ -2748,7 +2748,7 @@ const DEV_AGENTS = {
     criteria: [
       "All requested visual elements are identified and described",
       "Structural information (layouts, hierarchies) is accurately extracted",
-      "Output is scoped to what was requested — no hallucinated details",
+      "Output is scoped to what was requested, no hallucinated details",
       "Format is usable by design-dev or other consuming agents",
       "File type is confirmed before processing"
     ]
@@ -2949,7 +2949,7 @@ const DEV_AGENTS = {
     sections: ["Visual Diff Summary", "Design Token Audit", "Spacing and Layout Issues", "Accessibility Report", "CSS Fixes", "Decisions Log", "Open Questions"],
     criteria: [
       "Every component matches design spec (visual diff)",
-      "Design tokens are consistent — no magic values",
+      "Design tokens are consistent, no magic values",
       "Contrast ratios meet WCAG 2.1 AA minimum",
       "All interactive elements keyboard accessible",
       "Responsive breakpoints tested at 3+ widths"
@@ -3136,7 +3136,7 @@ const QA_AGENTS = {
       "Define test boundaries and scope for each testing domain",
       "Create priority matrices (P0/P1/P2) that guide all downstream QA sub-agents"
     ],
-    schema: '{\n  "test_strategy": {\n    "scope": "string",\n    "approach": "risk-based | exhaustive | regression",\n    "test_types_needed": ["unit", "integration", "api", ...],\n    "excluded_types": [{ "type": "", "reason": "" }]\n  },\n  "risk_map": [\n    { "area": "string", "risk_level": "critical | high | medium | low",\n      "risk_factors": ["string"],\n      "recommended_test_types": ["string"], "priority": 0 }\n  ],\n  "priority_matrix": {\n    "p0_must_test": [{ "target": "", "test_type": "", "reason": "" }],\n    "p1_should_test": [...],\n    "p2_nice_to_test": [...]\n  },\n  "test_boundaries": {\n    "unit_scope": { "modules_to_test": [], "mock_boundaries": [] },\n    "integration_scope": { "flows_to_test": [], "services_involved": [] },\n    "api_scope": { "endpoints_to_test": [], "auth_scenarios": [] },\n    "performance_scope": { "endpoints_to_load_test": [],\n      "target_throughput": "", "target_latency_p95": "" },\n    "security_scope": { "attack_surfaces": [], "compliance_requirements": [] }\n  },\n  "environment_requirements": { ... },\n  "decisions": [], "open_questions": []\n}',
+    schema: '{\n  "test_strategy": {\n    "scope": "string",\n    "approach": "risk-based | exhaustive | regression",\n    "test_types_needed": ["unit", "integration", "api"...],\n    "excluded_types": [{ "type": "", "reason": "" }]\n  },\n  "risk_map": [\n    { "area": "string", "risk_level": "critical | high | medium | low",\n      "risk_factors": ["string"],\n      "recommended_test_types": ["string"], "priority": 0 }\n  ],\n  "priority_matrix": {\n    "p0_must_test": [{ "target": "", "test_type": "", "reason": "" }],\n    "p1_should_test": [...],\n    "p2_nice_to_test": [...]\n  },\n  "test_boundaries": {\n    "unit_scope": { "modules_to_test": [], "mock_boundaries": [] },\n    "integration_scope": { "flows_to_test": [], "services_involved": [] },\n    "api_scope": { "endpoints_to_test": [], "auth_scenarios": [] },\n    "performance_scope": { "endpoints_to_load_test": [],\n      "target_throughput": "", "target_latency_p95": "" },\n    "security_scope": { "attack_surfaces": [], "compliance_requirements": [] }\n  },\n  "environment_requirements": { ... },\n  "decisions": [], "open_questions": []\n}',
     criteria: [
       "Every component in architecture-context assessed for risk level",
       "Every public export in feature-context has a testing recommendation",
@@ -3149,7 +3149,7 @@ const QA_AGENTS = {
   },
   "unit-tester": {
     name: "unit-tester",
-    role: "Generate comprehensive unit tests for all code modules — functions, classes, services in isolation with proper dependency mocking",
+    role: "Generate comprehensive unit tests for all code modules, functions, classes, services in isolation with proper dependency mocking",
     phase: 2,
     phaseName: "Core Testing",
     complexity: "medium",
@@ -3175,7 +3175,7 @@ const QA_AGENTS = {
   },
   "integration-tester": {
     name: "integration-tester",
-    role: "Cross-service integration tests — workflows, event flows, multi-component interactions with real service instances",
+    role: "Cross-service integration tests, workflows, event flows, multi-component interactions with real service instances",
     phase: 2,
     phaseName: "Core Testing",
     complexity: "medium",
@@ -3195,12 +3195,12 @@ const QA_AGENTS = {
       "Each suite specifies all setup requirements explicitly",
       "Tests use real service interactions, not mocks",
       "Error recovery scenarios included for each flow",
-      "Database cleanup handled — no dirty state between tests"
+      "Database cleanup handled, no dirty state between tests"
     ]
   },
   "api-tester": {
     name: "api-tester",
-    role: "API endpoint validation — request/response schemas, status codes, auth scenarios, pagination, error handling",
+    role: "API endpoint validation, request/response schemas, status codes, auth scenarios, pagination, error handling",
     phase: 2,
     phaseName: "Core Testing",
     complexity: "medium",
@@ -3225,7 +3225,7 @@ const QA_AGENTS = {
   },
   "contract-tester": {
     name: "contract-tester",
-    role: "Consumer-driven contract tests — verify API compatibility between services using Pact",
+    role: "Consumer-driven contract tests, verify API compatibility between services using Pact",
     phase: 2,
     phaseName: "Core Testing",
     complexity: "medium",
@@ -3250,7 +3250,7 @@ const QA_AGENTS = {
   },
   "schema-validator": {
     name: "schema-validator",
-    role: "Database schema, API schema, and data model validation — detect drift across DB, ORM, API, and frontend layers",
+    role: "Database schema, API schema, and data model validation, detect drift across DB, ORM, API, and frontend layers",
     phase: 2,
     phaseName: "Core Testing",
     complexity: "medium",
@@ -3383,7 +3383,7 @@ const QA_AGENTS = {
   },
   "visual-verifier": {
     name: "visual-verifier",
-    role: "Screenshot-based UI verification against reference designs using cmux-browser — scores layout, typography, color, components, responsive, and accessibility fidelity",
+    role: "Screenshot-based UI verification against reference designs using cmux-browser, scores layout, typography, color, components, responsive, and accessibility fidelity",
     phase: 3,
     phaseName: "Cross-Cutting",
     complexity: "medium",
@@ -3429,7 +3429,7 @@ const QA_AGENTS = {
       "Risk coverage matrix covers all critical and high-risk areas",
       "Coverage gaps categorized by severity with recommended actions",
       "Quality gate criteria all evaluated (none pending or unknown)",
-      "Verdict consistent with criteria — FAIL if any critical criterion fails",
+      "Verdict consistent with criteria, FAIL if any critical criterion fails",
       "Performance and security summaries include specific numbers"
     ]
   }
@@ -3566,7 +3566,7 @@ const DEPLOY_AGENTS = {
     criteria: [
       "Every service has a health check endpoint defined",
       "All services have resource limits (CPU, memory)",
-      "No plaintext secrets — all reference a secret store",
+      "No plaintext secrets, all reference a secret store",
       "Service dependencies form an acyclic graph",
       "All ports are unique per host",
       "Database connections specify connection pooling"
@@ -3591,7 +3591,7 @@ const DEPLOY_AGENTS = {
     ],
     schema: '{\n  "dockerfiles": [\n    { "service": "", "path": "", "content": "",\n      "base_image": "", "stages": ["string"],\n      "exposed_ports": [0] }\n  ],\n  "build_artifacts": [\n    { "name": "", "type": "docker | bundle | binary",\n      "build_command": "", "output_path": "",\n      "size_estimate": "" }\n  ],\n  "bundling_configs": [\n    { "service": "", "tool": "", "config_content": "" }\n  ],\n  "image_registry": {\n    "registry": "", "namespace": "", "tag_strategy": ""\n  },\n  "build_cache": { "strategy": "", "paths": ["string"] },\n  "decisions": [], "open_questions": []\n}',
     criteria: [
-      "No :latest tags — all base images pinned to specific versions",
+      "No :latest tags, all base images pinned to specific versions",
       "Multi-stage builds used for all production images",
       "Every Dockerfile has a companion .dockerignore",
       "No secrets passed as build args",
@@ -3785,7 +3785,7 @@ const DEPLOY_AGENTS = {
       "Probes have reasonable timeouts (not too aggressive)",
       "Monitoring alerts cover error rate, latency, CPU, memory",
       "Validation window is at least 5 minutes for production",
-      "Smoke tests are read-only — no production data mutations"
+      "Smoke tests are read-only, no production data mutations"
     ]
   },
   "rollback-planner": {
@@ -4138,7 +4138,7 @@ const PR_REVIEW_AGENTS = {
   },
   "style-reviewer": {
     name: "style-reviewer",
-    role: "Code style enforcement — formatting consistency, naming conventions, lint compliance, language idioms, import organization",
+    role: "Code style enforcement, formatting consistency, naming conventions, lint compliance, language idioms, import organization",
     phase: 2,
     phaseName: "Core Review",
     complexity: "simple",
@@ -4382,7 +4382,7 @@ function selectPrReviewAgent(name) {
 const CHAMP_AGENTS = {
   "analyst": {
     name: "analyst",
-    role: "Pre-planning requirements auditor — gap detection, scope risks, acceptance criteria generation before champ dispatches work",
+    role: "Pre-planning requirements auditor, gap detection, scope risks, acceptance criteria generation before champ dispatches work",
     phase: 1,
     phaseName: "Pre-Planning",
     complexity: "medium",
@@ -4408,7 +4408,7 @@ const CHAMP_AGENTS = {
   },
   "product-analyst": {
     name: "product-analyst",
-    role: "Measurement design — KPIs, event schemas, funnel analysis, experiment measurement plans aligned with user outcomes",
+    role: "Measurement design, KPIs, event schemas, funnel analysis, experiment measurement plans aligned with user outcomes",
     phase: 1,
     phaseName: "Pre-Planning",
     complexity: "medium",
@@ -4434,7 +4434,7 @@ const CHAMP_AGENTS = {
   },
   "critic": {
     name: "critic",
-    role: "Work plan gatekeeper — reviews clarity, verifiability, completeness, and coherence before work packets are dispatched",
+    role: "Work plan gatekeeper, reviews clarity, verifiability, completeness, and coherence before work packets are dispatched",
     phase: 1,
     phaseName: "Pre-Planning",
     complexity: "medium",
@@ -4451,7 +4451,7 @@ const CHAMP_AGENTS = {
     ],
     sections: ["Verdict (OKAY / REJECT)", "Clarity Assessment", "Verifiability Review", "Completeness Check", "Coherence Analysis", "Improvement Suggestions"],
     criteria: [
-      "Verdict is explicit: OKAY or REJECT — no ambiguous output",
+      "Verdict is explicit: OKAY or REJECT, no ambiguous output",
       "REJECT verdict includes specific, actionable improvement list",
       "Clarity issues reference specific ambiguous instructions",
       "Verifiability review checks every acceptance criterion",
@@ -4570,13 +4570,13 @@ function selectChampAgent(name) {
 // ===== STANDALONE AGENT MODAL =====
 const STANDALONE_AGENTS = {
   debugger: {
-    icon: '🐛', name: 'Debugger', color: 'var(--red)',
+    icon: '', name: 'Debugger', color: 'var(--red)',
     model: 'Sonnet', complexity: 'Medium',
     role: 'Traces bugs to their root cause and recommends minimal fixes. Enforces reproduce-first discipline with a 3-failure circuit breaker.',
-    invoke: 'bun src/cli.ts invoke debugger "bug description"',
+    invoke: 'bun cli.ts invoke debugger "bug description"',
     capabilities: [
       'Root-cause analysis and stack trace interpretation',
-      'Reproduce-first gate — no investigation without confirmed reproduction',
+      'Reproduce-first gate, no investigation without confirmed reproduction',
       'One-hypothesis-at-a-time discipline, no bundled fixes',
       'Circuit breaker: escalates after 3 failed hypotheses',
       'Mandatory file:line evidence for every diagnosis',
@@ -4589,16 +4589,16 @@ const STANDALONE_AGENTS = {
     ]
   },
   'dependency-expert': {
-    icon: '📦', name: 'Dependency Expert', color: 'var(--purple)',
+    icon: '', name: 'Dependency Expert', color: 'var(--purple)',
     model: 'Sonnet', complexity: 'Medium',
     role: 'Evaluates external SDKs, APIs, and packages. Compares at least 2 candidates across maintenance, security, license, and migration cost.',
-    invoke: 'bun src/cli.ts invoke dependency-expert "evaluate HTTP client for Node.js"',
+    invoke: 'bun cli.ts invoke dependency-expert "evaluate HTTP client for Node.js"',
     capabilities: [
       'Multi-candidate comparison with evidence (downloads, commits, CVEs)',
       'License compatibility check against project type',
       'Migration path assessment when replacing existing dependencies',
       'Version compatibility verification',
-      'Source-cited recommendations — no unsupported claims',
+      'Source-cited recommendations, no unsupported claims',
     ],
     criteria: [
       'At least 2 candidates compared',
@@ -4608,15 +4608,15 @@ const STANDALONE_AGENTS = {
     ]
   },
   researcher: {
-    icon: '🔎', name: 'Researcher', color: 'var(--accent)',
+    icon: '', name: 'Researcher', color: 'var(--accent)',
     model: 'Haiku', complexity: 'Simple',
     role: 'Locates and validates information from external sources, prioritizing official documentation. Every claim includes a source URL.',
-    invoke: 'bun src/cli.ts invoke researcher "how does JWT refresh token rotation work"',
+    invoke: 'bun cli.ts invoke researcher "how does JWT refresh token rotation work"',
     capabilities: [
       'Official-docs-first source hierarchy',
       'Cross-validation across at least 2 sources',
       'Version compatibility notes and stale-info flagging',
-      'Full citation — every factual claim has a URL',
+      'Full citation, every factual claim has a URL',
     ],
     criteria: [
       'Every claim has a source URL',
@@ -4626,10 +4626,10 @@ const STANDALONE_AGENTS = {
     ]
   },
   explore: {
-    icon: '🗺️', name: 'Explore', color: 'var(--green)',
+    icon: '', name: 'Explore', color: 'var(--green)',
     model: 'Haiku', complexity: 'Simple',
     role: 'Read-only codebase search specialist. Answers "where is X?" and "how do Y and Z relate?" with absolute paths and file:line evidence.',
-    invoke: 'bun src/cli.ts invoke explore "find all auth middleware entry points"',
+    invoke: 'bun cli.ts invoke explore "find all auth middleware entry points"',
     capabilities: [
       'Parallel multi-angle searches (filename, symbol, content, import)',
       'Glob-before-Read context budget discipline',
@@ -4641,14 +4641,14 @@ const STANDALONE_AGENTS = {
       'All file references use absolute paths with file:line',
       'Negative results reported explicitly',
       'Multiple search angles used before reporting',
-      'No file modifications — read only',
+      'No file modifications, read only',
     ]
   },
   'product-manager': {
-    icon: '📋', name: 'Product Manager', color: 'var(--pink)',
+    icon: '', name: 'Product Manager', color: 'var(--pink)',
     model: 'Opus', complexity: 'Complex',
     role: 'Owns the WHY and WHAT. Frames product strategy, defines problems, creates PRDs with testable acceptance criteria, and confirms scope before handoff to champ.',
-    invoke: 'bun src/cli.ts invoke product-manager "define MVP for a team scheduling feature"',
+    invoke: 'bun cli.ts invoke product-manager "define MVP for a team scheduling feature"',
     capabilities: [
       'Problem definition with specific user impact',
       'Persona development and value hypothesis formation',
@@ -4664,14 +4664,14 @@ const STANDALONE_AGENTS = {
     ]
   },
   'build-fixer': {
-    icon: '🔧', name: 'Build Fixer', color: 'var(--amber)',
+    icon: '', name: 'Build Fixer', color: 'var(--amber)',
     model: 'Sonnet', complexity: 'Medium',
     role: 'Resolves build and compilation failures with the smallest possible diff. Batch-diagnoses all errors first, then fixes minimally. Stops as soon as the build exits 0.',
-    invoke: 'bun src/cli.ts invoke build-fixer "tsc reports 12 type errors"',
+    invoke: 'bun cli.ts invoke build-fixer "tsc reports 12 type errors"',
     capabilities: [
       'Batch error diagnosis before any fixes',
       'Type error, import, and config resolution',
-      'Minimal diff — no refactoring while fixing',
+      'Minimal diff, no refactoring while fixing',
       'Circuit breaker: escalates after 3 failed attempts on same error',
       'Verified green build before reporting done',
     ],
@@ -4683,10 +4683,10 @@ const STANDALONE_AGENTS = {
     ]
   },
   'code-simplifier': {
-    icon: '✂️', name: 'Code Simplifier', color: 'var(--cyan)',
+    icon: '', name: 'Code Simplifier', color: 'var(--cyan)',
     model: 'Sonnet', complexity: 'Medium',
     role: 'Refines code for clarity and maintainability without changing behavior. Verified by zero-error diagnostics after every change.',
-    invoke: 'bun src/cli.ts invoke code-simplifier "simplify recently modified auth module"',
+    invoke: 'bun cli.ts invoke code-simplifier "simplify recently modified auth module"',
     capabilities: [
       'Nested ternary → switch/if-else replacement',
       'Guard clauses over deep nesting',
@@ -4702,15 +4702,15 @@ const STANDALONE_AGENTS = {
     ]
   },
   'git-master': {
-    icon: '🌿', name: 'Git Master', color: 'var(--orange)',
+    icon: '', name: 'Git Master', color: 'var(--orange)',
     model: 'Haiku', complexity: 'Simple',
     role: 'Creates clean, atomic git history. Detects project commit conventions, splits changes by logical concern, and uses --force-with-lease exclusively. Never rebases main/master.',
-    invoke: 'bun src/cli.ts invoke git-master "split and commit my staged changes atomically"',
+    invoke: 'bun cli.ts invoke git-master "split and commit my staged changes atomically"',
     capabilities: [
       'Convention detection from git log -30',
       'Logical change splitting into atomic commits',
       'Always --force-with-lease, never --force',
-      'Never rebases main/master — hard refusal',
+      'Never rebases main/master, hard refusal',
       'Each commit independently revertable',
     ],
     criteria: [
@@ -4762,7 +4762,7 @@ function showStandaloneAgent(key) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') document.getElementById('sa-modal-overlay').classList.remove('open');
 });
-</script>
+</script>script
 
 <!-- Standalone Agent Modal -->
 <div class="sa-modal-overlay" id="sa-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">

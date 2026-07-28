@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GST Compliance Co-Pilot — Architecture</title>
+<title>GST Compliance Co-Pilot, Architecture</title>
 <style>
   :root {
     --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
@@ -162,7 +162,7 @@
     .pipeline-arrow { transform: rotate(90deg); justify-content: center; }
     .agent-node { width: 100%; }
   }
-</style>
+</style>style
 </head>
 <body>
 
@@ -173,8 +173,7 @@
     <span class="chip">162 tests · 88% coverage</span>
     <span class="chip">Node 22 + Python 3.13</span>
     <span class="chip">IBM watsonx.ai · COS · Code Engine</span>
-    <span class="chip">greyquill/gst-copilot</span>
-  </div>
+    </div>
   <div class="header-nav">
     <a href="data-flow.html">End-to-End Data Flow &rarr;</a>
     <a href="invoice-matching.html">Invoice Matching Logic &rarr;</a>
@@ -213,7 +212,7 @@
     <div class="arch-label" style="color:var(--cyan);">CLIENT</div>
     <div class="arch-tier">
       <div class="agent-node" style="border-color:var(--cyan); width:280px;">
-        <div class="agent-icon">🧑‍💼</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">CA / Finance Team</div>
         <div class="agent-desc">Uploads purchase register (Excel) + GSTR-2B (JSON). Receives reconciliation report with ITC risk scores.</div>
         <span class="agent-type" style="background:rgba(34,211,238,0.15); color:var(--cyan); border:1px solid rgba(34,211,238,0.3);">Human-in-the-Loop</span>
@@ -222,10 +221,10 @@
 
     <div class="arch-connector">&#x2502; &#x2502; &#x2502;</div>
 
-    <div class="arch-label" style="color:var(--accent);">PUBLIC EDGE — Fastify Gateway</div>
+    <div class="arch-label" style="color:var(--accent);">PUBLIC EDGE, Fastify Gateway</div>
     <div class="arch-tier">
       <div class="agent-node" style="border-color:var(--accent); width:420px; cursor:pointer;" onclick="switchExplorer('api')">
-        <div class="agent-icon">🌐</div>
+        <div class="agent-icon"></div>
         <div class="agent-name"><span class="status-dot" style="background:var(--green)"></span> greyquill-api</div>
         <div class="agent-desc">Fastify + TypeScript. 6 endpoints: health, ai-status, document CRUD, COS upload/download. Graceful 503 when DB/COS not configured.</div>
         <span class="agent-type type-api">Node.js 22 · Fastify · Zod</span>
@@ -234,10 +233,10 @@
 
     <div class="arch-connector">&#x2502; &#x2502; &#x2502;</div>
 
-    <div class="arch-label" style="color:var(--green);">INTERNAL — Python AI Engine</div>
+    <div class="arch-label" style="color:var(--green);">INTERNAL, Python AI Engine</div>
     <div class="arch-tier">
       <div class="agent-node" style="border-color:var(--green); width:420px; cursor:pointer;" onclick="switchExplorer('ai-main')">
-        <div class="agent-icon">🧠</div>
+        <div class="agent-icon"></div>
         <div class="agent-name"><span class="status-dot" style="background:var(--green)"></span> greyquill-ai</div>
         <div class="agent-desc">FastAPI + 8 specialist modules. Invoice extraction via watsonx, GSTR parsing, validation, normalization, 5-pass reconciliation, ITC risk scoring.</div>
         <span class="agent-type type-ai">Python 3.13 · FastAPI · uv</span>
@@ -249,21 +248,21 @@
     <div class="arch-label" style="color:var(--text-dim);">BACKING SERVICES</div>
     <div class="arch-tier">
       <div class="agent-node" style="border-color:var(--purple);">
-        <div class="agent-icon">🤖</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">watsonx.ai</div>
         <div class="agent-desc">mistral-small-3-1-24b for invoice field extraction. Region: us-south.</div>
         <span class="agent-type type-watsonx">Granite / Mistral</span>
       </div>
       <div class="agent-node" style="border-color:var(--orange);">
-        <div class="agent-icon">🗄️</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">IBM COS</div>
-        <div class="agent-desc">Object storage for invoices, GSTR JSON, purchase registers. Bucket: greyquill-gst-dev.</div>
+        <div class="agent-desc">Object storage for invoices, GSTR JSON, purchase registers. Bucket provisioned per environment.</div>
         <span class="agent-type type-storage">S3-compatible</span>
       </div>
       <div class="agent-node" style="border-color:var(--cyan);">
-        <div class="agent-icon">💾</div>
+        <div class="agent-icon"></div>
         <div class="agent-name">PostgreSQL</div>
-        <div class="agent-desc">Documents table (UUID PK, jsonb metadata). Local dev only in v1 — cloud DB pending free tier.</div>
+        <div class="agent-desc">Documents table (UUID PK, jsonb metadata). Managed Postgres in the deployment region.</div>
         <span class="agent-type" style="background:rgba(34,211,238,0.15); color:var(--cyan); border:1px solid rgba(34,211,238,0.3);">Local dev · v1</span>
       </div>
     </div>
@@ -323,19 +322,19 @@
   <p class="section-sub">How a purchase register + GSTR-2B JSON become a risk-scored reconciliation report.</p>
 
   <div class="pipeline">
-    <div class="pipeline-stage"><div class="st-icon">📥</div><div class="st-name">Upload</div><div class="st-mod">/api/storage/upload</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Upload</div><div class="st-mod">/api/storage/upload</div></div>
     <div class="pipeline-arrow">&rarr;</div>
-    <div class="pipeline-stage"><div class="st-icon">📑</div><div class="st-name">Parse</div><div class="st-mod">excel_parser / gstr_parser</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Parse</div><div class="st-mod">excel_parser / gstr_parser</div></div>
     <div class="pipeline-arrow">&rarr;</div>
-    <div class="pipeline-stage"><div class="st-icon">🔍</div><div class="st-name">Validate</div><div class="st-mod">invoice_validator</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Validate</div><div class="st-mod">invoice_validator</div></div>
     <div class="pipeline-arrow">&rarr;</div>
-    <div class="pipeline-stage"><div class="st-icon">🧹</div><div class="st-name">Normalize</div><div class="st-mod">invoice_normalizer</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Normalize</div><div class="st-mod">invoice_normalizer</div></div>
     <div class="pipeline-arrow">&rarr;</div>
-    <div class="pipeline-stage"><div class="st-icon">🔗</div><div class="st-name">Reconcile</div><div class="st-mod">reconciliation.engine</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Reconcile</div><div class="st-mod">reconciliation.engine</div></div>
     <div class="pipeline-arrow">&rarr;</div>
-    <div class="pipeline-stage"><div class="st-icon">⚠️</div><div class="st-name">Score Risk</div><div class="st-mod">itc_risk.scorer</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Score Risk</div><div class="st-mod">itc_risk.scorer</div></div>
     <div class="pipeline-arrow">&rarr;</div>
-    <div class="pipeline-stage"><div class="st-icon">📊</div><div class="st-name">Report</div><div class="st-mod">ReconciliationReport</div></div>
+    <div class="pipeline-stage"><div class="st-icon"></div><div class="st-name">Report</div><div class="st-mod">ReconciliationReport</div></div>
   </div>
 
   <!-- ===== 5-PASS RECONCILIATION ===== -->
@@ -346,7 +345,7 @@
     <div class="pass-card p1">
       <div class="p-num">Pass 1</div>
       <div class="p-name">IRN_EXACT</div>
-      <div class="p-keys">Invoice Reference Number (e-invoice). Cryptographically-signed &mdash; no ambiguity possible.</div>
+      <div class="p-keys">Invoice Reference Number (e-invoice). Cryptographically-signed, no ambiguity possible.</div>
       <div class="p-conf">1.00<small>confidence</small></div>
     </div>
     <div class="pass-card p2">
@@ -377,7 +376,7 @@
 
   <div class="flow-grid">
     <div class="flow-card">
-      <h3>🔁 Auto-Resolver Rules</h3>
+      <h3>Auto-Resolver Rules</h3>
       <ul>
         <li><strong>Rounding diff</strong> &le; Rs 1 + proportional taxes &rarr; MATCHED</li>
         <li><strong>Date-only diff</strong> &le; 3 days + exact values &rarr; MATCHED</li>
@@ -385,7 +384,7 @@
       </ul>
     </div>
     <div class="flow-card">
-      <h3>🎚️ Confidence Adjustments</h3>
+      <h3>Confidence Adjustments</h3>
       <ul>
         <li><strong>+0.05</strong> for exact value match</li>
         <li><strong>+0.03</strong> for exact date match</li>
@@ -397,22 +396,19 @@
 
   <!-- ===== DEPLOYMENT ===== -->
   <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Live Deployment</div>
-  <p class="section-sub">IBM Code Engine project <code style="color:var(--accent); font-family:monospace;">greyquill-gst</code> (jp-tok), built from git via buildpacks.</p>
+  <p class="section-sub">Both services run on IBM Code Engine, built straight from source with buildpacks. No Dockerfiles to maintain.</p>
 
   <div class="kv-grid">
-    <div class="kv-card"><dt>API (public)</dt><dd><a href="https://greyquill-api.28qlxihql59b.jp-tok.codeengine.appdomain.cloud" target="_blank">greyquill-api.28qlxihql59b.jp-tok.codeengine.appdomain.cloud</a></dd></div>
-    <div class="kv-card"><dt>AI (cluster-local)</dt><dd>greyquill-ai.28qlxihql59b.svc.cluster.local</dd></div>
-    <div class="kv-card"><dt>Region</dt><dd>jp-tok (Japan)</dd></div>
-    <div class="kv-card"><dt>Build strategy</dt><dd>Buildpacks (no Dockerfiles)</dd></div>
-    <div class="kv-card"><dt>Scaling</dt><dd>0.5 vCPU, 1G, min-scale 1</dd></div>
-    <div class="kv-card"><dt>Secrets</dt><dd>watsonx-creds, cos-creds, github-creds</dd></div>
-    <div class="kv-card"><dt>watsonx.ai</dt><dd>us-south · mistral-small-3-1-24b-instruct-2503</dd></div>
-    <div class="kv-card"><dt>COS bucket</dt><dd>greyquill-gst-dev (jp-tok)</dd></div>
+    <div class="kv-card"><dt>Platform</dt><dd>IBM Code Engine, serverless containers</dd></div>
+    <div class="kv-card"><dt>Topology</dt><dd>Public API gateway, cluster-local AI service</dd></div>
+    <div class="kv-card"><dt>Build</dt><dd>Buildpacks from source, no Dockerfiles</dd></div>
+    <div class="kv-card"><dt>Residency</dt><dd>Deployed to the region you choose</dd></div>
+    <div class="kv-card"><dt>Credentials</dt><dd>Held in platform secrets, never in the image</dd></div>
+    <div class="kv-card"><dt>Model</dt><dd>watsonx.ai, for invoice field extraction</dd></div>
   </div>
-
-  <div class="flow-grid">
+<div class="flow-grid">
     <div class="flow-card">
-      <h3>✅ What's done</h3>
+      <h3>What's done</h3>
       <ul>
         <li><strong>Phases 0-8</strong>: repo, API, Python AI, service connectivity, local DB, COS, watsonx</li>
         <li><strong>Phases 10-15</strong>: all 8 AI modules with 162 tests, 88% coverage</li>
@@ -420,18 +416,18 @@
       </ul>
     </div>
     <div class="flow-card">
-      <h3>📋 Remaining</h3>
+      <h3>Remaining</h3>
       <ul>
-        <li><strong>Cloud Postgres</strong> — pick free tier (Neon / Supabase / CockroachDB)</li>
-        <li><strong>Wire endpoints</strong> — connect AI modules into `/extract`, `/reconcile` handlers</li>
-        <li><strong>UI</strong> — upload + dashboard for CA reviewers</li>
+        <li><strong>Managed Postgres</strong>, provisioned in the deployment region</li>
+        <li><strong>Wire endpoints</strong>, connect AI modules into `/extract`, `/reconcile` handlers</li>
+        <li><strong>UI</strong>, upload + dashboard for CA reviewers</li>
       </ul>
     </div>
   </div>
 
   <!-- ===== OCR PIPELINE PERFORMANCE ===== -->
   <div class="section-title"><span class="dot" style="background:var(--amber)"></span> OCR Pipeline Performance</div>
-  <p class="section-sub">End-to-end watsonx OCR extraction takes ~35-40 seconds. The LLM does NOT see the image &mdash; it only sees the text that OCR already produced.</p>
+  <p class="section-sub">End-to-end watsonx OCR extraction takes ~35-40 seconds. The LLM does NOT see the image, it only sees the text that OCR already produced.</p>
 
   <div class="pass-grid" style="grid-template-columns: repeat(7, 1fr);">
     <div class="pass-card p1" style="text-align:center;">
@@ -475,15 +471,15 @@
     <div class="flow-card">
       <h3>LLM Model Comparison (Step 6)</h3>
       <ul>
-        <li><strong>mistral-small-3.1-24b</strong> (current) &mdash; 24B, ~5-10s. Good at structured JSON extraction</li>
-        <li><strong>meta-llama/llama-3-3-70b</strong> &mdash; 70B, ~10-20s. Better reasoning, but 2x slower</li>
-        <li><strong>ibm/granite-3-8b</strong> &mdash; 8B, ~2-3s. Faster, but may miss edge cases</li>
+        <li><strong>mistral-small-3.1-24b</strong> (current), 24B, ~5-10s. Good at structured JSON extraction</li>
+        <li><strong>meta-llama/llama-3-3-70b</strong>, 70B, ~10-20s. Better reasoning, but 2x slower</li>
+        <li><strong>ibm/granite-3-8b</strong>, 8B, ~2-3s. Faster, but may miss edge cases</li>
       </ul>
     </div>
     <div class="flow-card">
       <h3>Why Model Size Matters Less</h3>
       <ul>
-        <li><strong>OCR is the bottleneck</strong> &mdash; if OCR garbles a digit, no LLM can fix it</li>
+        <li><strong>OCR is the bottleneck</strong>, if OCR garbles a digit, no LLM can fix it</li>
         <li><strong>tables_json cross-referencing</strong> catches digit errors better than a bigger model</li>
         <li><strong>Per-field confidence</strong> flags uncertain values for human review in the UI</li>
       </ul>
@@ -498,16 +494,16 @@ const MODULES = {
   api: {
     title: "Node.js API Gateway",
     color: "var(--accent)",
-    path: "services/api/src/",
+    path: "src",
     summary: "Fastify + TypeScript gateway. Validates env with Zod, lazy-inits DB and COS so the service boots even when those aren't configured. Every endpoint returns a structured error envelope.",
     stats: { Language: "TypeScript (Node 22)", Framework: "Fastify 4", Validation: "Zod", Endpoints: "6", Database: "postgres.js (optional)", Storage: "@aws-sdk/client-s3 (optional)" },
     files: [
       { name: "server.ts", role: "Fastify app with all 6 routes + graceful 503 guards", tags: ["TS","Core"],
         key: ["GET /health - components status", "GET /api/ai-status - proxies Python health", "POST /api/documents/test - create doc record (requires DB)", "GET /api/documents/:id - fetch by UUID", "POST /api/storage/upload - multipart to COS", "GET /api/storage/:id - download from COS"],
-        code: '// services/api/src/server.ts\nif (!isDbAvailable()) {\n  return reply.code(503).send({\n    error: "service_unavailable",\n    detail: "Database not configured"\n  });\n}' },
+        code: '// server.ts\nif (!isDbAvailable()) {\n  return reply.code(503).send({\n    error: "service_unavailable",\n    detail: "Database not configured"\n  });\n}' },
       { name: "config.ts", role: "Zod-validated env loader. DB and COS vars default to empty strings (optional).", tags: ["TS"],
         key: ["loadConfig() - parses process.env through Zod schema", "isDbConfigured(cfg) - DATABASE_URL non-empty", "isCosConfigured(cfg) - all 4 COS vars present", "Fails fast on invalid required vars; tolerant of optional"],
-        code: 'PORT=3000\nAI_SERVICE_URL=http://localhost:8000\nDATABASE_URL=          // optional\nCOS_ENDPOINT=          // optional\nCOS_ACCESS_KEY_ID=\nCOS_SECRET_ACCESS_KEY=\nCOS_BUCKET=greyquill-gst-dev' },
+        code: 'Environment is validated on boot. Database and object storage are optional,\nso the service starts cleanly before they are configured.' },
       { name: "db/client.ts", role: "postgres.js connection pool. Initialised only when DATABASE_URL is set.", tags: ["TS"],
         key: ["sql - nullable template-tag function", "isDbAvailable() - boolean guard", "closeDb() - graceful shutdown", "Never throws at import time - tolerates missing DB"] },
       { name: "db/repositories/document.repo.ts", role: "Repository pattern over documents table with requireDb() guard.", tags: ["TS"],
@@ -523,7 +519,7 @@ const MODULES = {
   watsonx: {
     title: "watsonx.ai Integration",
     color: "var(--purple)",
-    path: "services/ai/src/watsonx/",
+    path: "watsonx",
     summary: "Calls IBM watsonx-hosted Mistral / Granite models to extract structured invoice fields from free-form text (e.g. PDF OCR output).",
     stats: { Model: "mistral-small-3-1-24b-instruct-2503 (24B)", Region: "us-south", SDK: "ibm-watsonx-ai", "Python": "3.13 (pinned <3.14)", "Temperature": "0.1", "Max tokens": "1024", "LLM latency": "~5-10s", "OCR pipeline": "~35-40s total" },
     files: [
@@ -540,7 +536,7 @@ const MODULES = {
   gstr: {
     title: "GSTR Parser",
     color: "var(--accent2)",
-    path: "services/ai/src/gstr_parser/",
+    path: "gstr_parser",
     summary: "Parses GSTR-1 (outward supplies filed by vendors) and GSTR-2B (auto-drafted ITC statement) JSON from the GSTN portal. Supports both post-Oct-2024 flat-tax and legacy rate-wise formats.",
     stats: { "Test count": "23", "Output": "ParsedInvoice[]", "Dedup strategy": "deterministic UID hash", "GSTN formats": "current + legacy fallback" },
     files: [
@@ -564,12 +560,12 @@ const MODULES = {
   excel: {
     title: "Excel / Purchase Register Parser",
     color: "var(--cyan)",
-    path: "services/ai/src/excel_parser/",
+    path: "excel_parser",
     summary: "Ingests purchase registers from Tally, Zoho, or generic CSV/XLSX. Auto-detects format and fuzzy-maps columns to canonical invoice fields.",
     stats: { "Test count": "19", "Formats": "Tally · Zoho · generic", "Engine": "pandas", "Column match": "rapidfuzz" },
     files: [
       { name: "parser.py", role: "Main parse entry point. Reads file -> detects format -> maps columns -> validates rows.", tags: ["PY","Core"],
-        key: ["parse_file(path, template=None) -> ParseReport", "Supports .xlsx, .xls, .csv", "Per-row validation (invoice #, HSN/SAC)", "Returns valid + error counts + row-level detail"] },
+        key: ["parse_file(path, template=None) -> ParseReport", "Supports .xlsx.xls.csv", "Per-row validation (invoice #, HSN/SAC)", "Returns valid + error counts + row-level detail"] },
       { name: "column_mapper.py", role: "Fuzzy match raw spreadsheet headers to canonical invoice fields.", tags: ["PY"],
         key: ["auto_map_columns(headers) -> ColumnMapping[]", "Known synonyms for invoice_number, invoice_date, amount, gstin, hsn/sac", "Confidence threshold for mapping acceptance"] },
       { name: "format_detectors.py", role: "Heuristic detection of source system.", tags: ["PY"],
@@ -584,7 +580,7 @@ const MODULES = {
   validator: {
     title: "Invoice Validator",
     color: "var(--amber)",
-    path: "services/ai/src/invoice_validator/",
+    path: "invoice_validator",
     summary: "Runs GST-specific validation: GSTIN checksum, HSN/SAC patterns, line-item tax arithmetic, tax-type consistency, invoice number format.",
     stats: { "Test count": "37", "Rules": "GSTIN Mod 36 · HSN pattern · tax math · CGST+SGST vs IGST", "Output": "ValidationReport" },
     files: [
@@ -608,12 +604,12 @@ const MODULES = {
   normalizer: {
     title: "Invoice Normalizer",
     color: "var(--pink)",
-    path: "services/ai/src/invoice_normalizer/",
+    path: "invoice_normalizer",
     summary: "Strips invoice numbers of prefixes, separators, leading zeros, and case so that 'INV-00123/FY24' and 'inv123/fy24' match in Pass 2 of reconciliation.",
     stats: { "Test count": "12", "Fuzzy engine": "rapidfuzz", "Transforms": "prefix strip · separators · zeros · case fold" },
     files: [
       { name: "normalizer.py", role: "normalize_invoice_number() with tracked transformations.", tags: ["PY","Core"],
-        key: ["Strip known prefixes (INV-, INV., TAX-)", "Normalize separators (-, /, .)", "Strip special chars and leading zeros", "Case fold to uppercase", "Returns NormalizedResult with transform audit trail"] },
+        key: ["Strip known prefixes (INV-, INV. TAX-)", "Normalize separators (-, /.)", "Strip special chars and leading zeros", "Case fold to uppercase", "Returns NormalizedResult with transform audit trail"] },
       { name: "matcher.py", role: "Similarity scoring for Pass 3 fuzzy matching.", tags: ["PY"],
         key: ["similarity_score(a, b) -> float 0..1", "Wraps rapidfuzz token_sort_ratio", "Used by reconciliation.passes.fuzzy_match"] },
       { name: "models.py", role: "Config + result models.", tags: ["PY"],
@@ -624,7 +620,7 @@ const MODULES = {
   reconciliation: {
     title: "Reconciliation Engine",
     color: "var(--red)",
-    path: "services/ai/src/reconciliation/",
+    path: "reconciliation",
     summary: "The heart of the product. A 5-pass matching engine that reconciles a company's purchase register against its vendor-filed GSTR-2B. See the dedicated reconciliation-engine.html page for a deep dive.",
     stats: { "Test count": "44", "Passes": "5 (IRN -> exact -> fuzzy -> amount+date -> loose)", "Auto-resolve rules": "3", "Helpers": "duplicate detector · confidence adjuster · cross-period matcher" },
     files: [
@@ -659,7 +655,7 @@ const MODULES = {
   itc: {
     title: "ITC Risk Scorer",
     color: "var(--orange)",
-    path: "services/ai/src/itc_risk/",
+    path: "itc_risk",
     summary: "Takes the reconciliation report and scores each unresolved invoice on a 0-100 risk scale. Outputs a prioritized action list with SLAs for the finance team.",
     stats: { "Test count": "15", "Score range": "0-100", "Priorities": "CRITICAL · HIGH · MEDIUM · LOW", "SLAs": "3 / 7 / 15 / 30 days" },
     files: [
@@ -777,7 +773,7 @@ function switchExplorer(which) {
 
 /* Render initial + pre-render the default pane */
 Object.keys(MODULES).forEach(renderPane);
-</script>
+</script>script
 
 </body>
 </html>
