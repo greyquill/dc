@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Invoice Matching Logic — GST Co-Pilot</title>
+<title>Invoice Matching Logic, GST Co-Pilot</title>
 <style>
   :root {
     --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
@@ -109,11 +109,11 @@
     .problem-grid { grid-template-columns: 1fr; gap: 12px; }
     .problem-vs { display: none; }
     .key-table { font-size: 11px; }
-    .key-table td, .key-table th { padding: 8px 10px; }
+    .key-table td.key-table th { padding: 8px 10px; }
     .wf-row { grid-template-columns: 100px 1fr 60px 50px; }
     .example-grid { grid-template-columns: 1fr; }
   }
-</style>
+</style>style
 </head>
 <body>
 
@@ -157,7 +157,7 @@
   </div>
 
   <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:48px; font-size:13px; color:var(--text-dim); border-left:3px solid var(--amber);">
-    These are the <strong style="color:var(--text);">same invoice</strong>. The supplier filed <code style="color:var(--amber);">202600042</code> on the GST portal, but your Tally export has it as <code style="color:var(--cyan);">INV-2026/00042</code> with a prefix and slashes. Without normalization, the system would flag this as <strong style="color:var(--red);">"Missing in GSTR-2B"</strong> &mdash; a false ITC risk alert.
+    These are the <strong style="color:var(--text);">same invoice</strong>. The supplier filed <code style="color:var(--amber);">202600042</code>code on the GST portal, but your Tally export has it as <code style="color:var(--cyan);">INV-2026/00042</code>code with a prefix and slashes. Without normalization, the system would flag this as <strong style="color:var(--red);">"Missing in GSTR-2B"</strong>, a false ITC risk alert.
   </div>
 
   <!-- ===== ANCHOR FIELDS ===== -->
@@ -185,7 +185,7 @@
 
   <!-- ===== MATCHING KEY MATRIX ===== -->
   <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> Matching Key Matrix</div>
-  <p class="section-sub">What each pass checks. Every pass requires GSTIN to match exactly &mdash; the other fields vary.</p>
+  <p class="section-sub">What each pass checks. Every pass requires GSTIN to match exactly, the other fields vary.</p>
 
   <table class="key-table">
     <thead>
@@ -203,39 +203,39 @@
     <tbody>
       <tr>
         <td><span class="pass-name" style="color:var(--green);">Pass 1 &middot; IRN</span></td>
-        <td class="check">&mdash;</td>
+        <td class="check">, </td>
         <td class="check">Exact</td>
-        <td class="cross">&mdash;</td>
-        <td class="cross">&mdash;</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
+        <td class="cross">, </td>
+        <td class="cross">, </td>
         <td><span class="conf" style="color:var(--green);">1.00</span></td>
         <td style="color:var(--green);">No</td>
       </tr>
       <tr>
         <td><span class="pass-name" style="color:var(--accent);">Pass 2 &middot; Exact</span></td>
         <td class="check">Exact</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
         <td class="check">Exact (normalized)</td>
         <td class="check">&plusmn; Rs 1</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
         <td><span class="conf" style="color:var(--accent);">0.95</span></td>
         <td style="color:var(--green);">No</td>
       </tr>
       <tr>
         <td><span class="pass-name" style="color:var(--amber);">Pass 3 &middot; Fuzzy</span></td>
         <td class="check">Exact</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
         <td class="partial">Fuzzy &ge; 85%</td>
-        <td class="cross">&mdash;</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
+        <td class="cross">, </td>
         <td><span class="conf" style="color:var(--amber);">0.80</span></td>
         <td style="color:var(--green);">No</td>
       </tr>
       <tr>
         <td><span class="pass-name" style="color:var(--orange);">Pass 4 &middot; Amt+Date</span></td>
         <td class="check">Exact</td>
-        <td class="cross">&mdash;</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
+        <td class="cross">, </td>
         <td class="check">&plusmn; 2%</td>
         <td class="check">&plusmn; 7 days</td>
         <td><span class="conf" style="color:var(--orange);">0.65</span></td>
@@ -244,10 +244,10 @@
       <tr>
         <td><span class="pass-name" style="color:var(--red);">Pass 5 &middot; Loose</span></td>
         <td class="check">Exact</td>
-        <td class="cross">&mdash;</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
+        <td class="cross">, </td>
         <td class="check">&plusmn; 1%</td>
-        <td class="cross">&mdash;</td>
+        <td class="cross">, </td>
         <td><span class="conf" style="color:var(--red);">0.45</span></td>
         <td style="color:var(--red);">Always</td>
       </tr>
@@ -277,7 +277,7 @@
       <div class="pipe-num">2</div>
       <div class="pipe-body">
         <h4>Strip Known Prefixes</h4>
-        <p>Removes common invoice prefixes that ERPs add but the GST portal strips. Case-insensitive match. Recognized: <code>INV-</code>, <code>INV/</code>, <code>BILL-</code>, <code>BILL/</code>, <code>TAX-</code>, <code>TAX/</code>.</p>
+        <p>Removes common invoice prefixes that ERPs add but the GST portal strips. Case-insensitive match. Recognized: <code>INV-</code>code, <code>INV/</code>code, <code>BILL-</code>code, <code>BILL/</code>code, <code>TAX-</code>code, <code>TAX/</code>code.</p>
         <div class="pipe-example">
           <span class="before">INV-2026/001</span>
           <span class="arrow">&rarr;</span>
@@ -291,7 +291,7 @@
       <div class="pipe-num">3</div>
       <div class="pipe-body">
         <h4>Remove Separators</h4>
-        <p>Hyphens (<code>-</code>), slashes (<code>/</code>), dots (<code>.</code>), and spaces are all deleted. Different ERP systems use different separators for the same number.</p>
+        <p>Hyphens (<code>-</code>code), slashes (<code>/</code>code), dots (<code>.</code>code), and spaces are all deleted. Different ERP systems use different separators for the same number.</p>
         <div class="pipe-example">
           <span class="before">2026/001</span>
           <span class="arrow">&rarr;</span>
@@ -305,7 +305,7 @@
       <div class="pipe-num">4</div>
       <div class="pipe-body">
         <h4>Strip Special Characters</h4>
-        <p>Everything except <code>a-z</code>, <code>A-Z</code>, <code>0-9</code> is removed. Catches stray <code>#</code>, <code>@</code>, unicode characters.</p>
+        <p>Everything except <code>a-z</code>code, <code>A-Z</code>code, <code>0-9</code>code is removed. Catches stray <code>#</code>code, <code>@</code>code, unicode characters.</p>
         <div class="pipe-example">
           <span class="before">2026001#A</span>
           <span class="arrow">&rarr;</span>
@@ -319,7 +319,7 @@
       <div class="pipe-num">5</div>
       <div class="pipe-body">
         <h4>Strip Leading Zeros</h4>
-        <p>Tally often pads with zeros (<code>00042</code>). The GST portal usually doesn't. Minimum result: <code>0</code>.</p>
+        <p>Tally often pads with zeros (<code>00042</code>code). The GST portal usually doesn't. Minimum result: <code>0</code>code.</p>
         <div class="pipe-example">
           <span class="before">00042</span>
           <span class="arrow">&rarr;</span>
@@ -333,7 +333,7 @@
       <div class="pipe-num">6</div>
       <div class="pipe-body">
         <h4>Case Fold to Uppercase</h4>
-        <p>Final step. <code>inv</code> and <code>INV</code> become identical after this.</p>
+        <p>Final step. <code>inv</code>code and <code>INV</code>code become identical after this.</p>
         <div class="pipe-example">
           <span class="before">abc123def</span>
           <span class="arrow">&rarr;</span>
@@ -346,7 +346,7 @@
 
   <!-- ===== INTERACTIVE DEMO ===== -->
   <div class="demo-panel">
-    <h3 style="color:var(--amber);">Try It &mdash; Invoice Number Normalizer</h3>
+    <h3 style="color:var(--amber);">Try It, Invoice Number Normalizer</h3>
     <p style="font-size:12px; color:var(--text-dim); margin-bottom:16px;">Enter an invoice number to see how the normalization pipeline transforms it. The "normalized" output is what Pass 2 actually compares.</p>
     <div class="demo-input-row">
       <input type="text" id="norm-input" placeholder="e.g. INV-2026/00042" value="INV-2026/00042">
@@ -356,7 +356,7 @@
       <span class="label">Enter a value and click Normalize</span>
     </div>
 
-    <h3 style="color:var(--green); margin-top:24px;">Try It &mdash; Match Comparison</h3>
+    <h3 style="color:var(--green); margin-top:24px;">Try It, Match Comparison</h3>
     <p style="font-size:12px; color:var(--text-dim); margin-bottom:16px;">Enter two invoice numbers to see if they would match after normalization and what similarity score they get.</p>
     <div class="demo-input-row">
       <input type="text" id="match-a" placeholder="Books invoice #" value="INV-2026/00042">
@@ -428,7 +428,7 @@
     </div>
 
     <div class="example-card" style="border-left: 3px solid var(--red);">
-      <div class="ex-scenario" style="color:var(--red);">Last Resort &mdash; Amount Only</div>
+      <div class="ex-scenario" style="color:var(--red);">Last Resort, Amount Only</div>
       <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">GRN-44521, 15-Apr-2026, Rs 45,000</span></div>
       <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">TI/2026/891, 01-Apr-2026, Rs 45,200</span></div>
       <div class="ex-row"><span class="ex-label">Match on</span><span class="ex-val" style="color:var(--red);">Same GSTIN + amount within 0.4%</span></div>
@@ -441,10 +441,10 @@
 
   <!-- ===== WATERFALL ILLUSTRATION ===== -->
   <div class="section-title"><span class="dot" style="background:var(--purple)"></span> The Waterfall in Action</div>
-  <p class="section-sub">Illustrative breakdown for a typical month with ~200 book entries and ~195 GSTR-2B entries. Each pass eats from the unmatched pool &mdash; leftovers flow down.</p>
+  <p class="section-sub">Illustrative breakdown for a typical month with ~200 book entries and ~195 GSTR-2B entries. Each pass eats from the unmatched pool, leftovers flow down.</p>
 
   <div class="waterfall">
-    <h3 style="color:var(--purple);">Match Waterfall (illustrative &mdash; 200 books vs 195 GSTR-2B)</h3>
+    <h3 style="color:var(--purple);">Match Waterfall (illustrative, 200 books vs 195 GSTR-2B)</h3>
     <div class="wf-row">
       <div class="wf-pass" style="color:var(--green);">Pass 1 &middot; IRN</div>
       <div class="wf-bar-wrap"><div class="wf-bar" style="width:35%; background:var(--green);"></div></div>
@@ -485,7 +485,7 @@
 
   <!-- ===== UNMATCHED INVOICES ===== -->
   <div class="section-title"><span class="dot" style="background:var(--pink)"></span> What Happens to Unmatched Invoices?</div>
-  <p class="section-sub">After all 5 passes complete, leftover invoices with no match are classified into two buckets. These are the entries that need human attention &mdash; and the ITC risk scorer ensures the most critical ones surface first.</p>
+  <p class="section-sub">After all 5 passes complete, leftover invoices with no match are classified into two buckets. These are the entries that need human attention, and the ITC risk scorer ensures the most critical ones surface first.</p>
 
   <div style="display:grid; grid-template-columns:1fr 80px 1fr; gap:0; align-items:stretch; margin-bottom:32px;">
 
@@ -499,7 +499,7 @@
         </div>
       </div>
       <div style="font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px;">
-        You recorded a purchase and claimed ITC, but the supplier <strong style="color:var(--text);">has not filed this invoice</strong> on the GST portal. Until the supplier files, the government does not recognize this ITC &mdash; it can be reversed during assessment.
+        You recorded a purchase and claimed ITC, but the supplier <strong style="color:var(--text);">has not filed this invoice</strong> on the GST portal. Until the supplier files, the government does not recognize this ITC, it can be reversed during assessment.
       </div>
       <div style="font-size:12px; margin-bottom:10px;">
         <strong style="color:var(--text);">Common causes:</strong>
@@ -508,7 +508,7 @@
         <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Supplier hasn't filed their GSTR-1 yet (late filing)</li>
         <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Supplier filed under a different GSTIN (branch vs HO)</li>
         <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Invoice number entered completely differently by supplier</li>
-        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Bogus invoice &mdash; supplier doesn't exist or didn't issue it</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Bogus invoice, supplier doesn't exist or didn't issue it</li>
       </ul>
       <div style="margin-top:14px; padding:10px 14px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2); border-radius:8px;">
         <div style="font-size:11px; color:var(--red); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Risk Impact</div>
@@ -540,18 +540,18 @@
         <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Purchase not yet recorded in Tally/Zoho (data entry lag)</li>
         <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Invoice booked in wrong period (e.g. March books, April GSTR-2B)</li>
         <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Supplier filed an invoice to the wrong buyer GSTIN</li>
-        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Duplicate filing by supplier &mdash; same invoice, two entries</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Duplicate filing by supplier, same invoice, two entries</li>
       </ul>
       <div style="margin-top:14px; padding:10px 14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:8px;">
         <div style="font-size:11px; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Action Required</div>
-        <div style="font-size:12px; color:var(--text-dim);">Verify with supplier. If legitimate, record the purchase to claim ITC. If wrong, no action needed &mdash; it doesn't affect your returns.</div>
+        <div style="font-size:12px; color:var(--text-dim);">Verify with supplier. If legitimate, record the purchase to claim ITC. If wrong, no action needed, it doesn't affect your returns.</div>
       </div>
     </div>
   </div>
 
   <!-- Post-unmatched flow -->
   <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:48px;">
-    <h3 style="font-size:15px; margin-bottom:18px; color:var(--pink);">After Classification &mdash; The Action Pipeline</h3>
+    <h3 style="font-size:15px; margin-bottom:18px; color:var(--pink);">After Classification, The Action Pipeline</h3>
 
     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:20px;">
       <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center; position:relative;">
@@ -605,7 +605,7 @@
 
   <!-- Cross-period recovery -->
   <div style="background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--cyan); border-radius:12px; padding:22px 24px; margin-bottom:48px;">
-    <h3 style="font-size:15px; margin-bottom:10px; color:var(--cyan);">Before Giving Up &mdash; Cross-Period Matching</h3>
+    <h3 style="font-size:15px; margin-bottom:10px; color:var(--cyan);">Before Giving Up, Cross-Period Matching</h3>
     <p style="font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px;">
       Before classifying an invoice as missing, the engine runs one more check: <strong style="color:var(--text);">cross-period matching</strong>. It looks for the unmatched invoice in GSTR-2B data from adjacent filing periods (default: 2 months back, 1 month forward).
     </p>
@@ -636,19 +636,19 @@
     <div class="example-card" style="border-left: 3px solid var(--green);">
       <div class="ex-scenario" style="color:var(--green);">Confidence Matters for ITC</div>
       <div class="ex-row" style="grid-template-columns:1fr;"><span class="ex-val" style="font-family:inherit; color:var(--text-dim); font-size:12px;">
-        Input Tax Credit worth lakhs rides on match quality. A Pass 1 (IRN) match means the government already verified the invoice. A Pass 5 (loose) match means only the amounts roughly align &mdash; the CA needs to verify manually. Confidence scores drive the review queue priority.
+        Input Tax Credit worth lakhs rides on match quality. A Pass 1 (IRN) match means the government already verified the invoice. A Pass 5 (loose) match means only the amounts roughly align, the CA needs to verify manually. Confidence scores drive the review queue priority.
       </span></div>
     </div>
     <div class="example-card" style="border-left: 3px solid var(--amber);">
       <div class="ex-scenario" style="color:var(--amber);">False Positives Are Expensive</div>
       <div class="ex-row" style="grid-template-columns:1fr;"><span class="ex-val" style="font-family:inherit; color:var(--text-dim); font-size:12px;">
-        If everything was fuzzy-matched, two invoices from the same supplier with similar amounts but different dates could get incorrectly paired. The stricter passes prevent this &mdash; Pass 2 requires the invoice number to match exactly (after normalization), catching 70%+ of cases with high confidence before fuzzy logic even runs.
+        If everything was fuzzy-matched, two invoices from the same supplier with similar amounts but different dates could get incorrectly paired. The stricter passes prevent this, Pass 2 requires the invoice number to match exactly (after normalization), catching 70%+ of cases with high confidence before fuzzy logic even runs.
       </span></div>
     </div>
     <div class="example-card" style="border-left: 3px solid var(--red);">
       <div class="ex-scenario" style="color:var(--red);">Performance</div>
       <div class="ex-row" style="grid-template-columns:1fr;"><span class="ex-val" style="font-family:inherit; color:var(--text-dim); font-size:12px;">
-        Fuzzy matching is O(n&times;m) &mdash; every book entry vs every GSTR-2B entry. Exact matching uses hash indexes &mdash; O(n). By catching 70%+ in Passes 1-2, the expensive fuzzy pass only runs on the 30% residue.
+        Fuzzy matching is O(n&times;m), every book entry vs every GSTR-2B entry. Exact matching uses hash indexes, O(n). By catching 70%+ in Passes 1-2, the expensive fuzzy pass only runs on the 30% residue.
       </span></div>
     </div>
   </div>
@@ -661,11 +661,11 @@
       <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">invoice_normalizer/normalizer.py</td><td style="padding:6px 0; color:var(--text-dim);">6-step normalization pipeline</td></tr>
       <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">invoice_normalizer/matcher.py</td><td style="padding:6px 0; color:var(--text-dim);">similarity_score() and find_best_match() using rapidfuzz</td></tr>
       <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">invoice_normalizer/models.py</td><td style="padding:6px 0; color:var(--text-dim);">NormalizerConfig, NormalizedResult, MatchResult</td></tr>
-      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/irn_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 1 &mdash; IRN exact match</td></tr>
-      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/exact_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 2 &mdash; GSTIN + normalized inv # + value</td></tr>
-      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/fuzzy_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 3 &mdash; GSTIN + fuzzy inv # (rapidfuzz &ge; 0.85)</td></tr>
-      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/amount_date_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 4 &mdash; GSTIN + amount &plusmn;2% + date &plusmn;7 days</td></tr>
-      <tr><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/loose_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 5 &mdash; GSTIN + amount &plusmn;1% only</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/irn_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 1, IRN exact match</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/exact_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 2, GSTIN + normalized inv # + value</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/fuzzy_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 3, GSTIN + fuzzy inv # (rapidfuzz &ge; 0.85)</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/amount_date_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 4, GSTIN + amount &plusmn;2% + date &plusmn;7 days</td></tr>
+      <tr><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/loose_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 5, GSTIN + amount &plusmn;1% only</td></tr>
     </table>
   </div>
 
@@ -730,7 +730,7 @@ function runNormalize() {
   panel.innerHTML = `
     <div><span class="label">Original: </span><span style="color:var(--red);text-decoration:line-through;">${r.original}</span></div>
     <div><span class="label">Normalized: </span><span class="value">${r.normalized}</span></div>
-    <div><span class="label">Transforms: </span><span class="transform">${r.transforms.length ? r.transforms.join(" &rarr; ") : "(none &mdash; already clean)"}</span></div>
+    <div><span class="label">Transforms: </span><span class="transform">${r.transforms.length ? r.transforms.join(" &rarr; ") : "(none, already clean)"}</span></div>
   `;
 }
 
@@ -746,7 +746,7 @@ function runMatch() {
   let pass, color, conf;
   if (exact) { pass = "Pass 2 &middot; EXACT_MATCH"; color = "var(--accent)"; conf = "0.95"; }
   else if (score >= 0.85) { pass = "Pass 3 &middot; FUZZY_INVOICE"; color = "var(--amber)"; conf = "0.80"; }
-  else { pass = "Would NOT match on invoice #"; color = "var(--red)"; conf = "&mdash;"; }
+  else { pass = "Would NOT match on invoice #"; color = "var(--red)"; conf = ", "; }
 
   panel.innerHTML = `
     <div><span class="label">Books normalized: </span><span style="color:var(--cyan);">${na.normalized}</span> <span class="transform">(${na.transforms.join(", ") || "clean"})</span></div>
@@ -759,7 +759,7 @@ function runMatch() {
 
 // Auto-run on load
 document.addEventListener('DOMContentLoaded', () => { runNormalize(); runMatch(); });
-</script>
+</script>script
 
 </body>
 </html>

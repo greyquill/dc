@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Greyquill Health Platform — Database Schema (Enterprise / FHIR)</title>
+<title>Greyquill Health Platform, Database Schema (Enterprise / FHIR)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -58,12 +58,12 @@
   .TN{background:#F8FAFC;color:#475569;border-color:#E2E8F0}
   footer{color:var(--n400);font-size:12px;text-align:center;padding:24px}
   .offline{display:none;background:#FFFAEB;border:1px solid #FEDF89;color:#854D0E;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:12.5px}
-</style>
+</style>style
 </head>
 <body>
 <header class="top">
-  <h1><span class="logo">G</span> Database Schema — Enterprise / FHIR R4-aligned</h1>
-  <div class="sub">Multi-tenant Postgres · <b id="ecount">0</b> entities · 17 domains · source of truth: <code>prisma/schema.prisma</code> · theme Medical Blue</div>
+  <h1><span class="logo">G</span> Database Schema, Enterprise / FHIR R4-aligned</h1>
+  <div class="sub">Multi-tenant Postgres · <b id="ecount">0</b> entities · 17 domains · source of truth: <code>prisma/schema.prisma</code>code · theme Medical Blue</div>
   <div class="legend">
     <span class="b PK">PK</span><span class="b FK">FK</span><span class="b UK">UK</span><span class="b EN">enum</span>
     <span class="b JS">json</span><span class="b DEC">decimal</span><span class="b PHI">PHI</span><span class="b TN">tenant</span>
@@ -75,22 +75,22 @@
   <div class="offline" id="offline">Diagrams need internet (Mermaid via CDN). The table catalogue below works offline.</div>
 
   <div class="map">
-    <h3>Where are “Doctor”, “Nurse”, “Hospital”? — real-world concepts → entities</h3>
+    <h3>Where are “Doctor”, “Nurse”, “Hospital”? real-world concepts → entities</h3>
     <table>
-      <tr><td>Hospital / clinic group</td><td class="ar">→</td><td><code>Organization</code> (legal entity) + <code>Location</code> (facility→building→ward→room→bed)</td></tr>
-      <tr><td>Doctor</td><td class="ar">→</td><td><code>Practitioner</code> + <code>PractitionerRole</code> <code>(roleCode = doctor)</code></td></tr>
-      <tr><td>Nurse / Head Nurse</td><td class="ar">→</td><td><code>Practitioner</code> + <code>PractitionerRole</code> <code>(nurse / head-nurse)</code></td></tr>
-      <tr><td>Pharmacist / Lab tech / Technician / Maintenance / Ambulance crew</td><td class="ar">→</td><td><code>Practitioner</code> + <code>PractitionerRole</code> (one table, role is data — no table per job title)</td></tr>
-      <tr><td>Patient</td><td class="ar">→</td><td><code>Patient</code> (+ <code>PatientIdentifier</code>, <code>RelatedPerson</code>, <code>Coverage</code>)</td></tr>
-      <tr><td>A visit / admission</td><td class="ar">→</td><td><code>Encounter</code> (+ <code>Admission</code>, <code>Bed</code> for inpatient)</td></tr>
-      <tr><td>Prescription</td><td class="ar">→</td><td><code>MedicationRequest</code> → <code>MedicationDispense</code> → <code>MedicationAdministration</code> (eMAR)</td></tr>
-      <tr><td>Lab / imaging order</td><td class="ar">→</td><td><code>ServiceRequest</code> → <code>Specimen</code> → <code>DiagnosticReport</code> / <code>Observation</code> / <code>ImagingStudy</code></td></tr>
-      <tr><td>Diagnosis / vitals / lab value</td><td class="ar">→</td><td><code>Condition</code> / <code>Observation</code> (FHIR uses one Observation for vitals & labs)</td></tr>
+      <tr><td>Hospital / clinic group</td><td class="ar">→</td><td><code>Organization</code>code (legal entity) + <code>Location</code>code (facility→building→ward→room→bed)</td></tr>
+      <tr><td>Doctor</td><td class="ar">→</td><td><code>Practitioner</code>code + <code>PractitionerRole</code>code <code>(roleCode = doctor)</code>code</td></tr>
+      <tr><td>Nurse / Head Nurse</td><td class="ar">→</td><td><code>Practitioner</code>code + <code>PractitionerRole</code>code <code>(nurse / head-nurse)</code>code</td></tr>
+      <tr><td>Pharmacist / Lab tech / Technician / Maintenance / Ambulance crew</td><td class="ar">→</td><td><code>Practitioner</code>code + <code>PractitionerRole</code>code (one table, role is data, no table per job title)</td></tr>
+      <tr><td>Patient</td><td class="ar">→</td><td><code>Patient</code>code (+ <code>PatientIdentifier</code>code, <code>RelatedPerson</code>code, <code>Coverage</code>code)</td></tr>
+      <tr><td>A visit / admission</td><td class="ar">→</td><td><code>Encounter</code>code (+ <code>Admission</code>code, <code>Bed</code>code for inpatient)</td></tr>
+      <tr><td>Prescription</td><td class="ar">→</td><td><code>MedicationRequest</code>code → <code>MedicationDispense</code>code → <code>MedicationAdministration</code>code (eMAR)</td></tr>
+      <tr><td>Lab / imaging order</td><td class="ar">→</td><td><code>ServiceRequest</code>code → <code>Specimen</code>code → <code>DiagnosticReport</code>code / <code>Observation</code>code / <code>ImagingStudy</code>code</td></tr>
+      <tr><td>Diagnosis / vitals / lab value</td><td class="ar">→</td><td><code>Condition</code>code / <code>Observation</code>code (FHIR uses one Observation for vitals & labs)</td></tr>
     </table>
   </div>
 
   <div id="root"></div>
-  <footer>Greyquill Health Platform · enterprise schema preview · generated from <code>prisma/schema.prisma</code></footer>
+  <footer>Greyquill Health Platform · enterprise schema preview · generated from <code>prisma/schema.prisma</code>code</footer>
 </main>
 
 <script type="module">
@@ -462,6 +462,6 @@ try{
     primaryColor:'#DBEAFE',primaryBorderColor:'#1D4ED8',primaryTextColor:'#172554',
     lineColor:'#64748B',fontFamily:'Inter, system-ui, sans-serif',fontSize:'13px'}});
 }catch(err){document.getElementById('offline').style.display='block';}
-</script>
+</script>script
 </body>
 </html>

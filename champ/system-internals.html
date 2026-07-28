@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>System Internals — Champ Agent Swarm</title>
+<title>System Internals, Champ Agent Swarm</title>
 <style>
   :root {
     --bg: #0a0e17;
@@ -684,7 +684,7 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-</style>
+</style>style
 </head>
 <body>
 
@@ -715,7 +715,7 @@
       <span class="dot" style="background:var(--accent)"></span>
       What is a Work Packet?
     </div>
-    <p class="section-subtitle">The work packet is the fundamental unit of communication in the swarm. Every task — from a one-line fix to a full feature — travels as a packet.</p>
+    <p class="section-subtitle">The work packet is the fundamental unit of communication in the swarm. Every task, from a one-line fix to a full feature, travels as a packet.</p>
 
     <!-- Concept card -->
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;">
@@ -725,14 +725,14 @@
           Think of a work packet as a <strong style="color:var(--text);">sealed envelope</strong> you hand to an agent. Inside the envelope:
         </p>
         <ul style="font-size:12px; color:var(--text-dim); margin-top:8px; padding-left:20px; line-height:2;">
-          <li><strong style="color:var(--accent);">Instruction</strong> — what to do ("implement user authentication")</li>
-          <li><strong style="color:var(--green);">Context</strong> — files to read, directories to explore, reference docs, notes</li>
-          <li><strong style="color:var(--purple);">Expected Output</strong> — what kind of deliverable (files, PR, report, plan)</li>
-          <li><strong style="color:var(--amber);">Success Criteria</strong> — how to know it's done correctly</li>
-          <li><strong style="color:var(--red);">Test Command</strong> — a shell command to verify the result</li>
+          <li><strong style="color:var(--accent);">Instruction</strong>, what to do ("implement user authentication")</li>
+          <li><strong style="color:var(--green);">Context</strong>, files to read, directories to explore, reference docs, notes</li>
+          <li><strong style="color:var(--purple);">Expected Output</strong>, what kind of deliverable (files, PR, report, plan)</li>
+          <li><strong style="color:var(--amber);">Success Criteria</strong>, how to know it's done correctly</li>
+          <li><strong style="color:var(--red);">Test Command</strong>, a shell command to verify the result</li>
         </ul>
         <p style="font-size:12px; color:var(--text-dim); margin-top:12px;">
-          The agent opens the envelope, does the work, and returns a <strong style="color:var(--green);">Work Result</strong> — a structured response with status, summary, output files, and test results.
+          The agent opens the envelope, does the work, and returns a <strong style="color:var(--green);">Work Result</strong>, a structured response with status, summary, output files, and test results.
         </p>
       </div>
 
@@ -741,11 +741,11 @@
         <div style="font-size:12px; color:var(--text-dim); line-height:1.8;">
           <div style="padding:8px 0; border-bottom:1px solid var(--border);">
             <strong style="color:var(--text);">Any agent can invoke any other agent</strong><br>
-            Packets are the universal protocol — no hierarchy, no special channels. Dev can ask QA to verify. QA can ask Dev to fix. Champ orchestrates all of them.
+            Packets are the universal protocol, no hierarchy, no special channels. Dev can ask QA to verify. QA can ask Dev to fix. Champ orchestrates all of them.
           </div>
           <div style="padding:8px 0; border-bottom:1px solid var(--border);">
             <strong style="color:var(--text);">Full audit trail</strong><br>
-            Every packet gets a unique ID (<code style="color:var(--cyan);">wp-{hex8}</code>), phase history with timestamps, and an event log entry. Nothing happens without a record.
+            Every packet gets a unique ID (<code style="color:var(--cyan);">wp-{hex8}</code>code), phase history with timestamps, and an event log entry. Nothing happens without a record.
           </div>
           <div style="padding:8px 0; border-bottom:1px solid var(--border);">
             <strong style="color:var(--text);">Retry-safe</strong><br>
@@ -761,62 +761,62 @@
 
     <!-- Visual packet anatomy -->
     <div class="card" style="border-color:rgba(96,165,250,0.25); background:linear-gradient(135deg, rgba(96,165,250,0.04), rgba(167,139,250,0.04));">
-      <h3 style="margin-bottom:16px;">Packet Anatomy — Every Field Explained</h3>
+      <h3 style="margin-bottom:16px;">Packet Anatomy, Every Field Explained</h3>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
 
         <!-- Left: identity & routing -->
         <div>
           <div style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Identity &amp; Routing</div>
           <table class="schema-table">
-            <tr><td style="width:130px;"><code>id</code></td><td><code style="color:var(--amber);">wp-{hex8}</code> — unique ID generated from crypto.randomUUID()</td></tr>
-            <tr><td><code>agent</code></td><td>Target agent name (e.g., "dev", "qa", "architect")</td></tr>
-            <tr><td><code>invoked_by</code></td><td>Who created it — "human" for CLI, or another agent's name</td></tr>
-            <tr><td><code>priority</code></td><td><span class="tag tag-red">P0</span> <span class="tag tag-amber">P1</span> <span class="tag tag-green">P2</span> — urgency level (default P1)</td></tr>
-            <tr><td><code>timeout_minutes</code></td><td>Max execution time (default 60)</td></tr>
-            <tr><td><code>complexity</code></td><td><span class="tag tag-green">simple</span> <span class="tag tag-amber">medium</span> <span class="tag tag-red">complex</span> — drives model selection and fix loop limits</td></tr>
+            <tr><td style="width:130px;"><code>id</code>code</td><td><code style="color:var(--amber);">wp-{hex8}</code>code, unique ID generated from crypto.randomUUID()</td></tr>
+            <tr><td><code>agent</code>code</td><td>Target agent name (e.g. "dev", "qa", "architect")</td></tr>
+            <tr><td><code>invoked_by</code>code</td><td>Who created it, "human" for CLI, or another agent's name</td></tr>
+            <tr><td><code>priority</code>code</td><td><span class="tag tag-red">P0</span> <span class="tag tag-amber">P1</span> <span class="tag tag-green">P2</span>, urgency level (default P1)</td></tr>
+            <tr><td><code>timeout_minutes</code>code</td><td>Max execution time (default 60)</td></tr>
+            <tr><td><code>complexity</code>code</td><td><span class="tag tag-green">simple</span> <span class="tag tag-amber">medium</span> <span class="tag tag-red">complex</span>, drives model selection and fix loop limits</td></tr>
           </table>
 
           <div style="font-size:11px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Lifecycle State</div>
           <table class="schema-table">
-            <tr><td style="width:130px;"><code>status</code></td><td>Legacy: pending → accepted → in_progress → done/failed/blocked</td></tr>
-            <tr><td><code>phase</code></td><td>FSM: PENDING → ACCEPTED → EXECUTING → VERIFYING → FIXING → DONE/FAILED/BLOCKED/CANCELLED</td></tr>
-            <tr><td><code>phase_history</code></td><td>Array of <code>{phase, timestamp, reason}</code> — full transition audit</td></tr>
-            <tr><td><code>active</code></td><td>Boolean — false once in a terminal phase</td></tr>
-            <tr><td><code>fix_iteration</code></td><td>Current fix loop count (0-indexed, resets on restart)</td></tr>
+            <tr><td style="width:130px;"><code>status</code>code</td><td>Legacy: pending → accepted → in_progress → done/failed/blocked</td></tr>
+            <tr><td><code>phase</code>code</td><td>FSM: PENDING → ACCEPTED → EXECUTING → VERIFYING → FIXING → DONE/FAILED/BLOCKED/CANCELLED</td></tr>
+            <tr><td><code>phase_history</code>code</td><td>Array of <code>{phase, timestamp, reason}</code>code, full transition audit</td></tr>
+            <tr><td><code>active</code>code</td><td>Boolean, false once in a terminal phase</td></tr>
+            <tr><td><code>fix_iteration</code>code</td><td>Current fix loop count (0-indexed, resets on restart)</td></tr>
           </table>
         </div>
 
         <!-- Right: payload -->
         <div>
-          <div style="font-size:11px; font-weight:600; color:var(--green); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Payload — The Actual Work</div>
+          <div style="font-size:11px; font-weight:600; color:var(--green); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Payload, The Actual Work</div>
           <table class="schema-table">
-            <tr><td style="width:130px;"><code>instruction</code></td><td>Free-text task description. This becomes the core of the agent's prompt.</td></tr>
+            <tr><td style="width:130px;"><code>instruction</code>code</td><td>Free-text task description. This becomes the core of the agent's prompt.</td></tr>
             <tr>
-              <td><code>context</code></td>
+              <td><code>context</code>code</td>
               <td>
-                <code>.files</code> — specific file paths to read<br>
-                <code>.directories</code> — dirs to explore<br>
-                <code>.references</code> — related packet IDs or doc links<br>
-                <code>.notes</code> — free-text extra context
+                <code>.files</code>code, specific file paths to read<br>
+                <code>.directories</code>code, dirs to explore<br>
+                <code>.references</code>code, related packet IDs or doc links<br>
+                <code>.notes</code>code, free-text extra context
               </td>
             </tr>
             <tr>
-              <td><code>expected_output</code></td>
+              <td><code>expected_output</code>code</td>
               <td>
-                <code>.type</code> — one of: <span class="tag tag-blue">files</span> <span class="tag tag-purple">pr</span> <span class="tag tag-green">report</span> <span class="tag tag-amber">review</span> <span class="tag tag-cyan">plan</span> <span class="tag tag-pink">decision</span><br>
-                <code>.description</code> — what the output should contain
+                <code>.type</code>code, one of: <span class="tag tag-blue">files</span> <span class="tag tag-purple">pr</span> <span class="tag tag-green">report</span> <span class="tag tag-amber">review</span> <span class="tag tag-cyan">plan</span> <span class="tag tag-pink">decision</span><br>
+                <code>.description</code>code, what the output should contain
               </td>
             </tr>
-            <tr><td><code>success_criteria</code></td><td>String array — each criterion is checked against the result</td></tr>
-            <tr><td><code>test_command</code></td><td>Shell command to verify output (e.g., <code>bun test</code>)</td></tr>
+            <tr><td><code>success_criteria</code>code</td><td>String array, each criterion is checked against the result</td></tr>
+            <tr><td><code>test_command</code>code</td><td>Shell command to verify output (e.g. <code>bun test</code>code)</td></tr>
           </table>
 
-          <div style="font-size:11px; font-weight:600; color:var(--orange); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Optional — Verification</div>
+          <div style="font-size:11px; font-weight:600; color:var(--orange); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Optional, Verification</div>
           <table class="schema-table">
             <tr>
-              <td style="width:130px;"><code>verificationSpec</code></td>
+              <td style="width:130px;"><code>verificationSpec</code>code</td>
               <td>
-                Structured checks array: <code>{type, command, required}</code><br>
+                Structured checks array: <code>{type, command, required}</code>code<br>
                 Types: test, typecheck, lint, build, runtime, security, performance
               </td>
             </tr>
@@ -835,14 +835,14 @@
             id: "wp-a1b2c3d4"<br>
             agent: "dev"<br>
             instruction: "Add JWT auth middleware"<br>
-            context.files: ["src/server.ts"]<br>
+            context.files: ["server.ts"]<br>
             success_criteria: ["All tests pass"]<br>
             test_command: "bun test"<br>
             complexity: "medium"<br>
             phase: "PENDING"
           </div>
-          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createPacket()</code></div>
-          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/packets.json</code></div>
+          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createPacket()</code>code</div>
+          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/packets.json</code>code</div>
         </div>
 
         <!-- Arrow -->
@@ -859,13 +859,13 @@
             packet_id: "wp-a1b2c3d4"<br>
             status: "done"<br>
             summary: "Added JWT middleware..."<br>
-            output_files: ["src/middleware/auth.ts"]<br>
+            output_files: ["auth.ts"]<br>
             tests_passed: true<br>
             criteria_met: { "All tests pass": true }<br>
             verificationResult.passed: true
           </div>
-          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createResult()</code></div>
-          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/results.json</code></div>
+          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createResult()</code>code</div>
+          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/results.json</code>code</div>
         </div>
       </div>
     </div>
@@ -907,7 +907,7 @@
         </div>
         <div style="font-size:11px; color:var(--text-dim); margin-top:12px; text-align:center;">
           If verification fails and iterations remain, the packet loops back through the <strong style="color:var(--orange);">Fix Loop</strong> (EXECUTING → VERIFYING → FIXING → EXECUTING).
-          <br>Agents can also emit <code style="color:var(--cyan);">follow_up_packets</code> in their result to spawn new work.
+          <br>Agents can also emit <code style="color:var(--cyan);">follow_up_packets</code>code in their result to spawn new work.
         </div>
       </div>
     </div>
@@ -992,7 +992,7 @@
       <span class="dot" style="background:var(--pink)"></span>
       End-to-End Data Flow
     </div>
-    <p class="section-subtitle">From CLI invocation to completed work result — every module touched and every file written.</p>
+    <p class="section-subtitle">From CLI invocation to completed work result, every module touched and every file written.</p>
     <div id="data-flow-container"></div>
   </div>
 
@@ -1000,7 +1000,7 @@
 
 <script>
 // ============================================================
-// MODULE DATA — all 29 harness modules
+// MODULE DATA, all 29 harness modules
 // ============================================================
 const MODULES = {
   "protocol.ts": {
@@ -1029,7 +1029,7 @@ const MODULES = {
 
   "board.ts": {
     name: "board.ts",
-    role: "Read/write shared board — packets, results, events, memory",
+    role: "Read/write shared board, packets, results, events, memory",
     layer: "foundation",
     deps: ["protocol.ts"],
     fns: [
@@ -1076,7 +1076,7 @@ const MODULES = {
 
   "prompt-utils.ts": {
     name: "prompt-utils.ts",
-    role: "Prompt assembly helpers — anti-scope, permitted tools, workresult parsing",
+    role: "Prompt assembly helpers, anti-scope, permitted tools, workresult parsing",
     layer: "foundation",
     deps: ["protocol.ts", "registry.ts"],
     fns: [
@@ -1108,7 +1108,7 @@ const MODULES = {
     layer: "foundation",
     deps: [],
     fns: [
-      { name: "resolveSkillRefs", sig: "(text, visited?, depth?) → string", desc: "Recursive replacement, max depth 5, cycle detection" },
+      { name: "resolveSkillRefs", sig: "(text, visited? depth?) → string", desc: "Recursive replacement, max depth 5, cycle detection" },
       { name: "loadSkill", sig: "(name) → SkillManifest | null", desc: "Read skill file, estimate tokens (chars/4)" },
       { name: "loadSkills", sig: "(names[]) → string", desc: "Load multiple skills, concatenate" },
       { name: "resolveSkillPath", sig: "(name) → string | null", desc: "Check global then local skill dirs" },
@@ -1228,7 +1228,7 @@ const MODULES = {
     layer: "execution",
     deps: ["protocol.ts", "registry.ts", "progress-ledger.ts", "team-state.ts", "board.ts"],
     fns: [
-      { name: "enrichPrompt", sig: "(base, packet, agent, ctx?, budget?) → string", desc: "Assemble 4 sections, drop by priority on budget overflow" },
+      { name: "enrichPrompt", sig: "(base, packet, agent, ctx? budget?) → string", desc: "Assemble 4 sections, drop by priority on budget overflow" },
       { name: "injectVerificationFeedback", sig: "(packet) → string", desc: "Last 3 failures from ledger. HIGHEST priority, never dropped" },
       { name: "injectMemoryEntries", sig: "(packet, agent) → string", desc: "Keyword-scored memory entries, top 8" },
       { name: "injectBoardContext", sig: "(packet, ctx?) → string", desc: "Sibling packet phases, max 10" },
@@ -1254,7 +1254,7 @@ const MODULES = {
 
   "turn-tracker.ts": {
     name: "turn-tracker.ts",
-    role: "Track conversation turns per packet — tokens, tools, burn rate",
+    role: "Track conversation turns per packet, tokens, tools, burn rate",
     layer: "execution",
     deps: [],
     fns: [
@@ -1304,7 +1304,7 @@ const MODULES = {
 
   "role-router.ts": {
     name: "role-router.ts",
-    role: "Score-based task routing — intent detection, keyword scoring, memory learning",
+    role: "Score-based task routing, intent detection, keyword scoring, memory learning",
     layer: "orchestration",
     deps: ["registry.ts", "board.ts"],
     fns: [
@@ -1397,7 +1397,7 @@ const MODULES = {
 
   "runner.ts": {
     name: "runner.ts",
-    role: "Core agent execution — build prompt, invoke Claude, fix loop FSM",
+    role: "Core agent execution, build prompt, invoke Claude, fix loop FSM",
     layer: "execution",
     deps: ["protocol.ts", "verifier.ts", "registry.ts", "board.ts", "prompt-utils.ts", "skill-loader.ts", "tmux-runner.ts", "progress-ledger.ts", "worktree.ts", "prompt-enricher.ts", "mcp-registry.ts", "contracts.ts", "turn-tracker.ts"],
     fns: [
@@ -1444,7 +1444,7 @@ const MODULES = {
 
   "pipeline.ts": {
     name: "pipeline.ts",
-    role: "Multi-stage pipeline execution — plan → execute → verify",
+    role: "Multi-stage pipeline execution, plan → execute → verify",
     layer: "orchestration",
     deps: ["board.ts", "worktree.ts", "stage-roster.ts", "planner.ts"],
     fns: [
@@ -1475,7 +1475,7 @@ const MODULES = {
 
   "session-metrics.ts": {
     name: "session-metrics.ts",
-    role: "Compute session-level metrics — tokens, cost, duration, outcome",
+    role: "Compute session-level metrics, tokens, cost, duration, outcome",
     layer: "orchestration",
     deps: ["turn-tracker.ts", "board.ts", "cost-tracker.ts"],
     fns: [
@@ -1605,7 +1605,7 @@ function renderModuleGrid() {
   for (const [layerKey, layerInfo] of Object.entries(LAYERS)) {
     const mods = Object.values(MODULES).filter(m => m.layer === layerKey);
     html += `<div class="layer-group">`;
-    html += `<div class="layer-label"><span style="color:${layerInfo.color};">${layerInfo.label}</span> &mdash; ${layerInfo.desc}</div>`;
+    html += `<div class="layer-label"><span style="color:${layerInfo.color};">${layerInfo.label}</span>, ${layerInfo.desc}</div>`;
     html += `<div class="module-grid">`;
     for (const mod of mods) {
       const depsLabel = mod.deps.length > 0 ? `${mod.deps.length} deps` : 'root';
@@ -1671,7 +1671,7 @@ function renderDepGraph() {
     const mods = Object.entries(MODULES).filter(([_, m]) => m.layer === layer).sort((a, b) => a[0].localeCompare(b[0]));
 
     html += `<div class="dg-layer">`;
-    html += `<div class="dg-layer-label" style="background:${bgBase}0.12); color:${color};">${info.label} <span style="font-weight:400; opacity:0.7;">&mdash; ${mods.length} modules</span></div>`;
+    html += `<div class="dg-layer-label" style="background:${bgBase}0.12); color:${color};">${info.label} <span style="font-weight:400; opacity:0.7;">, ${mods.length} modules</span></div>`;
     html += `<div class="dg-nodes">`;
 
     for (const [name, mod] of mods) {
@@ -1970,7 +1970,7 @@ function renderFixLoop() {
           <!-- Ledger -->
           <div class="flow-row">
             <div style="font-size:11px; color:var(--text-dim); padding:4px 12px;">
-              appendLedgerEntry() — records verdict, score, summary, test output
+              appendLedgerEntry(), records verdict, score, summary, test output
             </div>
           </div>
           <div class="flow-connector">▼</div>
@@ -2057,7 +2057,7 @@ function renderPromptPipeline() {
           <div class="flow-arrow">→</div>
           <div style="font-size:11px; color:var(--text-dim);">Replace {{skill:name}} → content (recursive, max depth 5)</div>
         </div>
-        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">skill-loader.ts</span> — Checks skills/global/ then skills/agent-local/</div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">skill-loader.ts</span>, Checks skills/global/ then skills/agent-local/</div>
       </div>
 
       <!-- Stage 3: Anti-Scope & Tools -->
@@ -2068,7 +2068,7 @@ function renderPromptPipeline() {
           <div style="font-size:11px; color:var(--text-dim);">+</div>
           <div class="flow-step" style="background:rgba(251,191,36,0.1); color:var(--amber);">appendPermittedTools()</div>
         </div>
-        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">prompt-utils.ts</span> — From agent.yaml avoid_when[] and allowed_tools[]</div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">prompt-utils.ts</span>, From agent.yaml avoid_when[] and allowed_tools[]</div>
       </div>
 
       <!-- Stage 4: Work Packet Sections -->
@@ -2087,27 +2087,27 @@ function renderPromptPipeline() {
         <div style="font-size:11px; font-weight:600; color:var(--pink); margin-bottom:4px;">Stage 5: Runtime Enrichment (budget-aware, priority-ordered)</div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
           <div style="padding:8px; border:1px solid rgba(248,113,113,0.3); border-radius:6px;">
-            <div style="font-size:10px; color:var(--red); font-weight:600;">P0 — HIGHEST (never dropped)</div>
+            <div style="font-size:10px; color:var(--red); font-weight:600;">P0, HIGHEST (never dropped)</div>
             <div style="font-size:11px; color:var(--text);">injectVerificationFeedback()</div>
             <div style="font-size:10px; color:var(--text-dim);">Last 3 failures from progress ledger</div>
           </div>
           <div style="padding:8px; border:1px solid rgba(251,191,36,0.3); border-radius:6px;">
-            <div style="font-size:10px; color:var(--amber); font-weight:600;">P1 — Memory</div>
+            <div style="font-size:10px; color:var(--amber); font-weight:600;">P1, Memory</div>
             <div style="font-size:11px; color:var(--text);">injectMemoryEntries()</div>
             <div style="font-size:10px; color:var(--text-dim);">Keyword-scored memory, top 8 entries</div>
           </div>
           <div style="padding:8px; border:1px solid rgba(96,165,250,0.3); border-radius:6px;">
-            <div style="font-size:10px; color:var(--accent); font-weight:600;">P2 — Board Context</div>
+            <div style="font-size:10px; color:var(--accent); font-weight:600;">P2, Board Context</div>
             <div style="font-size:11px; color:var(--text);">injectBoardContext()</div>
             <div style="font-size:10px; color:var(--text-dim);">Sibling packet phases, max 10</div>
           </div>
           <div style="padding:8px; border:1px solid rgba(136,146,164,0.3); border-radius:6px;">
-            <div style="font-size:10px; color:var(--text-dim); font-weight:600;">P3 — LOWEST (dropped first)</div>
+            <div style="font-size:10px; color:var(--text-dim); font-weight:600;">P3, LOWEST (dropped first)</div>
             <div style="font-size:11px; color:var(--text);">injectSiblingStatus()</div>
             <div style="font-size:10px; color:var(--text-dim);">Team state for current run</div>
           </div>
         </div>
-        <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Module: <span style="color:var(--cyan);">prompt-enricher.ts</span> — Budget: ~750 tokens. Drops P3 → P2 → P1 on overflow. P0 never dropped.</div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Module: <span style="color:var(--cyan);">prompt-enricher.ts</span>, Budget: ~750 tokens. Drops P3 → P2 → P1 on overflow. P0 never dropped.</div>
       </div>
 
       <!-- Stage 6: Sub-agent extras -->
@@ -2118,7 +2118,7 @@ function renderPromptPipeline() {
           <div style="font-size:11px; color:var(--text-dim);">+</div>
           <div class="flow-step" style="background:rgba(251,146,60,0.1); color:var(--orange);">knowledge/*.md</div>
         </div>
-        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">sub-runner.ts</span> — Injected between base prompt and work packet sections</div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">sub-runner.ts</span>, Injected between base prompt and work packet sections</div>
       </div>
     </div>
   `;
@@ -2135,8 +2135,7 @@ function renderCLIRouting() {
   container.innerHTML = `
     <div class="route-tree">
       <div style="margin-bottom:16px; font-size:12px; color:var(--text-dim);">
-        <code style="color:var(--cyan);">bun src/cli.ts invoke &lt;agent&gt; "task"</code> —
-        The --size flag (or auto-classification via task-classifier.ts) determines the execution path.
+        <code style="color:var(--cyan);">bun cli.ts invoke &lt;agent&gt; "task"</code>, The --size flag (or auto-classification via task-classifier.ts) determines the execution path.
       </div>
 
       <!-- Root -->
@@ -2183,24 +2182,24 @@ function renderCLIRouting() {
         <h4 style="font-size:12px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">All CLI Commands (13+ groups)</h4>
         <table class="schema-table">
           <tr><th>Command</th><th>Description</th><th>Key Options</th></tr>
-          <tr><td><code>agents</code></td><td>List all discovered agents</td><td>—</td></tr>
+          <tr><td><code>agents</code></td><td>List all discovered agents</td><td>, </td></tr>
           <tr><td><code>invoke</code></td><td>Send work packet + launch</td><td>--files, --dirs, --refs, --notes, --size, --model, --no-run</td></tr>
           <tr><td><code>board</code></td><td>Show board summary</td><td>--watch (poll 2s)</td></tr>
           <tr><td><code>packets</code></td><td>List work packets</td><td>--agent, --status, --stalled</td></tr>
           <tr><td><code>show</code></td><td>Packet details + result</td><td>--history (phase + ledger)</td></tr>
           <tr><td><code>prompt</code></td><td>Preview assembled prompt</td><td>--size, --dry-enriched</td></tr>
-          <tr><td><code>panes</code></td><td>List active tmux panes</td><td>—</td></tr>
-          <tr><td><code>attach</code></td><td>Attach to running pane</td><td>—</td></tr>
+          <tr><td><code>panes</code></td><td>List active tmux panes</td><td>, </td></tr>
+          <tr><td><code>attach</code></td><td>Attach to running pane</td><td>, </td></tr>
           <tr><td><code>kill</code></td><td>Kill running pane(s)</td><td>--all</td></tr>
           <tr><td><code>logs</code></td><td>View agent output</td><td>--stderr, --follow</td></tr>
-          <tr><td><code>restart</code></td><td>Restart BLOCKED/FAILED</td><td>—</td></tr>
+          <tr><td><code>restart</code></td><td>Restart BLOCKED/FAILED</td><td>, </td></tr>
           <tr><td><code>route</code></td><td>Dry-run task routing</td><td>--phase</td></tr>
-          <tr><td><code>stream</code></td><td>Tail event_log.jsonl</td><td>—</td></tr>
+          <tr><td><code>stream</code></td><td>Tail event_log.jsonl</td><td>, </td></tr>
           <tr><td><code>plan *</code></td><td>show / approve / reject / edit / create</td><td>--reason, --remove, --set-agent</td></tr>
           <tr><td><code>pipeline *</code></td><td>run / status / resume / cancel / list</td><td>--prd, --run-id</td></tr>
           <tr><td><code>session *</code></td><td>metrics / list / compare</td><td>--json, --limit</td></tr>
           <tr><td><code>worktrees *</code></td><td>list / clean</td><td>--run</td></tr>
-          <tr><td><code>mcp *</code></td><td>list / check</td><td>—</td></tr>
+          <tr><td><code>mcp *</code></td><td>list / check</td><td>, </td></tr>
         </table>
       </div>
     </div>
@@ -2220,7 +2219,7 @@ function renderSharedState() {
       <!-- packets.json -->
       <div class="state-card" style="border-color:rgba(96,165,250,0.3);">
         <h4>shared/packets.json</h4>
-        <div class="state-desc">Work queue — the central registry of all tasks in the system.</div>
+        <div class="state-desc">Work queue, the central registry of all tasks in the system.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: cli.ts, board.ts, runner.ts</span>
           <span class="tag tag-blue">readers: everyone</span>
@@ -2248,7 +2247,7 @@ function renderSharedState() {
       <!-- results.json -->
       <div class="state-card" style="border-color:rgba(52,211,153,0.3);">
         <h4>shared/results.json</h4>
-        <div class="state-desc">Completed work — every agent's output is stored here permanently.</div>
+        <div class="state-desc">Completed work, every agent's output is stored here permanently.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: runner.ts, tmux-runner.ts</span>
           <span class="tag tag-blue">readers: cli.ts, board.ts, session-metrics.ts</span>
@@ -2274,7 +2273,7 @@ function renderSharedState() {
       <!-- event_log.jsonl -->
       <div class="state-card" style="border-color:rgba(251,191,36,0.3);">
         <h4>shared/event_log.jsonl</h4>
-        <div class="state-desc">Append-only audit trail — never modified, only appended to.</div>
+        <div class="state-desc">Append-only audit trail, never modified, only appended to.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: board.ts (almost every module calls logEvent)</span>
           <span class="tag tag-blue">readers: cli.ts stream, session-metrics.ts</span>
@@ -2296,7 +2295,7 @@ function renderSharedState() {
       <!-- memory.json -->
       <div class="state-card" style="border-color:rgba(167,139,250,0.3);">
         <h4>shared/memory.json</h4>
-        <div class="state-desc">Shared learnings — agents teach each other across invocations.</div>
+        <div class="state-desc">Shared learnings, agents teach each other across invocations.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: any agent (via board.ts writeMemory)</span>
           <span class="tag tag-blue">readers: prompt-enricher.ts, role-router.ts</span>
@@ -2316,7 +2315,7 @@ function renderSharedState() {
       <!-- panes.json -->
       <div class="state-card" style="border-color:rgba(244,114,182,0.3);">
         <h4>shared/panes.json</h4>
-        <div class="state-desc">Live tmux session registry — tracks which agents are running where.</div>
+        <div class="state-desc">Live tmux session registry, tracks which agents are running where.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: tmux-runner.ts</span>
           <span class="tag tag-blue">readers: cli.ts panes/attach/kill, stall-detector.ts</span>
@@ -2341,7 +2340,7 @@ function renderSharedState() {
       <!-- concurrency.json -->
       <div class="state-card" style="border-color:rgba(34,211,238,0.3);">
         <h4>shared/concurrency.json</h4>
-        <div class="state-desc">Slot-based concurrency gate — prevents too many agents from running at once.</div>
+        <div class="state-desc">Slot-based concurrency gate, prevents too many agents from running at once.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: concurrency.ts (via tmux-runner.ts)</span>
           <span class="tag tag-blue">readers: tmux-runner.ts (before launching)</span>
@@ -2362,7 +2361,7 @@ function renderSharedState() {
       <!-- cost-ledger.json -->
       <div class="state-card" style="border-color:rgba(251,146,60,0.3);">
         <h4>shared/cost-ledger.json</h4>
-        <div class="state-desc">Token usage and cost tracking — every Claude invocation logged with USD cost.</div>
+        <div class="state-desc">Token usage and cost tracking, every Claude invocation logged with USD cost.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: cost-tracker.ts (via tmux-runner.ts)</span>
           <span class="tag tag-blue">readers: session-metrics.ts, cli.ts session</span>
@@ -2383,7 +2382,7 @@ function renderSharedState() {
       <!-- escalations.json -->
       <div class="state-card" style="border-color:rgba(248,113,113,0.3);">
         <h4>shared/escalations.json</h4>
-        <div class="state-desc">Escalation records — when agents can't fix a problem after all retries.</div>
+        <div class="state-desc">Escalation records, when agents can't fix a problem after all retries.</div>
         <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
           <span class="tag tag-red">writers: escalation.ts (via runner.ts exhaustion hook)</span>
           <span class="tag tag-blue">readers: cli.ts, human operators</span>
@@ -2445,7 +2444,7 @@ function renderDataFlow() {
           <span class="tag tag-blue">cli.ts</span>
         </div>
         <div style="font-size:12px; color:var(--text-dim);">
-          User runs <code>bun src/cli.ts invoke dev "implement auth"</code>
+          User runs <code>bun cli.ts invoke dev "implement auth"</code>
         </div>
         <div style="font-size:11px; color:var(--text-dim); margin-top:8px;">
           → <strong>classifyTaskSize()</strong> determines routing (trivial/explore/small/medium/large)<br>
@@ -2585,6 +2584,6 @@ function renderDataFlow() {
 }
 
 renderDataFlow();
-</script>
+</script>script
 </body>
 </html>

@@ -1,6 +1,6 @@
-# dc — Greyquill Document Center
+# dc, Greyquill Document Center
 
-**Public** document publishing space for Greyquill — for *open*, non-confidential
+**Public** document publishing space for Greyquill, for *open*, non-confidential
 material only (platform overviews, architecture, blogs, public one-pagers).
 Anything committed here is served statically over HTTPS via GitHub Pages, behind
 the `www.greyquill.io` custom domain.
@@ -15,8 +15,8 @@ the `www.greyquill.io` custom domain.
 https://www.greyquill.io/dc/<project>/<document>.<ext>
 ```
 
-- `<project>` — one folder per topic / overview (kebab-case).
-- `<document>` — the file itself: `.html`, `.pdf`, images, etc.
+- `<project>`, one folder per topic / overview (kebab-case).
+- `<document>`, the file itself: `.html`, `.pdf`, images, etc.
 - The apex `greyquill.io/dc/...` redirects to the `www` canonical.
 
 Example:
@@ -41,9 +41,9 @@ Pages rebuilds within ~1 minute. The URL is live immediately after.
 ## Notes
 
 - This repo is **public**. Do not commit anything you would not share with a
-  customer or investor. There is no access control on published URLs — treat
+  customer or investor. There is no access control on published URLs, treat
   them as unlisted, not secret.
 - `.nojekyll` is present so files and folders are served verbatim (no Jekyll
   processing, underscore-prefixed names work, PDFs/assets serve raw).
-- Do **not** add a `CNAME` file here — the domain is inherited from the
+- Do **not** add a `CNAME` file here, the domain is inherited from the
   `greyquill.github.io` user site. A CNAME would break the `/dc/` path routing.

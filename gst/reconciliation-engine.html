@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reconciliation Engine — GST Co-Pilot</title>
+<title>Reconciliation Engine, GST Co-Pilot</title>
 <style>
   :root {
     --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
@@ -107,16 +107,16 @@
   @media (max-width: 900px) {
     .detail-grid { grid-template-columns: 1fr; }
     .pass-row { grid-template-columns: 1fr; gap: 10px; }
-    .pass-row .ladder-left, .pass-row .ladder-right { border: none; padding: 0; flex-direction: row; justify-content: flex-start; }
+    .pass-row .ladder-left.pass-row .ladder-right { border: none; padding: 0; flex-direction: row; justify-content: flex-start; }
     .flow-row { grid-template-columns: 1fr; }
   }
-</style>
+</style>style
 </head>
 <body>
 
 <div class="header">
   <h1>Reconciliation Engine</h1>
-  <p>A 5-pass deterministic matching engine that reconciles a company's purchase register against its vendor-filed GSTR-2B. Each pass trades strictness for recall &mdash; surviving entries drop into the next pass, never backwards.</p>
+  <p>A 5-pass deterministic matching engine that reconciles a company's purchase register against its vendor-filed GSTR-2B. Each pass trades strictness for recall, surviving entries drop into the next pass, never backwards.</p>
   <div class="header-nav">
     <a href="index.html">&larr; Architecture Overview</a>
     <a href="invoice-matching.html">&larr; Invoice Matching Logic</a>
@@ -136,22 +136,22 @@
     <div class="flow-row">
       <div class="flow-lbl">books</div>
       <div class="flow-arr">&rarr;</div>
-      <div class="flow-desc">Purchase register rows (parsed by <code>excel_parser</code>) after validation by <code>invoice_validator</code>.</div>
+      <div class="flow-desc">Purchase register rows (parsed by <code>excel_parser</code>code) after validation by <code>invoice_validator</code>code.</div>
     </div>
     <div class="flow-row">
       <div class="flow-lbl">gstr2b</div>
       <div class="flow-arr">&rarr;</div>
-      <div class="flow-desc">GSTR-2B invoices (parsed by <code>gstr2b_parser</code>) with IRN, GSTIN, normalized invoice #, dedup hashes.</div>
+      <div class="flow-desc">GSTR-2B invoices (parsed by <code>gstr2b_parser</code>code) with IRN, GSTIN, normalized invoice #, dedup hashes.</div>
     </div>
     <div class="flow-row">
       <div class="flow-lbl">config</div>
       <div class="flow-arr">&rarr;</div>
-      <div class="flow-desc">Tolerances: <code>value_tolerance=1.0</code>, <code>date_tolerance_days=7</code>, <code>fuzzy_threshold=0.85</code>.</div>
+      <div class="flow-desc">Tolerances: <code>value_tolerance=1.0</code>code, <code>date_tolerance_days=7</code>code, <code>fuzzy_threshold=0.85</code>code.</div>
     </div>
     <div class="flow-row">
       <div class="flow-lbl">Report</div>
       <div class="flow-arr">&larr;</div>
-      <div class="flow-desc">Summary counts + <code>entries[]</code> with <code>match_category</code>, <code>match_confidence</code>, <code>match_pass</code>, <code>mismatch_types[]</code>, <code>auto_resolved</code>, and the full <code>books_record</code> + <code>gstr2b_record</code> for audit.</div>
+      <div class="flow-desc">Summary counts + <code>entries[]</code>code with <code>match_category</code>code, <code>match_confidence</code>code, <code>match_pass</code>code, <code>mismatch_types[]</code>code, <code>auto_resolved</code>code, and the full <code>books_record</code>code + <code>gstr2b_record</code>code for audit.</div>
     </div>
   </div>
 
@@ -193,17 +193,17 @@
 
   <!-- ===== PRE AND POST STEPS ===== -->
   <div class="section-title"><span class="dot" style="background:var(--green)"></span> Full Engine Pipeline</div>
-  <p class="section-sub">The 5 passes are sandwiched between preparation and resolution steps &mdash; ordering matters.</p>
+  <p class="section-sub">The 5 passes are sandwiched between preparation and resolution steps, ordering matters.</p>
 
   <div class="flow-diagram">
-    <h3 style="color:var(--green);">engine.reconcile() — step by step</h3>
-    <div class="flow-row"><div class="flow-lbl">Step 1 · Dedup</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>duplicate_detector.py</code> &mdash; exact duplicates are removed, near-duplicates flagged for review.</div></div>
+    <h3 style="color:var(--green);">engine.reconcile(), step by step</h3>
+    <div class="flow-row"><div class="flow-lbl">Step 1 · Dedup</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>duplicate_detector.py</code>code, exact duplicates are removed, near-duplicates flagged for review.</div></div>
     <div class="flow-row"><div class="flow-lbl">Step 2 · Pass 1-5</div><div class="flow-arr">&rarr;</div><div class="flow-desc">Sequential matching. Each pass consumes a slice of the unmatched pool.</div></div>
-    <div class="flow-row"><div class="flow-lbl">Step 3 · Mismatch detect</div><div class="flow-arr">&rarr;</div><div class="flow-desc">For matched pairs, diff each field. Populate <code>mismatch_types[]</code>.</div></div>
-    <div class="flow-row"><div class="flow-lbl">Step 4 · Auto-resolve</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>auto_resolver.py</code> &mdash; promote trivial mismatches back to MATCHED.</div></div>
-    <div class="flow-row"><div class="flow-lbl">Step 5 · Cross-period</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>cross_period.py</code> &mdash; residue searches adjacent 2B periods (late filers) with month penalty.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 3 · Mismatch detect</div><div class="flow-arr">&rarr;</div><div class="flow-desc">For matched pairs, diff each field. Populate <code>mismatch_types[]</code>code.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 4 · Auto-resolve</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>auto_resolver.py</code>code, promote trivial mismatches back to MATCHED.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 5 · Cross-period</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>cross_period.py</code>code, residue searches adjacent 2B periods (late filers) with month penalty.</div></div>
     <div class="flow-row"><div class="flow-lbl">Step 6 · Classify</div><div class="flow-arr">&rarr;</div><div class="flow-desc">Unmatched books &rarr; MISSING_IN_GSTR2B &middot; Unmatched 2B &rarr; MISSING_IN_BOOKS.</div></div>
-    <div class="flow-row"><div class="flow-lbl">Step 7 · Confidence</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>confidence.py</code> &mdash; adjust per-entry score with vendor grade &amp; cross-period penalties.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 7 · Confidence</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>confidence.py</code>code, adjust per-entry score with vendor grade &amp; cross-period penalties.</div></div>
   </div>
 
   <!-- ===== MISMATCH TYPES ===== -->
@@ -218,7 +218,7 @@
     </div>
     <div class="mismatch-card">
       <div class="mm-type">TAX_AMOUNT</div>
-      <div class="mm-desc">CGST/SGST/IGST/cess don't match &mdash; direct ITC mismatch.</div>
+      <div class="mm-desc">CGST/SGST/IGST/cess don't match, direct ITC mismatch.</div>
       <div class="mm-impact">Risk weight: +60</div>
     </div>
     <div class="mismatch-card">
@@ -233,7 +233,7 @@
     </div>
     <div class="mismatch-card">
       <div class="mm-type">INVOICE_NUMBER_FORMAT</div>
-      <div class="mm-desc">Matched fuzzy but invoice # strings differ &mdash; format drift.</div>
+      <div class="mm-desc">Matched fuzzy but invoice # strings differ, format drift.</div>
       <div class="mm-impact">Risk weight: +5 (warn)</div>
     </div>
     <div class="mismatch-card">
@@ -276,7 +276,7 @@
             <ul>
               <li>Normalized invoice # identical (prefix strip, zero strip, case fold)</li>
               <li>All other fields already exact</li>
-              <li>Original strings differ (e.g. <code>INV-001/24</code> vs <code>inv1/24</code>)</li>
+              <li>Original strings differ (e.g. <code>INV-001/24</code>code vs <code>inv1/24</code>code)</li>
             </ul>
           </div>
           <div class="detail-section">
@@ -295,7 +295,7 @@
 
   <!-- ===== CONFIDENCE ADJUSTMENT ===== -->
   <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> Confidence Adjustment</div>
-  <p class="section-sub">The pass baseline is just the start &mdash; confidence moves up or down based on secondary signals.</p>
+  <p class="section-sub">The pass baseline is just the start, confidence moves up or down based on secondary signals.</p>
 
   <div class="factor-grid">
     <div class="factor-chip"><div class="f-lbl">Exact value match</div><div class="f-pts" style="color:var(--green);">+0.05</div></div>
@@ -345,7 +345,7 @@
 
   <!-- ===== SAMPLE REPORT ===== -->
   <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Sample Report Output</div>
-  <p class="section-sub">Shape of the final <code>ReconciliationReport</code> for a typical month with 200 vendor invoices.</p>
+  <p class="section-sub">Shape of the final <code>ReconciliationReport</code>code for a typical month with 200 vendor invoices.</p>
 
   <div class="report-sample">
     <h3 style="color:var(--purple);">ReconciliationReport (illustrative)</h3>
@@ -402,7 +402,7 @@ const PASSES = {
     ],
     why: "IRNs only exist for e-invoiced B2B supplies above the mandated turnover threshold. For those, this pass is near 100% recall.",
     emits: "match_pass = IRN_EXACT, confidence = 1.0, requires_review = false",
-    code: "# passes/irn_match.py\nfor books_row in unmatched_books:\n  if not books_row.irn: continue\n  match = next((g for g in unmatched_2b if g.irn == books_row.irn), None)\n  if match:\n    yield ReconciliationEntry(..., match_pass='IRN_EXACT', confidence=1.0)"
+    code: "# passes/irn_match.py\nfor books_row in unmatched_books:\n  if not books_row.irn: continue\n  match = next((g for g in unmatched_2b if g.irn == books_row.irn), None)\n  if match:\n    yield ReconciliationEntry(... match_pass='IRN_EXACT', confidence=1.0)"
   },
   2: {
     name: "EXACT_MATCH", color: "var(--accent)", confidence: 0.95,
@@ -513,7 +513,7 @@ function selectPass(n) {
   `;
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
-</script>
+</script>script
 
 </body>
 </html>

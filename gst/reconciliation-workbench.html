@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reconciliation Workbench &mdash; GST Co-Pilot</title>
+<title>Reconciliation Workbench, GST Co-Pilot</title>
 <style>
   :root {
     --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
@@ -105,7 +105,7 @@
 
 <div class="header">
   <h1>Reconciliation Workbench</h1>
-  <p>Run persistence, per-entry action layer with versioning and rollback, ITC re-scoring on corrections, reminder system, and vendor intimation CSV export &mdash; the CA's working surface on top of the reconciliation engine.</p>
+  <p>Run persistence, per-entry action layer with versioning and rollback, ITC re-scoring on corrections, reminder system, and vendor intimation CSV export, the CA's working surface on top of the reconciliation engine.</p>
   <div class="header-nav">
     <a href="index.html">&larr; Architecture Overview</a>
     <a href="reconciliation-engine.html">Reconciliation Engine</a>
@@ -158,7 +158,7 @@
       <div class="stage-num" style="color:var(--accent);">1</div>
       <div class="stage-title">
         <h3>Save Run</h3>
-        <p><code>POST /api/sessions/:id/runs</code> &mdash; persists the current engine output with document links and risk scores.</p>
+        <p><code>POST /api/sessions/:id/runs</code>, persists the current engine output with document links and risk scores.</p>
       </div>
       <span class="stage-chip" style="background:rgba(96,165,250,0.15); color:var(--accent);">API + DB</span>
     </div>
@@ -177,7 +177,7 @@
         <h4>Performance: bulk fetch pattern</h4>
         <ul>
           <li>Source document linking requires matching entries to <code>parsed_invoices</code> rows</li>
-          <li>Naive approach: 2 DB queries per entry (N+1 problem &mdash; 400 queries for 200 entries)</li>
+          <li>Naive approach: 2 DB queries per entry (N+1 problem, 400 queries for 200 entries)</li>
           <li>Actual: 2 bulk queries total, results stored in <code>Map&lt;string, {id, document_id}&gt;</code></li>
           <li>O(1) lookup per entry via <code>GSTIN|invoice_number_norm</code> composite key</li>
         </ul>
@@ -199,10 +199,10 @@
       <div class="stage-card">
         <h4>Operations</h4>
         <ul>
-          <li><code>GET /api/sessions/:id/runs</code> &mdash; list with summary counts</li>
-          <li><code>GET /api/sessions/:id/runs/:runId</code> &mdash; full entries + current actions</li>
-          <li><code>PATCH</code> &mdash; rename run label (inline edit)</li>
-          <li><code>DELETE</code> &mdash; cascade deletes results, actions, and reminders</li>
+          <li><code>GET /api/sessions/:id/runs</code>, list with summary counts</li>
+          <li><code>GET /api/sessions/:id/runs/:runId</code>, full entries + current actions</li>
+          <li><code>PATCH</code>, rename run label (inline edit)</li>
+          <li><code>DELETE</code>, cascade deletes results, actions, and reminders</li>
         </ul>
       </div>
       <div class="stage-card">
@@ -279,17 +279,17 @@
     <h3 style="color:var(--accent2);">Example: Action History for Entry INV-2026/0412</h3>
     <div class="v-row">
       <div class="v-badge current">v3</div>
-      <div class="v-action"><strong>enter_correction</strong> &mdash; Corrected books value to &#8377;5,06,467. Risk: LOW (12)</div>
+      <div class="v-action"><strong>enter_correction</strong>, Corrected books value to &#8377;5,06,467. Risk: LOW (12)</div>
       <div class="v-status" style="color:var(--green);">Current</div>
     </div>
     <div class="v-row">
       <div class="v-badge superseded">v2</div>
-      <div class="v-action"><strong>accept_difference</strong> &mdash; Accepted mismatch. Risk unchanged: HIGH (68)</div>
+      <div class="v-action"><strong>accept_difference</strong>, Accepted mismatch. Risk unchanged: HIGH (68)</div>
       <div class="v-status" style="color:var(--text-dim);">Superseded &middot; <span style="color:var(--cyan); cursor:pointer;">Rollback</span></div>
     </div>
     <div class="v-row">
       <div class="v-badge superseded">v1</div>
-      <div class="v-action"><strong>ignored</strong> &mdash; Initial triage, no action taken.</div>
+      <div class="v-action"><strong>ignored</strong>, Initial triage, no action taken.</div>
       <div class="v-status" style="color:var(--text-dim);">Superseded &middot; <span style="color:var(--cyan); cursor:pointer;">Rollback</span></div>
     </div>
   </div>
@@ -348,7 +348,7 @@
     <div class="flow-row">
       <div class="flow-lbl">Failure Handling</div>
       <div class="flow-arr">&rarr;</div>
-      <div class="flow-desc">If the AI service is unavailable, the action still succeeds but the response includes a <code>warnings[]</code> array: "Risk re-scoring failed &mdash; scores may be stale".</div>
+      <div class="flow-desc">If the AI service is unavailable, the action still succeeds but the response includes a <code>warnings[]</code> array: "Risk re-scoring failed, scores may be stale".</div>
     </div>
   </div>
 
@@ -406,7 +406,7 @@
   <p class="section-sub">Bulk export a CSV of entries flagged for vendor follow-up.</p>
 
   <div class="flow-diagram" style="margin-bottom: 48px;">
-    <h3 style="color:var(--red);">CSV Export &mdash; GET /api/sessions/:id/runs/:runId/export</h3>
+    <h3 style="color:var(--red);">CSV Export, GET /api/sessions/:id/runs/:runId/export</h3>
     <div class="flow-row">
       <div class="flow-lbl">Filter</div>
       <div class="flow-arr">&rarr;</div>
@@ -426,7 +426,7 @@
 
   <!-- ===== DB SCHEMA ===== -->
   <div class="section-title"><span class="dot" style="background:var(--green)"></span> Database Schema</div>
-  <p class="section-sub">Three new migrations (009&ndash;011) add five tables/extensions to the existing schema.</p>
+  <p class="section-sub">Three new migrations (009 to 011) add five tables/extensions to the existing schema.</p>
 
   <div class="model-grid">
     <div class="model-card" style="border-left: 3px solid var(--accent);">
@@ -517,7 +517,7 @@
 
   <!-- ===== API ROUTES ===== -->
   <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> API Routes</div>
-  <p class="section-sub">15 new endpoints added to <code>services/api/src/server.ts</code>.</p>
+  <p class="section-sub">15 new endpoints added to <code>server.ts</code>.</p>
 
   <table class="route-table">
     <thead>
@@ -547,63 +547,63 @@
 
   <div class="file-grid">
     <div class="file-chip">
-      <div class="f-path">services/api/migrations/009_recon-runs.js</div>
+      <div class="f-path">a database migration</div>
       <div class="f-desc">Creates reconciliation_runs table + extends reconciliation_results</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/migrations/010_entry-actions.js</div>
+      <div class="f-path">a database migration</div>
       <div class="f-desc">Creates entry_actions table with versioning columns</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/migrations/011_settings-reminders.js</div>
+      <div class="f-path">a database migration</div>
       <div class="f-desc">Creates app_settings + reminders tables, seeds defaults</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/src/db/repositories/recon-run.repo.ts</div>
+      <div class="f-path">recon-run.repo.ts</div>
       <div class="f-desc">Run CRUD: create, findBySession, findById, updateLabel, deleteRun</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/src/db/repositories/recon-result.repo.ts</div>
+      <div class="f-path">recon-result.repo.ts</div>
       <div class="f-desc">Result bulk insert, findByRun, updateActionStatus, updateRiskScores</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/src/db/repositories/entry-action.repo.ts</div>
+      <div class="f-path">entry-action.repo.ts</div>
       <div class="f-desc">Versioned action create (transactional), findByResult, rollback</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/src/db/repositories/settings.repo.ts</div>
+      <div class="f-path">settings.repo.ts</div>
       <div class="f-desc">Key-value settings: get, set (UPSERT), getAll</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/src/db/repositories/reminder.repo.ts</div>
+      <div class="f-path">reminder.repo.ts</div>
       <div class="f-desc">Reminder CRUD: create, findPending, updateStatus, getPendingCount</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/api/src/server.ts</div>
+      <div class="f-path">server.ts</div>
       <div class="f-desc">15 new route handlers for runs, actions, export, settings, reminders</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/ui/src/lib/api.ts</div>
+      <div class="f-path">api.ts</div>
       <div class="f-desc">14 new API client functions matching the new endpoints</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/ui/src/pages/Reconciliation.tsx</div>
+      <div class="f-path">Reconciliation.tsx</div>
       <div class="f-desc">Major overhaul: save/load runs, expandable rows, bulk export bar</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/ui/src/components/RunActionPanel.tsx</div>
+      <div class="f-path">RunActionPanel.tsx</div>
       <div class="f-desc">Inline action panel: side-by-side comparison, action buttons, history</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/ui/src/components/RemindersPanel.tsx</div>
+      <div class="f-path">RemindersPanel.tsx</div>
       <div class="f-desc">Pending reminders list with dismiss and error handling</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/ui/src/pages/TenantProfile.tsx</div>
+      <div class="f-path">TenantProfile.tsx</div>
       <div class="f-desc">Added reminder settings section (frequency + time)</div>
     </div>
     <div class="file-chip">
-      <div class="f-path">services/ui/src/components/Sidebar.tsx</div>
+      <div class="f-path">Sidebar.tsx</div>
       <div class="f-desc">Orange badge on Reconciliation nav link for pending reminders</div>
     </div>
   </div>
