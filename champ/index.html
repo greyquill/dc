@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Greyquill · Champ Agent Swarm</title>
+<link rel="icon" href="/dc/assets/greyquill-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-blue:#0B4F88; --ink:#0a1628; --mist:#eefbff;
+    --ink-soft:#475067; --muted:#8b93a7; --line:#e4e7ee;
+    --display:'Sora',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:#fff;line-height:1.55}
+  .wrap{max-width:780px;margin:0 auto;padding:64px 24px}
+  .logo{height:30px;width:auto;display:block;margin-bottom:36px}
+  .back{font-size:13.5px;color:var(--brand-blue);text-decoration:none;font-weight:500}
+  .back:hover{text-decoration:underline}
+  .eyebrow{font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand-blue);margin-top:16px}
+  h1{font-family:var(--display);font-weight:700;font-size:28px;letter-spacing:-.02em;margin:8px 0 8px}
+  p.sub{color:var(--ink-soft);font-size:15.5px;margin:0 0 30px}
+  a.doc{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:border-color .15s,transform .15s,box-shadow .15s}
+  a.doc:hover{border-color:var(--brand-blue);transform:translateY(-1px);box-shadow:0 6px 22px rgba(11,79,136,.10)}
+  a.doc b{font-family:var(--display);font-weight:600;font-size:16px}
+  a.doc span{display:block;color:var(--ink-soft);font-size:14px;margin-top:4px}
+  .foot{color:var(--muted);font-size:13px;margin-top:44px;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <img class="logo" src="/dc/assets/greyquill-logo.png" alt="Greyquill" />
+    <a class="back" href="/dc/">&larr; Document Center</a>
+    <div class="eyebrow">Champ Agent Swarm</div>
+    <h1>Champ Agent Swarm</h1>
+    <p class="sub">How the Champ multi-agent system is designed, what runs inside it, and how its work is observed.</p>
+    <a class="doc" href="./agent-swarm-architecture.html">
+      <b>Agent Swarm Architecture</b>
+      <span>The orchestration model, agent roles, and how work is decomposed and dispatched.</span>
+    </a>
+    <a class="doc" href="./system-internals.html">
+      <b>System Internals</b>
+      <span>The moving parts inside the swarm, end to end.</span>
+    </a>
+    <a class="doc" href="./event-log-viewer.html">
+      <b>Event Log Viewer</b>
+      <span>An illustrated walkthrough of the swarm event stream.</span>
+    </a>
+    <div class="foot">© Greyquill.</div>
+  </div>
+</body>
+</html>

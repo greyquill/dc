@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 540" font-family="'Segoe UI',Helvetica,Arial,sans-serif">
+  <rect width="1260" height="540" fill="#0b4f88"/>
+  <circle cx="1080" cy="120" r="300" fill="#1a6bb5" opacity="0.35"/>
+  <!-- ascending steps: six rising blocks, the top three brighter (human) -->
+  <g>
+    <rect x="150"  y="380" width="150" height="90"  fill="#ffffff" opacity="0.16"/>
+    <rect x="320"  y="330" width="150" height="140" fill="#ffffff" opacity="0.20"/>
+    <rect x="490"  y="280" width="150" height="190" fill="#ffffff" opacity="0.24"/>
+    <rect x="660"  y="220" width="150" height="250" fill="#ffffff" opacity="0.55"/>
+    <rect x="830"  y="160" width="150" height="310" fill="#ffffff" opacity="0.72"/>
+    <rect x="1000" y="100" width="150" height="370" fill="#ffffff" opacity="0.92"/>
+  </g>
+  <line x1="150" y1="255" x2="1150" y2="255" stroke="#c4683c" stroke-width="3" stroke-dasharray="10 8" opacity="0.9"/>
+</svg>
