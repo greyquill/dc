@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Greyquill · Document Center</title>
+<link rel="icon" href="/dc/assets/greyquill-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-blue:#0B4F88; --brand-blue-light:#1a6bb5; --brand-blue-dark:#083d6a;
+    --ink:#0a1628; --mist:#eefbff;
+    --ink-soft:#475067; --muted:#8b93a7; --line:#e4e7ee;
+    --display:'Sora',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:#fff;line-height:1.55}
+  .wrap{max-width:780px;margin:0 auto;padding:64px 24px}
+  .logo{height:30px;width:auto;display:block;margin-bottom:36px}
+  .eyebrow{font-family:var(--display);font-weight:600;font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand-blue)}
+  h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:-.02em;margin:8px 0 10px}
+  p.sub{color:var(--ink-soft);font-size:16px;max-width:580px;margin:0 0 32px}
+  .section-title{font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);margin:30px 0 12px}
+  a.doc{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:18px 20px;margin-bottom:12px;transition:border-color .15s,transform .15s,box-shadow .15s}
+  a.doc:hover{border-color:var(--brand-blue);transform:translateY(-1px);
+    box-shadow:0 6px 22px rgba(11,79,136,.10)}
+  a.doc b{font-family:var(--display);font-weight:600;font-size:16px}
+  a.doc .tag{font-size:11px;font-weight:600;color:var(--brand-blue);background:var(--mist);
+    border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:middle}
+  a.doc span{display:block;color:var(--ink-soft);font-size:14px;margin-top:4px}
+  .foot{color:var(--muted);font-size:13px;margin-top:44px;border-top:1px solid var(--line);padding-top:18px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <img class="logo" src="/dc/assets/greyquill-logo.png" alt="Greyquill" />
+    <div class="eyebrow">Document Center</div>
+    <h1>Greyquill Document Center</h1>
+    <p class="sub">A curated space for open Greyquill material. Browse the published
+      documents below, or open a direct link shared with you.</p>
+
+    <div class="section-title">Platform</div>
+    <a class="doc" href="/dc/studio/">
+      <b>GQ Studio<span class="tag">Product preview</span></b>
+      <span>Governed AI for regulated enterprises: what the platform does, shown on screen.</span>
+    </a>
+    <a class="doc" href="/dc/platform/">
+      <b>Platform &amp; Architecture<span class="tag">2 documents</span></b>
+      <span>Greyquill platform C4 architecture and the GQ Data build explainer.</span>
+    </a>
+
+    <div class="section-title">Champ Agent Swarm</div>
+    <a class="doc" href="/dc/champ/">
+      <b>Champ Agent Swarm<span class="tag">3 documents</span></b>
+      <span>Agent swarm architecture, system internals, and an event log walkthrough.</span>
+    </a>
+
+    <div class="section-title">GST Compliance Co-Pilot</div>
+    <a class="doc" href="/dc/gst/">
+      <b>GST Co-Pilot, Architecture &amp; Engine<span class="tag">5 documents</span></b>
+      <span>System architecture, data flow, the reconciliation engine, invoice matching logic, and the reconciliation workbench.</span>
+    </a>
+
+    <div class="section-title">Health Platform</div>
+    <a class="doc" href="/dc/health/">
+      <b>Greyquill Health Platform<span class="tag">1 document</span></b>
+      <span>Healthcare data model: real-world concepts mapped to a FHIR-aligned entity model.</span>
+    </a>
+
+    <div class="section-title">Decks</div>
+    <a class="doc" href="/dc/decks/greyquill-cosell-deck.pdf">
+      <b>Greyquill Co-Sell Deck<span class="tag">PDF</span></b>
+      <span>Partner co-sell overview.</span>
+    </a>
+
+    <div class="foot">© Greyquill. Open materials.</div>
+  </div>
+</body>
+</html>

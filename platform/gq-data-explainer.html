@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GQ Data, Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#ffffff; --bg-soft:#f7f8fa; --ink:#0b1220; --ink-soft:#475067; --muted:#8b93a7;
+    --line:#e4e7ee; --accent:#1f4fe0; --accent-soft:#eef3ff;
+    --data:#2563eb; --data-bg:#eff5ff; --data-line:#c7dafe;
+    --govern:#d97706; --govern-bg:#fff7ed; --govern-line:#fcd9a8;
+    --agents:#059669; --agents-bg:#ecfdf5; --agents-line:#b3ecd5;
+    --studio:#7c3aed; --studio-bg:#f5f3ff; --studio-line:#ddd2fb;
+    --packs:#0d9488; --packs-bg:#f0fdfa; --packs-line:#b3e7e0;
+    --store:#475569; --store-bg:#f1f5f9; --store-line:#d8dfe8;
+    --ok:#059669; --ok-bg:#ecfdf5; --ok-line:#b3ecd5;
+    --stub:#d97706; --stub-bg:#fff7ed; --stub-line:#fcd9a8;
+    --plan:#64748b; --plan-bg:#f6f7f9; --plan-line:#e1e5ec;
+    --radius:12px; --shadow:0 1px 2px rgba(11,18,32,.04),0 6px 20px rgba(11,18,32,.05);
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; font-family:var(--font); color:var(--ink);
+    background:linear-gradient(180deg,#fff 0%,var(--bg-soft) 100%); line-height:1.5; }
+  .wrap { max-width:1120px; margin:0 auto; padding:0 24px; }
+
+  /* header */
+  header { padding:54px 0 30px; }
+  .brand { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .logo { width:34px; height:34px; border-radius:8px; background:var(--ink); color:#fff;
+    display:grid; place-items:center; font-weight:800; font-size:16px; }
+  .brand-name { font-size:18px; font-weight:700; } .brand-name span { color:var(--muted); font-weight:500; }
+  h1 { font-size:34px; line-height:1.15; margin:6px 0 12px; letter-spacing:-.02em; }
+  .sub { color:var(--ink-soft); font-size:16.5px; max-width:780px; margin:0 0 20px; }
+  .pills { display:flex; flex-wrap:wrap; gap:8px; }
+  .pill { font-size:12.5px; font-weight:600; color:var(--ink-soft); background:#fff;
+    border:1px solid var(--line); border-radius:999px; padding:5px 12px; }
+  .pill.ok { color:var(--ok); background:var(--ok-bg); border-color:var(--ok-line); }
+  .pill.accent { color:var(--accent); background:var(--accent-soft); border-color:var(--data-line); }
+  .pill.warn { color:var(--stub); background:var(--stub-bg); border-color:var(--stub-line); }
+
+  /* nav */
+  nav { position:sticky; top:0; z-index:10; background:rgba(255,255,255,.86);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line); margin-top:24px; }
+  nav .wrap { display:flex; gap:4px; flex-wrap:wrap; padding-top:10px; padding-bottom:10px; }
+  nav a { font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none;
+    padding:6px 12px; border-radius:8px; }
+  nav a:hover { background:var(--bg-soft); color:var(--ink); }
+
+  section { padding:44px 0; border-top:1px solid var(--line); }
+  section:first-of-type { border-top:none; }
+  .eyebrow { font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent); background:var(--accent-soft); padding:4px 10px; border-radius:6px; display:inline-block; }
+  h2 { font-size:25px; margin:14px 0 6px; letter-spacing:-.01em; }
+  .note { color:var(--ink-soft); font-size:14.5px; margin:4px 0 24px; max-width:840px; }
+  h3 { font-size:16px; margin:26px 0 12px; }
+
+  .grid { display:grid; gap:14px; }
+  .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); }
+  .g4 { grid-template-columns:repeat(4,1fr); }
+  @media(max-width:860px){ .g2,.g3,.g4{ grid-template-columns:1fr; } }
+
+  .card { background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 16px 14px; box-shadow:var(--shadow); }
+  .card h4 { margin:0 0 6px; font-size:14.5px; display:flex; align-items:center; gap:8px; }
+  .card p { margin:0; font-size:12.8px; color:var(--ink-soft); }
+  .card .meta { font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-top:8px; }
+
+  /* status chips */
+  .chip { font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:2px 8px; border-radius:999px; white-space:nowrap; }
+  .chip.ok { color:var(--ok); background:var(--ok-bg); border:1px solid var(--ok-line); }
+  .chip.stub { color:var(--stub); background:var(--stub-bg); border:1px solid var(--stub-line); }
+  .chip.plan { color:var(--plan); background:var(--plan-bg); border:1px solid var(--plan-line); }
+
+  /* layer stack */
+  .layer { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:10px;
+    display:flex; align-items:center; gap:16px; background:#fff; }
+  .layer .tag { font-weight:700; font-size:14px; min-width:120px; }
+  .layer .desc { font-size:13px; color:var(--ink-soft); }
+  .layer.data { background:var(--data-bg); border-color:var(--data-line); }
+  .layer.govern { background:var(--govern-bg); border-color:var(--govern-line); }
+  .layer.agents { background:var(--agents-bg); border-color:var(--agents-line); }
+  .layer.studio { background:var(--studio-bg); border-color:var(--studio-line); }
+  .layer .now { margin-left:auto; font-size:11px; font-weight:700; color:var(--data);
+    background:#fff; border:1px solid var(--data-line); border-radius:999px; padding:3px 10px; }
+
+  /* pipeline */
+  .pipe { display:flex; align-items:stretch; gap:0; flex-wrap:wrap; }
+  .step { flex:1; min-width:120px; background:#fff; border:1px solid var(--line);
+    border-radius:10px; padding:12px; text-align:center; position:relative; }
+  .step b { font-size:13px; display:block; } .step span { font-size:11px; color:var(--muted); }
+  .arrow { display:grid; place-items:center; width:26px; color:var(--muted); font-size:18px; }
+  @media(max-width:860px){ .arrow{ width:100%; height:22px; transform:rotate(90deg);} }
+
+  /* core/pack diagram */
+  .cp { display:grid; grid-template-columns:1.3fr 1fr; gap:16px; align-items:start; }
+  @media(max-width:860px){ .cp{ grid-template-columns:1fr; } }
+  .core-box { background:var(--data-bg); border:1.5px solid var(--data-line); border-radius:12px; padding:16px; }
+  .pack-box { background:var(--packs-bg); border:1.5px dashed var(--packs); border-radius:12px; padding:16px; }
+  .core-box h4,.pack-box h4 { margin:0 0 4px; font-size:14px; }
+  .iface { font-family:var(--mono); font-size:12px; background:#fff; border:1px solid var(--data-line);
+    border-radius:7px; padding:7px 10px; margin:7px 0; color:var(--ink); }
+  .pl { font-family:var(--mono); font-size:12px; background:#fff; border:1px solid var(--packs-line);
+    border-radius:7px; padding:7px 10px; margin:7px 0; }
+
+  /* tree */
+  pre.tree { font-family:var(--mono); font-size:12.5px; line-height:1.7; background:#0b1220; color:#cfe0ff;
+    border-radius:12px; padding:18px 20px; overflow:auto; }
+  pre.tree .c { color:#5fd3a3; } /* green ok */
+  pre.tree .s { color:#f0ad4e; } /* stub */
+  pre.tree .p { color:#8b93a7; } /* plan */
+  pre.tree .d { color:#7fa8ff; font-weight:600; } /* dir */
+  pre.tree .cm { color:#6b7280; }
+
+  /* table */
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+  td.k { font-family:var(--mono); font-size:12px; white-space:nowrap; }
+
+  /* checklist */
+  .check { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); }
+  .check .mk { font-size:18px; line-height:1.2; } .check .mk.y{ color:var(--ok);} .check .mk.n{ color:var(--muted);}
+  .check b { font-size:14px; } .check p { margin:2px 0 0; font-size:13px; color:var(--ink-soft); }
+
+  .callout { background:#fff; border:1px solid var(--line); border-left:4px solid var(--accent);
+    border-radius:8px; padding:14px 16px; font-size:13.5px; color:var(--ink-soft); }
+  .callout.warn { border-left-color:var(--stub); }
+  .callout b { color:var(--ink); }
+  code { font-family:var(--mono); font-size:12px; background:var(--bg-soft); padding:1px 6px; border-radius:5px; }
+  footer { padding:40px 0 60px; color:var(--muted); font-size:12.5px; }
+  .legend { display:flex; gap:14px; flex-wrap:wrap; margin:8px 0 18px; font-size:12px; color:var(--ink-soft); }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo">GQ</div>
+      <div class="brand-name">Greyquill <span>/ GQ Data</span></div>
+    </div>
+    <span class="eyebrow">GQ Data · Overview</span>
+    <h1>What GQ Data is, and how it stays reusable.</h1>
+    <p class="sub">How the platform is layered, the path every record travels, and the design decision that lets one engine serve any industry without a fork.</p>
+    <div class="pills">
+      <span class="pill">Vertical = Insurance Claims</span>
+    </div>
+  </div>
+</header>
+
+<nav><div class="wrap">
+  <a href="#vision">Platform</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#corepack">Core vs Pack</a>
+</div></nav>
+
+<!-- VISION -->
+<section id="vision"><div class="wrap">
+  <span class="eyebrow">The platform</span>
+  <h2>Four layers, a stable core, customized on top</h2>
+  <p class="note">Greyquill is an enterprise trust &amp; governance platform. GQ Data is the
+    foundation everything else depends on, so it's built first as a standalone product. The
+    other three layers talk to it only through documented contracts, so they build in parallel.</p>
+
+  <div class="layer data">
+    <div class="tag">GQ Data</div>
+    <div class="desc">Enterprise data-truth layer, ingest, resolve, classify, lineage, quality, governed API.</div>
+    <div class="now">◀ current focus</div>
+  </div>
+  <div class="layer govern">
+    <div class="tag">GQ Govern</div>
+    <div class="desc">Policies, controls, approvals, evidence + the Diagnose role. Talks to GQ Data via contracts only.</div>
+  </div>
+  <div class="layer agents">
+    <div class="tag">GQ Agents</div>
+    <div class="desc">Governed workflow execution.</div>
+  </div>
+  <div class="layer studio">
+    <div class="tag">GQ Studio</div>
+    <div class="desc">Business-specific customization layer (low-code + optional code).</div>
+  </div>
+  <div class="callout" style="margin-top:16px">
+    <b>Why this matters for direction:</b> building GQ Data alone, with contracts as the boundary,
+    is what lets the rest of the platform proceed without coupling. We're working on the right layer first.
+  </div>
+</div></section>
+
+<!-- PIPELINE -->
+<section id="pipeline" style="background:var(--bg-soft)"><div class="wrap">
+  <span class="eyebrow">GQ Data</span>
+  <h2>The governed pipeline</h2>
+  <p class="note">Every record flows through the same path, whatever industry it belongs to and whichever system it arrived from.</p>
+  <div class="pipe">
+    <div class="step"><b>Source</b><span>any system</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Ingest</b><span>gateway + connectors</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Raw Record</b><span>immutable</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Resolve</b><span>match + merge</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Golden Record</b><span>+ field provenance</span></div>
+    <div class="arrow">→</div>
+    <div class="step"><b>Graph API</b><span>+ audit pack</span></div>
+  </div>
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card"><h4>Six modules</h4><p>Ingest · Resolve · Classify · Lineage · Quality · Graph API.
+      Every record passes through the same six, whatever the industry.</p></div>
+    <div class="card"><h4>MVP proof</h4><p>Ingest a duplicated policyholder from 2 sources, resolve to one
+      golden record, and answer "how did this get here?" in a single query with a signed audit pack.</p></div>
+  </div>
+</div></section>
+
+<!-- CORE / PACK -->
+<section id="corepack"><div class="wrap">
+  <span class="eyebrow">The key design decision</span>
+  <h2>Domain-agnostic core + verticals as loadable data</h2>
+  <p class="note">This is the answer to "make it reusable for any use case." The engine knows
+    <i>nothing</i> about insurance. A vertical is a <b>pack</b>, pure data declaring entity types,
+    match keys, survivorship &amp; quality rules. Adding BFSI or healthcare means writing a new pack, with <b>no change to the engine</b>.</p>
+  <div class="cp">
+    <div class="core-box">
+      <h4>Stable core</h4>
+      <p class="card" style="border:none;box-shadow:none;padding:0 0 8px">Generic primitives and strategy interfaces, registered by id. No entity is ever named here, so the engine carries no knowledge of any one industry.</p>
+    </div>
+    <div class="pack-box">
+      <h4>Vertical pack</h4>
+      <p class="card" style="border:none;box-shadow:none;padding:0 0 8px">A pack is data. It names the entities and references core strategies by id.</p>
+      <div class="pl">entities: PolicyHolder, Policy, Claim</div>
+      <div class="pl">match keys, survivorship and quality rules</div>
+      <div class="pl">a new industry is a new pack, not a fork</div>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:16px"><b>The rule we hold to:</b> if the core has to name a business entity, that entity belongs in a pack. The platform refuses to load a pack that references a strategy it does not recognise, so the boundary cannot quietly erode.</div>
+</div></section>
+
+
+
+
+
+
+
+
+
+
+
+<footer><div class="wrap">
+  Greyquill · GQ Data. Companion to the platform C4 diagram.
+</div></footer>
+
+</body>
+</html>

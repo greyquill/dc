@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>GQ Studio · Governed AI for regulated enterprises</title>
+<meta name="description" content="GQ Studio is the workspace where enterprise data becomes records you can defend, with a signed answer to how did this get here for every value your AI sees." />
+<link rel="icon" href="/dc/assets/greyquill-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0B4F88; --blue-deep:#083a64; --ink:#0a1628; --ink-soft:#475067;
+    --muted:#8b93a7; --line:#e4e7ee; --mist:#f4f9fc; --wash:#eefbff;
+    --ok:#0f7355; --amber:#8a6100;
+    --display:'Newsreader',Georgia,serif;
+    --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:#fff;
+    line-height:1.6;-webkit-font-smoothing:antialiased;font-size:16.5px}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  /* Narrow prose stays on the same left edge as the wider sections, so the page
+     reads as one column rather than two competing alignments. */
+  .wrap.narrow>*{max-width:720px}
+
+  a{color:var(--blue)}
+  h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.015em;line-height:1.18;margin:0}
+  h1{font-size:clamp(34px,5.2vw,52px)}
+  h2{font-size:clamp(26px,3.4vw,34px)}
+  h3{font-size:19px;line-height:1.3}
+  p{margin:0 0 16px}
+  .lede{font-size:clamp(17px,2vw,20px);color:var(--ink-soft);line-height:1.55}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--blue);font-weight:500}
+  .mono{font-family:var(--mono);font-size:.92em}
+
+  /* header */
+  header.top{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(8px);z-index:20}
+  .top .wrap{display:flex;align-items:center;gap:16px;height:62px}
+  .top img{height:26px;width:auto}
+  .top .sp{flex:1}
+  .top a.nav{font-size:14px;color:var(--ink-soft);text-decoration:none}
+  .top a.nav:hover{color:var(--blue)}
+  .btn{display:inline-block;background:var(--blue);color:#fff;text-decoration:none;font-weight:600;
+    font-size:14.5px;padding:10px 18px;border-radius:8px;border:1px solid var(--blue);
+    transition:background .15s,transform .15s}
+  .btn:hover{background:var(--blue-deep);transform:translateY(-1px)}
+  .btn.ghost{background:#fff;color:var(--blue)}
+  .btn.ghost:hover{background:var(--wash);color:var(--blue-deep)}
+
+  /* hero */
+  .hero{padding:78px 0 0;background:
+    radial-gradient(1200px 420px at 50% -140px, var(--wash), #fff 70%)}
+  .hero .tag{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+    background:#fff;border-radius:999px;padding:5px 13px;font-size:12.5px;color:var(--ink-soft);
+    margin-bottom:22px}
+  .hero .tag b{color:var(--blue);font-weight:600}
+  .hero h1{max-width:16ch}
+  .hero .lede{max-width:56ch;margin-top:18px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+  /* figures */
+  figure{margin:0}
+  .shot{margin:44px 0 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    background:var(--mist);box-shadow:0 18px 50px -22px rgba(10,22,40,.30)}
+  .shot img{display:block;width:100%;height:auto}
+  figcaption{font-size:13px;color:var(--muted);margin-top:11px;line-height:1.5}
+  .shot-note{font-size:13px;color:var(--muted);margin:13px 0 0;line-height:1.5;padding-bottom:4px}
+
+  /* sections */
+  section{padding:74px 0}
+  section.tint{background:var(--mist);border-block:1px solid var(--line)}
+  .kicker{margin-bottom:12px}
+  .sec-head{max-width:62ch}
+  .sec-head p{margin-top:14px}
+
+  /* spine */
+  .spine{display:flex;align-items:flex-start;gap:0;margin-top:38px;flex-wrap:wrap}
+  .stage{flex:1 1 190px;min-width:180px;position:relative;padding-right:20px}
+  .stage .dot{width:11px;height:11px;border-radius:50%;background:var(--blue);margin-bottom:14px}
+  .stage:not(:last-child)::after{content:"";position:absolute;left:11px;right:8px;top:5px;height:1px;
+    background:var(--line)}
+  .stage h3{font-family:var(--body);font-size:13.5px;font-weight:600;letter-spacing:.02em;
+    text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+  .stage p{font-size:14.5px;color:var(--ink-soft);margin:0;padding-right:6px}
+
+  /* feature rows */
+  .feat{padding:70px 0;border-top:1px solid var(--line)}
+  .feat:first-of-type{border-top:0}
+  .feat .sec-head h2{margin-bottom:0}
+  .points{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:12px}
+  .points li{position:relative;padding-left:24px;font-size:15.5px;color:var(--ink-soft)}
+  .points li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:2px;
+    background:var(--blue);opacity:.55}
+  .points li b{color:var(--ink);font-weight:600}
+
+  /* cards */
+  .grid{display:grid;gap:18px;margin-top:34px}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .card{border:1px solid var(--line);border-radius:12px;padding:22px 22px 20px;background:#fff}
+  .card h3{margin-bottom:8px}
+  .card p{font-size:14.8px;color:var(--ink-soft);margin:0}
+  .card .who{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:9px}
+
+  /* Questions */
+  .qa{margin-top:34px;border-top:1px solid var(--line)}
+  .qa>div{padding:22px 0;border-bottom:1px solid var(--line)}
+  .qa h3{font-size:17.5px;margin-bottom:7px}
+  .qa p{font-size:15.5px;color:var(--ink-soft);margin:0;max-width:74ch}
+
+  /* Fact rows under the Synthera section */
+  .specrow{display:grid;gap:0;margin-top:30px;border-top:1px solid var(--line)}
+  .specrow>div{display:flex;gap:18px;flex-wrap:wrap;padding:12px 2px;font-size:15px;
+    color:var(--ink-soft);border-bottom:1px solid var(--line)}
+  .specrow .k{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);flex:0 0 148px;padding-top:4px}
+
+  /* callout */
+  .callout{border:1px solid var(--line);border-left:3px solid var(--blue);background:#fff;
+    border-radius:0 12px 12px 0;padding:24px 26px;margin-top:32px}
+  .callout p:last-child{margin-bottom:0}
+
+  /* close */
+  .close{background:var(--ink);color:#fff;padding:80px 0}
+  .close h2{color:#fff}
+  .close p{color:#c3cbd9;max-width:56ch}
+  .close .btn{background:#fff;color:var(--ink);border-color:#fff;margin-top:8px}
+  .close .btn:hover{background:var(--wash);color:var(--ink)}
+  .close a.mail{color:#fff}
+
+  footer{padding:34px 0;font-size:13px;color:var(--muted)}
+  footer a{color:var(--ink-soft);text-decoration:none}
+  footer a:hover{color:var(--blue)}
+
+  @media (max-width:640px){
+    section,.feat{padding:52px 0}
+    .hero{padding-top:52px}
+    .shot{margin-top:30px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <img src="/dc/assets/greyquill-logo.png" alt="Greyquill" />
+    <div class="sp"></div>
+    <a class="nav" href="#what">What it does</a>
+    <a class="nav" href="#deploy">Deployment</a>
+    <a class="nav" href="#questions">Questions</a>
+    <a class="btn ghost" href="https://calendly.com/greyquill/30min" target="_blank"
+       rel="noopener">Book a demo</a>
+  </div>
+</header>
+
+<!-- ===== hero ===== -->
+<div class="hero">
+  <div class="wrap">
+    <div class="tag"><b>GQ Studio</b> · Product preview</div>
+    <h1>Governed AI for regulated enterprises</h1>
+    <p class="lede">GQ Studio takes the data you already have, resolves it into records you can stand
+      behind, and serves it to your applications and agents through a single governed path. When
+      someone asks where a number came from, the answer is already there, and it is signed.</p>
+    <div class="cta">
+      <a class="btn" href="https://calendly.com/greyquill/30min" target="_blank"
+         rel="noopener">Book a demo</a>
+      <a class="btn ghost" href="#what">See what it does</a>
+    </div>
+
+    <figure class="shot">
+      <img src="shots/home.png" alt="GQ Studio home, showing the implementation journey, golden record count, quality score, a compliance snapshot and a live audit event feed." loading="eager" width="1800" />
+    </figure>
+    <p class="shot-note">Screens on this page are from a working product preview. The data shown is a
+      sample insurance workspace, not a customer's.</p>
+  </div>
+</div>
+
+<!-- ===== problem ===== -->
+<section>
+  <div class="wrap narrow">
+    <div class="eyebrow kicker">Why this exists</div>
+    <h2>The hard part comes after the model works</h2>
+    <p class="lede" style="margin-top:16px">Most AI programmes get the model right. What stops them
+      is the review. Someone in risk or internal audit asks where a figure came from, and answering
+      means pulling exports from four systems and reconstructing the path by hand. That takes weeks,
+      and the momentum behind the project usually does not survive it.</p>
+    <p>The EU AI Act has turned that question into a legal one. It expects training data you can
+      trace, human oversight on high-impact decisions, and technical documentation that matches how
+      the system actually runs. Most data platforms were never designed to answer on demand, so the
+      evidence gets assembled by hand every time somebody asks for it.</p>
+    <p>We built GQ Studio around the evidence instead. The audit trail is not something you generate
+      at the end of a quarter. The platform writes it as it works, and everything else reads from
+      it.</p>
+  </div>
+</section>
+
+<!-- ===== spine ===== -->
+<section class="tint">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow kicker">The path</div>
+      <h2>Where a value travels, and what signs it</h2>
+      <p class="lede">Every record moves through the same four stages, and each hop is signed as it
+        happens. Wherever you are in the product, you can see how far a value has come.</p>
+    </div>
+    <div class="spine">
+      <div class="stage"><div class="dot"></div><h3>Source</h3>
+        <p>You connect the systems you already run. Whatever arrives is kept as an immutable copy,
+          with the time it landed.</p></div>
+      <div class="stage"><div class="dot"></div><h3>Golden record</h3>
+        <p>Duplicates across those systems collapse into one record per real entity. The reason each
+          field survived is kept with it.</p></div>
+      <div class="stage"><div class="dot"></div><h3>Governed entity</h3>
+        <p>Policy attaches to the record. Who can read which field, from which region, in full or
+          masked.</p></div>
+      <div class="stage"><div class="dot"></div><h3>API</h3>
+        <p>Applications, models and agents read through one interface that applies the policy as
+          they query.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== platform layers ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow kicker">The platform</div>
+      <h2>One workspace, three layers</h2>
+      <p class="lede">GQ Studio is the single place your people work. Underneath it the platform is
+        built in three layers, and they go in that order because each one depends on the last.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="who">GQ Data</div>
+        <h3>The foundation</h3>
+        <p>Sources, resolution into golden records, master data, lineage, quality and the Graph API.
+          This is the layer that makes everything above it provable, and it stands on its own as a
+          product.</p>
+      </div>
+      <div class="card">
+        <div class="who">GQ Govern</div>
+        <h3>Policy and evidence</h3>
+        <p>Controls mapped to obligations, the canvas where policy gets composed, oversight of the
+          models, and the signed packs you hand to a regulator. It reads everything it needs from GQ
+          Data.</p>
+      </div>
+      <div class="card">
+        <div class="who">GQ Agents</div>
+        <h3>Governed execution</h3>
+        <p>Playbooks that do real industry work through the Graph API, inside the policies you
+          composed, with every step on the trail. This is the layer we are building next.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <p>The order is the whole argument. Structure and prove the data, then govern it, then let
+        agents act on it. Programmes that start at the agent and work backwards are the ones that end
+        up with results nobody can defend.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== what it does ===== -->
+<div id="what"></div>
+
+<section style="padding-bottom:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow kicker">What it does</div>
+      <h2>What you work with day to day</h2>
+      <p class="lede">Data engineers, stewards, compliance officers and AI engineers all work in the
+        same place, on the same records, against the same trail.</p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <!-- sources -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Connecting the systems you already run</h2>
+      <p class="lede" style="margin-top:14px">Everything starts here. You point the workspace at your
+        systems of record, or create managed storage inside it when there is nothing to point at
+        yet.</p>
+    </div>
+    <ul class="points">
+      <li>Connectors cover the shape most enterprise estates actually have. Change data capture off a
+        relational system of record, nightly batch out of object storage, REST from a SaaS CRM, and a
+        direct path into finance.</li>
+      <li>Every source is residency-checked before the first byte is read, and locked to the region
+        the workspace runs in.</li>
+      <li>Managed storage is provisioned in your own subscription inside that same region, encrypted
+        with workspace-managed keys, versioned, and immutable once ingested.</li>
+      <li>Records that fail your ingestion rules go to quarantine with the reason attached, so nothing
+        broken enters the pipeline quietly and nothing gets dropped on the floor either.</li>
+      <li>Connections, syncs and schema changes all land on the audit trail.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/sources.png" loading="lazy" alt="Sources screen listing connected systems with connector type, health, record counts, last sync and residency, plus managed storage and a quarantine panel." />
+    </figure>
+  </div>
+
+  <!-- resolve -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Resolution a steward can stand behind</h2>
+      <p class="lede" style="margin-top:14px">Matching handles most of the volume on its own. What is
+        left is judgement, so the product puts it in front of a person.</p>
+    </div>
+    <ul class="points">
+      <li>Anything above your auto-merge threshold merges without asking. Everything below it waits
+        in a queue with the match evidence attached, so the steward can see why the system thought
+        these were the same entity in the first place.</li>
+      <li>The steward chooses the surviving value field by field, with the source and the
+        last-updated date sitting next to each candidate.</li>
+      <li>Survivorship defaults come from the vertical pack, so most fields are already decided. A
+        manual pick overrides the default and is attributed to whoever made it.</li>
+      <li>That choice becomes part of the record's history and travels with it from then on.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/resolve.png" loading="lazy" alt="Steward review screen, comparing two candidate records field by field with source badges and a confidence score." />
+    </figure>
+  </div>
+
+  <!-- lineage -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Asking a value how it got here</h2>
+      <p class="lede" style="margin-top:14px">You give the box an identifier. A whole record, a single
+        field, a business key, a particular load. It returns the entire path.</p>
+    </div>
+    <ul class="points">
+      <li>Each hop carries a signature and names the person or process responsible, from the source
+        system through the raw record and the resolution decision to the golden record itself.</li>
+      <li>The chain is recomputed each time you ask for it, so tampering shows up.</li>
+      <li>You can export the whole trace as a signed pack scoped to one record, one decision or one
+        window of time, and hand it to a regulator as it is.</li>
+      <li>Running the check is itself an audited event.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/lineage.png" loading="lazy" alt="Lineage view tracing one field back through two raw records to two source systems, with a verified chain badge and a download audit pack action." />
+    </figure>
+  </div>
+
+  <!-- govern -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Knowing where you stand today</h2>
+      <p class="lede" style="margin-top:14px">The page answers one question. Are we compliant right
+        now? Controls evaluate continuously against live data rather than against last quarter's
+        screenshots.</p>
+    </div>
+    <ul class="points">
+      <li>Every control names the obligation it satisfies, so your conversation with audit starts
+        from a shared list.</li>
+      <li>A control either has current evidence attached to it or tells you what it is missing.</li>
+      <li>Residency and masking are enforced by the platform when the data is read, so what the
+        policy says and what actually happens stay the same thing.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/govern.png" loading="lazy" alt="Controls and compliance screen listing regulatory controls with current pass status and attached evidence." />
+    </figure>
+  </div>
+
+  <!-- quality -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Six quality dimensions, and a gate</h2>
+      <p class="lede" style="margin-top:14px">Every golden record is scored continuously on
+        completeness, accuracy, consistency, timeliness, uniqueness and validity. The score is not
+        decoration. It decides what the API will hand out.</p>
+    </div>
+    <ul class="points">
+      <li>You set the publish gate. Anything scoring below it is held back from the governed API, so a
+        model cannot quietly train on records you would never have signed off.</li>
+      <li>Below-gate data is still reachable when someone genuinely needs it, but only with an
+        explicit flag on the request, and that access is logged like everything else.</li>
+      <li>Scores break out per entity with a seven day trend, so you see a dimension slipping while it
+        is still a trend and not yet an incident.</li>
+      <li>When something does drift, the platform names the likely cause and offers the fix as a block
+        you can drop straight onto the workflow canvas.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/quality.png" loading="lazy" alt="Quality screen scoring six dimensions with a publish gate, a per-entity scorecard with seven day trends, and drift alerts with suggested fixes." />
+    </figure>
+  </div>
+
+  <!-- audit -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>The audit trail</h2>
+      <p class="lede" style="margin-top:14px">One continuous record of what the platform and the
+        people using it actually did, written so a reviewer can read it.</p>
+    </div>
+    <ul class="points">
+      <li>Events are in plain language. Who did what, to which record, and why they did it.</li>
+      <li>They are hash-chained and kept apart from the operational stores, and verification
+        recomputes the chain from scratch.</li>
+      <li>A steward's merge and an agent's retrieval are recorded the same way, so people and
+        machines sit on one timeline.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/audit.png" loading="lazy" alt="Live audit trail listing signed events from ingest, resolve and govern with expandable reasons." />
+    </figure>
+  </div>
+
+  <!-- workflows -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Composing policy on a canvas</h2>
+      <p class="lede" style="margin-top:14px">Business rules live somewhere your team can read them.
+        When something genuinely needs code, there is a governed way to add it.</p>
+    </div>
+    <ul class="points">
+      <li>Masking, residency, approval gates and thresholds are blocks you arrange into a workflow,
+        so changing a rule does not mean waiting for a release.</li>
+      <li>Vertical packs ship templates for the domain, so you start by editing something rather
+        than facing an empty canvas.</li>
+      <li>A custom block runs sandboxed under the workflow's own identity rather than yours. It
+        cannot be published without documentation, and a second admin has to approve it.</li>
+      <li>Everything published is versioned, attributable and reversible.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/workflows.png" loading="lazy" alt="Workflow canvas composing policy blocks, with a palette of governed blocks and a publishing path." />
+    </figure>
+  </div>
+
+  <!-- api + models -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>One path to the model</h2>
+      <p class="lede" style="margin-top:14px">Applications and agents read their context through the
+        Graph API. Policy applies as the query runs, and every request lands in the audit trail.</p>
+    </div>
+    <ul class="points">
+      <li>Masking, residency and role scope resolve at read time, so nobody ends up working from a
+        stale copy with the old rules baked into it.</li>
+      <li>Authentication goes through your own identity provider on standard OAuth2 and OIDC, and
+        tenant isolation is checked on every call.</li>
+      <li>On the model itself, a frontier LLM is not always the right answer. Sometimes it is a
+        shaped prompt, sometimes a small model trained for one node and nothing else. We tell you
+        which one your node needs before we build it. A specialised model can run on hardware you
+        own, so the cost follows the machine instead of the call volume.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/api.png" loading="lazy" alt="Graph API screen showing per-request policy checks, OAuth2 and OIDC authentication and full request logging." />
+    </figure>
+    <figure class="shot">
+      <img src="shots/models.png" loading="lazy" alt="AI models screen showing PII masking before context leaves the platform, retrieval logging, drift monitoring and automated factsheets." />
+    </figure>
+  </div>
+
+  <!-- agents -->
+  <div class="feat">
+    <div class="sec-head">
+      <h2>Agents, once the foundation is under them</h2>
+      <p class="lede" style="margin-top:14px">This is the layer we are building next, and it only
+        makes sense in this order. An agent is never more defensible than the data and the policy
+        underneath it.</p>
+    </div>
+    <ul class="points">
+      <li>Playbooks ship with the vertical pack and run as they are. Your own agents come in through
+        the SDK and get the same runtime and the same guardrails.</li>
+      <li>Agents read through the Graph API like anything else, so residency, masking and role scope
+        already apply to them. There is no second policy engine to keep in sync.</li>
+      <li>High-impact steps stop and wait for a person. Someone can approve, hold or overrule an agent
+        at any point, and the override is itself a signed event.</li>
+      <li>Each step streams onto the audit trail as it happens, carrying the prompt, the context it
+        was allowed to see, the decision and the actor, replayable from one end to the other.</li>
+      <li>The first pack playbooks cover claims triage and fraud investigation. The investigation
+        copilot assembles the picture and cites its sources. It does not decide.</li>
+    </ul>
+    <figure class="shot">
+      <img src="shots/agents.png" loading="lazy" alt="Agent playbooks screen showing the agent runtime, a real-time evidence stream into the audit trail, human oversight controls, and insurance claims playbooks." />
+    </figure>
+  </div>
+
+</div>
+
+<!-- ===== deployment ===== -->
+<section class="tint" id="deploy">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow kicker">Deployment</div>
+      <h2>It runs where your data already is</h2>
+      <p class="lede">Greyquill installs into your environment. Your cloud account, your region, your
+        identity provider, your keys. Nothing has to leave in order to be governed.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <h3>Your own infrastructure</h3>
+        <p>It deploys into an account you own and can audit. The major clouds are supported, and the
+          pattern is the same on each of them.</p>
+      </div>
+      <div class="card">
+        <h3>Residency you can check</h3>
+        <p>Where data is allowed to live gets verified when a source is connected, then enforced on
+          every read after that.</p>
+      </div>
+      <div class="card">
+        <h3>Getting your data out</h3>
+        <p>Golden records, lineage and the audit trail export in open formats whenever you want
+          them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== audience ===== -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow kicker">What each seat gets</div>
+      <h2>The same platform, read three ways</h2>
+    </div>
+    <div class="grid g3">
+      <div class="card">
+        <div class="who">Chief technology</div>
+        <h3>One place to integrate</h3>
+        <p>Teams stop rebuilding entity resolution and access policy for every new project. They read
+          governed context through one API, and the governance arrives with it.</p>
+      </div>
+      <div class="card">
+        <div class="who">Chief financial</div>
+        <h3>Where the cost goes</h3>
+        <p>Evidence work moves from repeated manual effort to a query somebody runs. Where a
+          specialised model suits a node, it can run on hardware you own, which turns a per-call bill
+          into a fixed one.</p>
+      </div>
+      <div class="card">
+        <div class="who">Risk and compliance</div>
+        <h3>Ready before the meeting</h3>
+        <p>Control status is current, the evidence is already attached, and any record's history
+          exports as a signed pack. You walk into the review holding the answers.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><b>Vertical packs.</b> The platform underneath is the same everywhere. What changes by
+        industry is the pack: the entity model, the survivorship defaults, the control set and the
+        workflows you start from. Insurance claims is the first one. A pack is configuration rather
+        than a fork, so you keep getting platform improvements as they land.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== questions ===== -->
+<section id="questions">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow kicker">Questions</div>
+      <h2>What people ask us first</h2>
+    </div>
+    <div class="qa">
+      <div>
+        <h3>Does this replace our warehouse or our lake?</h3>
+        <p>No, and we would push back if someone suggested it. GQ Studio sits alongside them. It reads
+          from your systems of record and serves governed entities out. Your warehouse carries on
+          doing analytics with the same data.</p>
+      </div>
+      <div>
+        <h3>Do we have to move our data to you?</h3>
+        <p>No. The platform deploys into your own environment and reads in place. Raw copies stay in
+          your region, under your keys, in an account you control.</p>
+      </div>
+      <div>
+        <h3>We already have a catalogue and lineage tooling.</h3>
+        <p>Most of our conversations start there. A catalogue tells you what exists and roughly where
+          it came from. This answers what happened to one specific value, at field level, signed, and
+          gives you the evidence pack to hand over. They coexist comfortably.</p>
+      </div>
+      <div>
+        <h3>We have already invested in master data management.</h3>
+        <p>Then you are ahead. Bring your existing survivorship rules in as pack configuration and the
+          resolution layer will use them rather than asking your stewards to relearn anything.</p>
+      </div>
+      <div>
+        <h3>How long before we see something real?</h3>
+        <p>It depends on how many sources are in scope and how settled your entity definitions are. We
+          aim at one governed entity serving through the API as the first milestone, because that
+          proves the whole chain end to end. Migrating an entire estate is a much later
+          conversation.</p>
+      </div>
+      <div>
+        <h3>Can we run the models on our own hardware?</h3>
+        <p>Yes, and for a lot of nodes you should. Where a specialised model does the job, it can run
+          on a machine you own, which changes the cost from a per-call bill into a fixed one.</p>
+      </div>
+      <div>
+        <h3>What happens to all of this if we stop working with you?</h3>
+        <p>Your golden records, the lineage and the full audit trail export in open formats whenever
+          you ask. The evidence is yours, not something you rent from us.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== partners ===== -->
+<section class="tint">
+  <div class="wrap narrow">
+    <div class="eyebrow kicker">Ecosystem</div>
+    <h2>Agent identity, with Synthera</h2>
+    <p class="lede" style="margin-top:16px">When a person acts in GQ Studio, the trail records
+      exactly who they were. Agents should meet the same standard, and today most of them do not.</p>
+    <p>An agent typically calls an API using a service account, so what the log records is the
+      service. Not which agent it was, not who it was acting for, and not what authority it had been
+      given. That is a real problem once an agent can move money, close a claim or release a record,
+      because the oversight obligation is written about accountable actions and a shared service
+      account cannot tell you who was accountable.</p>
+    <p>We are working with Synthera on VAID, an open standard for verifiable agent-action identity.
+      Rather than putting a broker in the middle, VAID specifies the bytes. A request is
+      canonicalised with RFC 8785, hashed with SHA-256, then signed with Ed25519. Any client that
+      follows the specification produces a signature that any conforming verifier accepts, across
+      languages, with no shared runtime and no network service in between.</p>
+    <p>The part that matters for governance is delegation. A VAID is bound to a specific action, and
+      it can be attenuated when it is handed on, so an agent can be given strictly narrower authority
+      than the person who delegated it, and that narrowing is inside the signed object rather than in
+      a config file somewhere. Signatures carry a timestamp and a nonce so they cannot be replayed,
+      and they expire on a short lifetime by default.</p>
+    <p>For GQ Studio this closes the last gap. The chain is already signed from the source system
+      through resolution to the governed entity. VAID signs the caller at the far end, so "which
+      agent read this record, acting for whom, under what authority" gets answered the same way
+      "which steward merged this record" already does.</p>
+
+    <div class="specrow">
+      <div><span class="k">Standard</span>Verifiable agent-action identity, proof of possession</div>
+      <div><span class="k">Signing</span>RFC 8785 canonicalisation, SHA-256, Ed25519</div>
+      <div><span class="k">Implementations</span>Rust and Python, plus a LangChain adapter</div>
+      <div><span class="k">Licence</span>Apache-2.0, maintained by solara.associates</div>
+    </div>
+    <p style="margin-top:22px"><a class="btn ghost" href="https://github.com/solara-associates/vaid"
+      rel="noopener">Read the VAID specification on GitHub</a></p>
+  </div>
+</section>
+
+<!-- ===== who we are ===== -->
+<section>
+  <div class="wrap narrow">
+    <div class="eyebrow kicker">Who we are</div>
+    <h2>Who you would be working with</h2>
+    <p class="lede" style="margin-top:16px">Greyquill is an enterprise AI consulting firm and an IBM
+      Business Partner, based in Bengaluru, working with regulated organisations across banking,
+      insurance, retail and telecom.</p>
+    <p>The people building this have spent their careers delivering data and AI programmes inside
+      large, audited enterprises. That is the reason the product looks the way it does. Most of the
+      decisions behind these screens came out of an argument about what an auditor would actually
+      accept, which is a different question from what would demo well.</p>
+    <p>We are a consulting firm as much as a product team, and at this stage that matters. Getting a
+      governed foundation in place is part product and part method. We do both, and we would rather
+      be in the room while you do it.</p>
+  </div>
+</section>
+
+<!-- ===== close ===== -->
+<div class="close" id="talk">
+  <div class="wrap narrow">
+    <div class="eyebrow kicker" style="color:#8fc6f0">Design partners</div>
+    <h2>We are taking on a small number of design partners</h2>
+    <p style="margin-top:16px">GQ Studio is in product preview, and a small number of early clients
+      are already running it with us. We are keeping that group deliberately small, because at this
+      stage we work alongside your team rather than handing over a licence and a manual and wishing
+      you luck.</p>
+    <p>In practice that means we help stand it up in your environment, shape the vertical pack around
+      how your domain actually works, and stay reachable while your people get used to it. When
+      something needs changing, you are talking to the person who will change it, not to a queue.</p>
+    <p>If your AI programme is held up by someone asking you to prove where the data came from, it is
+      worth a conversation.</p>
+    <a class="btn" href="https://calendly.com/greyquill/30min" target="_blank"
+       rel="noopener">Book a demo</a>
+    <p style="margin-top:22px;font-size:14px">Thirty minutes, and we will walk you through the
+      product on a real workspace. Or write to
+      <a class="mail" href="mailto:hello@greyquill.io">hello@greyquill.io</a>.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="/dc/">Document Center</a> · © Greyquill. Shared in confidence with partners and
+    prospective customers.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice Matching Logic — GST Co-Pilot</title>
+<style>
+  :root {
+    --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
+    --text: #e2e8f0; --text-dim: #8892a4;
+    --accent: #60a5fa; --accent2: #818cf8; --green: #34d399; --amber: #fbbf24;
+    --red: #f87171; --cyan: #22d3ee; --purple: #a78bfa; --pink: #f472b6; --orange: #fb923c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+  .header { text-align: center; padding: 48px 24px 32px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #1a1a0f 0%, var(--bg) 100%); }
+  .header h1 { font-size: 32px; font-weight: 700; background: linear-gradient(135deg, var(--amber), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  .header p { color: var(--text-dim); font-size: 15px; max-width: 780px; margin: 0 auto; }
+  .header-nav { margin-top: 16px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .header-nav a { color: var(--accent); text-decoration: none; font-size: 12px; padding: 4px 12px; border: 1px solid rgba(96,165,250,0.4); border-radius: 12px; transition: all .2s; }
+  .header-nav a:hover { background: rgba(96,165,250,0.1); border-color: var(--accent); }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+  .section-title { font-size: 20px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .section-sub { font-size: 13px; color: var(--text-dim); margin-top: -8px; margin-bottom: 24px; max-width: 900px; }
+
+  /* Problem statement */
+  .problem-grid { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: center; margin-bottom: 40px; }
+  .problem-side { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; }
+  .problem-side h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .problem-side .src-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 3px 10px; border-radius: 6px; display: inline-block; margin-bottom: 12px; }
+  .problem-vs { text-align: center; font-size: 14px; font-weight: 700; color: var(--text-dim); }
+  .problem-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(42,53,72,0.4); font-size: 12px; }
+  .problem-row:last-child { border-bottom: none; }
+  .problem-row .field { color: var(--text-dim); }
+  .problem-row .val { font-family: 'SF Mono', monospace; font-size: 12px; }
+
+  /* Pipeline steps */
+  .pipe-ladder { margin-bottom: 48px; }
+  .pipe-step { display: grid; grid-template-columns: 48px 1fr; gap: 16px; position: relative; padding-bottom: 20px; }
+  .pipe-step:not(:last-child)::before { content: ""; position: absolute; left: 23px; top: 48px; bottom: 0; width: 2px; background: var(--border); }
+  .pipe-num { width: 48px; height: 48px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--amber); flex-shrink: 0; z-index: 1; }
+  .pipe-body { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; }
+  .pipe-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .pipe-body p { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
+  .pipe-example { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; font-family: 'SF Mono', monospace; font-size: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pipe-example .before { color: var(--red); text-decoration: line-through; opacity: 0.7; }
+  .pipe-example .arrow { color: var(--text-dim); }
+  .pipe-example .after { color: var(--green); font-weight: 600; }
+  .pipe-example .tag { font-size: 10px; color: var(--amber); background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); border-radius: 4px; padding: 1px 6px; margin-left: auto; }
+
+  /* Interactive demo */
+  .demo-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 48px; }
+  .demo-panel h3 { font-size: 15px; margin-bottom: 16px; }
+  .demo-input-row { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+  .demo-input-row input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'SF Mono', monospace; font-size: 13px; flex: 1; min-width: 200px; outline: none; }
+  .demo-input-row input:focus { border-color: var(--accent); }
+  .demo-input-row button { background: var(--accent); color: #000; border: none; border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap; }
+  .demo-input-row button:hover { background: #7db8fc; }
+  .demo-result { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-family: 'SF Mono', monospace; font-size: 12px; line-height: 1.8; min-height: 60px; }
+  .demo-result .label { color: var(--text-dim); }
+  .demo-result .value { color: var(--green); font-weight: 600; }
+  .demo-result .transform { color: var(--amber); font-size: 11px; }
+
+  /* Matching key table */
+  .key-table { width: 100%; border-collapse: collapse; margin-bottom: 48px; }
+  .key-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim); padding: 10px 14px; border-bottom: 2px solid var(--border); }
+  .key-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  .key-table tr:hover { background: rgba(96,165,250,0.03); }
+  .key-table .pass-name { font-family: 'SF Mono', monospace; font-weight: 700; font-size: 12px; }
+  .key-table .check { color: var(--green); font-weight: 700; }
+  .key-table .cross { color: var(--red); opacity: 0.5; }
+  .key-table .partial { color: var(--amber); }
+  .key-table .conf { font-family: 'SF Mono', monospace; font-weight: 700; }
+
+  /* Real-world examples */
+  .example-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px; margin-bottom: 48px; }
+  .example-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .example-card .ex-scenario { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .example-card .ex-row { display: grid; grid-template-columns: 80px 1fr; gap: 8px; font-size: 12px; padding: 4px 0; }
+  .example-card .ex-label { color: var(--text-dim); }
+  .example-card .ex-val { font-family: 'SF Mono', monospace; font-size: 12px; }
+  .example-card .ex-result { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .example-card .ex-pass { font-family: 'SF Mono', monospace; font-weight: 600; }
+  .example-card .ex-conf { font-family: 'SF Mono', monospace; font-weight: 700; }
+
+  /* Flow waterfall */
+  .waterfall { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 48px; overflow-x: auto; }
+  .waterfall h3 { font-size: 15px; margin-bottom: 16px; }
+  .wf-row { display: grid; grid-template-columns: 120px 1fr 80px 60px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(42,53,72,0.4); font-size: 12px; }
+  .wf-row:last-child { border-bottom: none; }
+  .wf-row .wf-pass { font-family: 'SF Mono', monospace; font-weight: 600; }
+  .wf-row .wf-bar-wrap { height: 18px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
+  .wf-row .wf-bar { height: 100%; border-radius: 4px; transition: width .6s ease; }
+  .wf-row .wf-count { font-family: 'SF Mono', monospace; font-weight: 700; text-align: right; }
+  .wf-row .wf-pct { font-size: 11px; color: var(--text-dim); text-align: right; }
+
+  /* Anchor field explainer */
+  .anchor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 48px; }
+  .anchor-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; text-align: center; }
+  .anchor-card .a-field { font-family: 'SF Mono', monospace; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .anchor-card .a-role { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+  .anchor-card.primary { border-color: rgba(52,211,153,0.5); border-width: 2px; }
+  .anchor-card.primary .a-field { color: var(--green); }
+
+  @media (max-width: 900px) {
+    .problem-grid { grid-template-columns: 1fr; gap: 12px; }
+    .problem-vs { display: none; }
+    .key-table { font-size: 11px; }
+    .key-table td, .key-table th { padding: 8px 10px; }
+    .wf-row { grid-template-columns: 100px 1fr 60px 50px; }
+    .example-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Invoice Matching Logic</h1>
+  <p>How the system decides that an invoice in your purchase register and an invoice in GSTR-2B are the same document. Covers normalization, matching keys, and the 5-pass waterfall.</p>
+  <div class="header-nav">
+    <a href="index.html">&larr; Architecture Overview</a>
+    <a href="data-flow.html">Data Flow</a>
+    <a href="reconciliation-engine.html">Reconciliation Engine</a>
+    <a href="reconciliation-workbench.html">Reconciliation Workbench &rarr;</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== THE PROBLEM ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--red)"></span> The Problem</div>
+  <p class="section-sub">The same invoice appears differently in two data sources. The system must recognize they refer to the same real-world transaction.</p>
+
+  <div class="problem-grid">
+    <div class="problem-side" style="border-left: 3px solid var(--cyan);">
+      <span class="src-badge" style="background:rgba(34,211,238,0.15); color:var(--cyan);">Purchase Register (Books)</span>
+      <h3 style="color:var(--cyan);">What your accountant entered</h3>
+      <div class="problem-row"><span class="field">Invoice #</span><span class="val" style="color:var(--cyan);">INV-2026/00042</span></div>
+      <div class="problem-row"><span class="field">Supplier GSTIN</span><span class="val">29AABCM1234F1Z5</span></div>
+      <div class="problem-row"><span class="field">Date</span><span class="val">15-04-2026</span></div>
+      <div class="problem-row"><span class="field">Total</span><span class="val">1,18,000.00</span></div>
+      <div class="problem-row"><span class="field">Source</span><span class="val" style="color:var(--text-dim);">Tally ERP export</span></div>
+    </div>
+    <div class="problem-vs">vs</div>
+    <div class="problem-side" style="border-left: 3px solid var(--amber);">
+      <span class="src-badge" style="background:rgba(251,191,36,0.15); color:var(--amber);">GSTR-2B (Government Portal)</span>
+      <h3 style="color:var(--amber);">What the supplier filed</h3>
+      <div class="problem-row"><span class="field">Invoice #</span><span class="val" style="color:var(--amber);">202600042</span></div>
+      <div class="problem-row"><span class="field">Supplier GSTIN</span><span class="val">29AABCM1234F1Z5</span></div>
+      <div class="problem-row"><span class="field">Date</span><span class="val">15-04-2026</span></div>
+      <div class="problem-row"><span class="field">Total</span><span class="val">1,18,000.00</span></div>
+      <div class="problem-row"><span class="field">Source</span><span class="val" style="color:var(--text-dim);">GST Portal auto-draft</span></div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:48px; font-size:13px; color:var(--text-dim); border-left:3px solid var(--amber);">
+    These are the <strong style="color:var(--text);">same invoice</strong>. The supplier filed <code style="color:var(--amber);">202600042</code> on the GST portal, but your Tally export has it as <code style="color:var(--cyan);">INV-2026/00042</code> with a prefix and slashes. Without normalization, the system would flag this as <strong style="color:var(--red);">"Missing in GSTR-2B"</strong> &mdash; a false ITC risk alert.
+  </div>
+
+  <!-- ===== ANCHOR FIELDS ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--green)"></span> What Makes Two Invoices "The Same"?</div>
+  <p class="section-sub">Four fields identify an invoice. The system uses different combinations at each pass, trading strictness for recall.</p>
+
+  <div class="anchor-grid">
+    <div class="anchor-card primary">
+      <div class="a-field">supplier_gstin</div>
+      <div class="a-role">The anchor in <strong>every</strong> pass. Same supplier must have issued both records. 15-char alphanumeric, always exact match.</div>
+    </div>
+    <div class="anchor-card">
+      <div class="a-field" style="color:var(--accent);">invoice_number</div>
+      <div class="a-role">The primary identity. Used in passes 1-3. Normalized before comparison (prefix strip, separator removal, case fold).</div>
+    </div>
+    <div class="anchor-card">
+      <div class="a-field" style="color:var(--amber);">invoice_value</div>
+      <div class="a-role">The amount anchor. Used in passes 2, 4, and 5. Tolerance: exact (&plusmn;Rs 1), loose (&plusmn;1-2%).</div>
+    </div>
+    <div class="anchor-card">
+      <div class="a-field" style="color:var(--purple);">invoice_date</div>
+      <div class="a-role">Date proximity check. Used only in Pass 4 (&plusmn;7 days). Catches same-amount invoices from the same supplier in the same week.</div>
+    </div>
+  </div>
+
+  <!-- ===== MATCHING KEY MATRIX ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> Matching Key Matrix</div>
+  <p class="section-sub">What each pass checks. Every pass requires GSTIN to match exactly &mdash; the other fields vary.</p>
+
+  <table class="key-table">
+    <thead>
+      <tr>
+        <th>Pass</th>
+        <th>GSTIN</th>
+        <th>Invoice Reference (IRN)</th>
+        <th>Invoice Number</th>
+        <th>Invoice Value</th>
+        <th>Invoice Date</th>
+        <th>Confidence</th>
+        <th>Needs Review?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pass-name" style="color:var(--green);">Pass 1 &middot; IRN</span></td>
+        <td class="check">&mdash;</td>
+        <td class="check">Exact</td>
+        <td class="cross">&mdash;</td>
+        <td class="cross">&mdash;</td>
+        <td class="cross">&mdash;</td>
+        <td><span class="conf" style="color:var(--green);">1.00</span></td>
+        <td style="color:var(--green);">No</td>
+      </tr>
+      <tr>
+        <td><span class="pass-name" style="color:var(--accent);">Pass 2 &middot; Exact</span></td>
+        <td class="check">Exact</td>
+        <td class="cross">&mdash;</td>
+        <td class="check">Exact (normalized)</td>
+        <td class="check">&plusmn; Rs 1</td>
+        <td class="cross">&mdash;</td>
+        <td><span class="conf" style="color:var(--accent);">0.95</span></td>
+        <td style="color:var(--green);">No</td>
+      </tr>
+      <tr>
+        <td><span class="pass-name" style="color:var(--amber);">Pass 3 &middot; Fuzzy</span></td>
+        <td class="check">Exact</td>
+        <td class="cross">&mdash;</td>
+        <td class="partial">Fuzzy &ge; 85%</td>
+        <td class="cross">&mdash;</td>
+        <td class="cross">&mdash;</td>
+        <td><span class="conf" style="color:var(--amber);">0.80</span></td>
+        <td style="color:var(--green);">No</td>
+      </tr>
+      <tr>
+        <td><span class="pass-name" style="color:var(--orange);">Pass 4 &middot; Amt+Date</span></td>
+        <td class="check">Exact</td>
+        <td class="cross">&mdash;</td>
+        <td class="cross">&mdash;</td>
+        <td class="check">&plusmn; 2%</td>
+        <td class="check">&plusmn; 7 days</td>
+        <td><span class="conf" style="color:var(--orange);">0.65</span></td>
+        <td style="color:var(--amber);">Yes</td>
+      </tr>
+      <tr>
+        <td><span class="pass-name" style="color:var(--red);">Pass 5 &middot; Loose</span></td>
+        <td class="check">Exact</td>
+        <td class="cross">&mdash;</td>
+        <td class="cross">&mdash;</td>
+        <td class="check">&plusmn; 1%</td>
+        <td class="cross">&mdash;</td>
+        <td><span class="conf" style="color:var(--red);">0.45</span></td>
+        <td style="color:var(--red);">Always</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== NORMALIZATION PIPELINE ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--amber)"></span> Invoice Number Normalization Pipeline</div>
+  <p class="section-sub">Before Pass 2 compares invoice numbers, both sides go through this 6-step normalization. The goal: remove formatting noise so that the underlying number can be compared.</p>
+
+  <div class="pipe-ladder">
+    <div class="pipe-step">
+      <div class="pipe-num">1</div>
+      <div class="pipe-body">
+        <h4>Strip Whitespace</h4>
+        <p>Leading and trailing spaces are removed. Tally exports often pad invoice numbers.</p>
+        <div class="pipe-example">
+          <span class="before">&nbsp; INV-2026/001 &nbsp;</span>
+          <span class="arrow">&rarr;</span>
+          <span class="after">INV-2026/001</span>
+          <span class="tag">trim</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">2</div>
+      <div class="pipe-body">
+        <h4>Strip Known Prefixes</h4>
+        <p>Removes common invoice prefixes that ERPs add but the GST portal strips. Case-insensitive match. Recognized: <code>INV-</code>, <code>INV/</code>, <code>BILL-</code>, <code>BILL/</code>, <code>TAX-</code>, <code>TAX/</code>.</p>
+        <div class="pipe-example">
+          <span class="before">INV-2026/001</span>
+          <span class="arrow">&rarr;</span>
+          <span class="after">2026/001</span>
+          <span class="tag">stripped_prefix:INV-</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">3</div>
+      <div class="pipe-body">
+        <h4>Remove Separators</h4>
+        <p>Hyphens (<code>-</code>), slashes (<code>/</code>), dots (<code>.</code>), and spaces are all deleted. Different ERP systems use different separators for the same number.</p>
+        <div class="pipe-example">
+          <span class="before">2026/001</span>
+          <span class="arrow">&rarr;</span>
+          <span class="after">2026001</span>
+          <span class="tag">normalized_separators</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">4</div>
+      <div class="pipe-body">
+        <h4>Strip Special Characters</h4>
+        <p>Everything except <code>a-z</code>, <code>A-Z</code>, <code>0-9</code> is removed. Catches stray <code>#</code>, <code>@</code>, unicode characters.</p>
+        <div class="pipe-example">
+          <span class="before">2026001#A</span>
+          <span class="arrow">&rarr;</span>
+          <span class="after">2026001A</span>
+          <span class="tag">stripped_special_chars</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">5</div>
+      <div class="pipe-body">
+        <h4>Strip Leading Zeros</h4>
+        <p>Tally often pads with zeros (<code>00042</code>). The GST portal usually doesn't. Minimum result: <code>0</code>.</p>
+        <div class="pipe-example">
+          <span class="before">00042</span>
+          <span class="arrow">&rarr;</span>
+          <span class="after">42</span>
+          <span class="tag">stripped_leading_zeros</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipe-step">
+      <div class="pipe-num">6</div>
+      <div class="pipe-body">
+        <h4>Case Fold to Uppercase</h4>
+        <p>Final step. <code>inv</code> and <code>INV</code> become identical after this.</p>
+        <div class="pipe-example">
+          <span class="before">abc123def</span>
+          <span class="arrow">&rarr;</span>
+          <span class="after">ABC123DEF</span>
+          <span class="tag">case_folded</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== INTERACTIVE DEMO ===== -->
+  <div class="demo-panel">
+    <h3 style="color:var(--amber);">Try It &mdash; Invoice Number Normalizer</h3>
+    <p style="font-size:12px; color:var(--text-dim); margin-bottom:16px;">Enter an invoice number to see how the normalization pipeline transforms it. The "normalized" output is what Pass 2 actually compares.</p>
+    <div class="demo-input-row">
+      <input type="text" id="norm-input" placeholder="e.g. INV-2026/00042" value="INV-2026/00042">
+      <button onclick="runNormalize()">Normalize</button>
+    </div>
+    <div class="demo-result" id="norm-result">
+      <span class="label">Enter a value and click Normalize</span>
+    </div>
+
+    <h3 style="color:var(--green); margin-top:24px;">Try It &mdash; Match Comparison</h3>
+    <p style="font-size:12px; color:var(--text-dim); margin-bottom:16px;">Enter two invoice numbers to see if they would match after normalization and what similarity score they get.</p>
+    <div class="demo-input-row">
+      <input type="text" id="match-a" placeholder="Books invoice #" value="INV-2026/00042">
+      <input type="text" id="match-b" placeholder="GSTR-2B invoice #" value="202600042">
+      <button onclick="runMatch()">Compare</button>
+    </div>
+    <div class="demo-result" id="match-result">
+      <span class="label">Enter two values and click Compare</span>
+    </div>
+  </div>
+
+  <!-- ===== REAL-WORLD EXAMPLES ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Real-World Matching Examples</div>
+  <p class="section-sub">Common scenarios from GST reconciliation showing which pass catches each case and why.</p>
+
+  <div class="example-grid">
+    <div class="example-card" style="border-left: 3px solid var(--green);">
+      <div class="ex-scenario" style="color:var(--green);">E-Invoice with IRN</div>
+      <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">INV-2026/1001, IRN: abc...xyz</span></div>
+      <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">20261001, IRN: abc...xyz</span></div>
+      <div class="ex-result">
+        <span class="ex-pass" style="color:var(--green);">Pass 1 &middot; IRN_EXACT</span>
+        <span class="ex-conf" style="color:var(--green);">1.00</span>
+      </div>
+    </div>
+
+    <div class="example-card" style="border-left: 3px solid var(--accent);">
+      <div class="ex-scenario" style="color:var(--accent);">Prefix + Separator Difference</div>
+      <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">INV-2026/00042</span></div>
+      <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">202600042</span></div>
+      <div class="ex-row"><span class="ex-label">Normalized</span><span class="ex-val" style="color:var(--green);">Both &rarr; 202600042</span></div>
+      <div class="ex-result">
+        <span class="ex-pass" style="color:var(--accent);">Pass 2 &middot; EXACT_MATCH</span>
+        <span class="ex-conf" style="color:var(--accent);">0.95</span>
+      </div>
+    </div>
+
+    <div class="example-card" style="border-left: 3px solid var(--accent);">
+      <div class="ex-scenario" style="color:var(--accent);">Leading Zeros Stripped</div>
+      <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">BILL-00123</span></div>
+      <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">123</span></div>
+      <div class="ex-row"><span class="ex-label">Normalized</span><span class="ex-val" style="color:var(--green);">Both &rarr; 123</span></div>
+      <div class="ex-result">
+        <span class="ex-pass" style="color:var(--accent);">Pass 2 &middot; EXACT_MATCH</span>
+        <span class="ex-conf" style="color:var(--accent);">0.95</span>
+      </div>
+    </div>
+
+    <div class="example-card" style="border-left: 3px solid var(--amber);">
+      <div class="ex-scenario" style="color:var(--amber);">OCR Typo (I &rarr; 1)</div>
+      <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">INV-0426-789</span></div>
+      <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">1NV0426789</span></div>
+      <div class="ex-row"><span class="ex-label">Normalized</span><span class="ex-val" style="color:var(--amber);">0426789 vs 1NV0426789 (87% similar)</span></div>
+      <div class="ex-result">
+        <span class="ex-pass" style="color:var(--amber);">Pass 3 &middot; FUZZY_INVOICE</span>
+        <span class="ex-conf" style="color:var(--amber);">0.80</span>
+      </div>
+    </div>
+
+    <div class="example-card" style="border-left: 3px solid var(--orange);">
+      <div class="ex-scenario" style="color:var(--orange);">Completely Different Numbers</div>
+      <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">PO-2026-0099 (purchase order #)</span></div>
+      <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">SI-88712 (sales invoice #)</span></div>
+      <div class="ex-row"><span class="ex-label">But</span><span class="ex-val" style="color:var(--orange);">Same GSTIN, amount &plusmn;1.5%, date &plusmn;2 days</span></div>
+      <div class="ex-result">
+        <span class="ex-pass" style="color:var(--orange);">Pass 4 &middot; AMOUNT_DATE</span>
+        <span class="ex-conf" style="color:var(--orange);">0.65</span>
+      </div>
+    </div>
+
+    <div class="example-card" style="border-left: 3px solid var(--red);">
+      <div class="ex-scenario" style="color:var(--red);">Last Resort &mdash; Amount Only</div>
+      <div class="ex-row"><span class="ex-label">Books</span><span class="ex-val">GRN-44521, 15-Apr-2026, Rs 45,000</span></div>
+      <div class="ex-row"><span class="ex-label">GSTR-2B</span><span class="ex-val">TI/2026/891, 01-Apr-2026, Rs 45,200</span></div>
+      <div class="ex-row"><span class="ex-label">Match on</span><span class="ex-val" style="color:var(--red);">Same GSTIN + amount within 0.4%</span></div>
+      <div class="ex-result">
+        <span class="ex-pass" style="color:var(--red);">Pass 5 &middot; LOOSE_MATCH</span>
+        <span class="ex-conf" style="color:var(--red);">0.45</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WATERFALL ILLUSTRATION ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--purple)"></span> The Waterfall in Action</div>
+  <p class="section-sub">Illustrative breakdown for a typical month with ~200 book entries and ~195 GSTR-2B entries. Each pass eats from the unmatched pool &mdash; leftovers flow down.</p>
+
+  <div class="waterfall">
+    <h3 style="color:var(--purple);">Match Waterfall (illustrative &mdash; 200 books vs 195 GSTR-2B)</h3>
+    <div class="wf-row">
+      <div class="wf-pass" style="color:var(--green);">Pass 1 &middot; IRN</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:35%; background:var(--green);"></div></div>
+      <div class="wf-count" style="color:var(--green);">68</div>
+      <div class="wf-pct">35%</div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-pass" style="color:var(--accent);">Pass 2 &middot; Exact</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:38%; background:var(--accent);"></div></div>
+      <div class="wf-count" style="color:var(--accent);">74</div>
+      <div class="wf-pct">38%</div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-pass" style="color:var(--amber);">Pass 3 &middot; Fuzzy</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:8%; background:var(--amber);"></div></div>
+      <div class="wf-count" style="color:var(--amber);">15</div>
+      <div class="wf-pct">8%</div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-pass" style="color:var(--orange);">Pass 4 &middot; Amt+Date</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:5%; background:var(--orange);"></div></div>
+      <div class="wf-count" style="color:var(--orange);">9</div>
+      <div class="wf-pct">5%</div>
+    </div>
+    <div class="wf-row">
+      <div class="wf-pass" style="color:var(--red);">Pass 5 &middot; Loose</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:2%; background:var(--red);"></div></div>
+      <div class="wf-count" style="color:var(--red);">4</div>
+      <div class="wf-pct">2%</div>
+    </div>
+    <div class="wf-row" style="border-top:2px solid var(--border); padding-top:12px;">
+      <div class="wf-pass" style="color:var(--pink);">Unmatched</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:12%; background:var(--pink);"></div></div>
+      <div class="wf-count" style="color:var(--pink);">30</div>
+      <div class="wf-pct">12%</div>
+    </div>
+  </div>
+
+  <!-- ===== UNMATCHED INVOICES ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--pink)"></span> What Happens to Unmatched Invoices?</div>
+  <p class="section-sub">After all 5 passes complete, leftover invoices with no match are classified into two buckets. These are the entries that need human attention &mdash; and the ITC risk scorer ensures the most critical ones surface first.</p>
+
+  <div style="display:grid; grid-template-columns:1fr 80px 1fr; gap:0; align-items:stretch; margin-bottom:32px;">
+
+    <!-- MISSING IN GSTR-2B -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--red); border-radius:12px; padding:22px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <span style="font-size:24px; line-height:1;">&#x26A0;</span>
+        <div>
+          <div style="font-family:'SF Mono',monospace; font-size:14px; font-weight:700; color:var(--red);">MISSING_IN_GSTR2B</div>
+          <div style="font-size:11px; color:var(--text-dim);">Book entry with no match in government data</div>
+        </div>
+      </div>
+      <div style="font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px;">
+        You recorded a purchase and claimed ITC, but the supplier <strong style="color:var(--text);">has not filed this invoice</strong> on the GST portal. Until the supplier files, the government does not recognize this ITC &mdash; it can be reversed during assessment.
+      </div>
+      <div style="font-size:12px; margin-bottom:10px;">
+        <strong style="color:var(--text);">Common causes:</strong>
+      </div>
+      <ul style="list-style:none; padding:0; font-size:12px; color:var(--text-dim);">
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Supplier hasn't filed their GSTR-1 yet (late filing)</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Supplier filed under a different GSTIN (branch vs HO)</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Invoice number entered completely differently by supplier</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--red); font-weight:700;">&rsaquo;</span> Bogus invoice &mdash; supplier doesn't exist or didn't issue it</li>
+      </ul>
+      <div style="margin-top:14px; padding:10px 14px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.2); border-radius:8px;">
+        <div style="font-size:11px; color:var(--red); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Risk Impact</div>
+        <div style="font-size:12px; color:var(--text-dim);"><strong style="color:var(--red);">+80 risk points</strong> &rarr; almost always <strong style="color:var(--red);">CRITICAL</strong> priority &rarr; <strong>3-day SLA</strong> for vendor follow-up</div>
+      </div>
+    </div>
+
+    <!-- VS -->
+    <div style="display:flex; align-items:center; justify-content:center;">
+      <div style="writing-mode:vertical-lr; font-size:12px; font-weight:700; color:var(--text-dim); letter-spacing:2px; text-transform:uppercase;">or</div>
+    </div>
+
+    <!-- MISSING IN BOOKS -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--amber); border-radius:12px; padding:22px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+        <span style="font-size:24px; line-height:1;">&#x1F4CB;</span>
+        <div>
+          <div style="font-family:'SF Mono',monospace; font-size:14px; font-weight:700; color:var(--amber);">MISSING_IN_BOOKS</div>
+          <div style="font-size:11px; color:var(--text-dim);">GSTR-2B entry with no match in purchase register</div>
+        </div>
+      </div>
+      <div style="font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px;">
+        The supplier filed an invoice for you on the portal, but <strong style="color:var(--text);">it's not in your books</strong>. You may be missing out on legitimate ITC, or the supplier filed incorrectly.
+      </div>
+      <div style="font-size:12px; margin-bottom:10px;">
+        <strong style="color:var(--text);">Common causes:</strong>
+      </div>
+      <ul style="list-style:none; padding:0; font-size:12px; color:var(--text-dim);">
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Purchase not yet recorded in Tally/Zoho (data entry lag)</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Invoice booked in wrong period (e.g. March books, April GSTR-2B)</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Supplier filed an invoice to the wrong buyer GSTIN</li>
+        <li style="padding:3px 0; display:flex; gap:6px;"><span style="color:var(--amber); font-weight:700;">&rsaquo;</span> Duplicate filing by supplier &mdash; same invoice, two entries</li>
+      </ul>
+      <div style="margin-top:14px; padding:10px 14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:8px;">
+        <div style="font-size:11px; color:var(--amber); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Action Required</div>
+        <div style="font-size:12px; color:var(--text-dim);">Verify with supplier. If legitimate, record the purchase to claim ITC. If wrong, no action needed &mdash; it doesn't affect your returns.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post-unmatched flow -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:48px;">
+    <h3 style="font-size:15px; margin-bottom:18px; color:var(--pink);">After Classification &mdash; The Action Pipeline</h3>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:20px;">
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center; position:relative;">
+        <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Step 1</div>
+        <div style="font-size:13px; font-weight:600;">ITC Risk Scoring</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">Each unmatched entry gets a 0-100 risk score based on factors</div>
+      </div>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center;">
+        <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Step 2</div>
+        <div style="font-size:13px; font-weight:600;">Priority Assignment</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">CRITICAL (71-100), HIGH (51-70), MEDIUM (31-50), LOW (0-30)</div>
+      </div>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center;">
+        <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Step 3</div>
+        <div style="font-size:13px; font-weight:600;">SLA Assignment</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">CRITICAL: 3 days, HIGH: 7 days, MEDIUM: 15 days, LOW: 30 days</div>
+      </div>
+      <div style="background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center;">
+        <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px;">Step 4</div>
+        <div style="font-size:13px; font-weight:600;">Reviewer Queue</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">Finance team sees sorted list: critical first, with suggested actions</div>
+      </div>
+    </div>
+
+    <!-- Risk factor breakdown for unmatched -->
+    <div style="font-size:13px; font-weight:600; margin-bottom:12px;">Risk Score Factors for Unmatched Invoices</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:'SF Mono',monospace; font-size:11px;">MISSING_IN_GSTR2B (base)</span>
+        <span style="font-size:14px; font-weight:700; color:var(--red);">+80</span>
+      </div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:'SF Mono',monospace; font-size:11px;">ITC_NOT_AVAILABLE (2B flag)</span>
+        <span style="font-size:14px; font-weight:700; color:var(--red);">+90</span>
+      </div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:'SF Mono',monospace; font-size:11px;">HIGH_VALUE_INVOICE (&ge; Rs 1L)</span>
+        <span style="font-size:14px; font-weight:700; color:var(--orange);">+10</span>
+      </div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:'SF Mono',monospace; font-size:11px;">VENDOR_LOW_COMPLIANCE (grade C)</span>
+        <span style="font-size:14px; font-weight:700; color:var(--orange);">+15</span>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; font-size:12px; color:var(--text-dim); line-height:1.7;">
+      <strong style="color:var(--text);">Example:</strong> An invoice worth Rs 2,50,000 from a grade-C vendor that's missing in GSTR-2B would score:
+      <span style="font-family:'SF Mono',monospace; color:var(--red); font-weight:600;">80 (missing) + 10 (high value) + 15 (low compliance) = 105 &rarr; capped at 100 &rarr; CRITICAL, 3-day SLA</span>
+    </div>
+  </div>
+
+  <!-- Cross-period recovery -->
+  <div style="background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--cyan); border-radius:12px; padding:22px 24px; margin-bottom:48px;">
+    <h3 style="font-size:15px; margin-bottom:10px; color:var(--cyan);">Before Giving Up &mdash; Cross-Period Matching</h3>
+    <p style="font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px;">
+      Before classifying an invoice as missing, the engine runs one more check: <strong style="color:var(--text);">cross-period matching</strong>. It looks for the unmatched invoice in GSTR-2B data from adjacent filing periods (default: 2 months back, 1 month forward).
+    </p>
+    <p style="font-size:12px; color:var(--text-dim); line-height:1.7; margin-bottom:14px;">
+      This catches a very common scenario: the supplier filed the invoice in March, but your books recorded it in April. Or the supplier was late and it shows up in May's GSTR-2B.
+    </p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; text-align:center;">
+        <div style="font-family:'SF Mono',monospace; font-size:12px; color:var(--text-dim);">Current: April 2026</div>
+        <div style="font-size:11px; color:var(--cyan); margin-top:4px;">Searches: Feb, Mar, May</div>
+      </div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; text-align:center;">
+        <div style="font-family:'SF Mono',monospace; font-size:12px; color:var(--text-dim);">Match confidence</div>
+        <div style="font-size:11px; color:var(--cyan); margin-top:4px;">0.90 - (0.05 &times; months offset)</div>
+      </div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; text-align:center;">
+        <div style="font-family:'SF Mono',monospace; font-size:12px; color:var(--text-dim);">Risk score addition</div>
+        <div style="font-size:11px; color:var(--cyan); margin-top:4px;">+20 for CROSS_PERIOD_MATCH</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WHY NOT JUST FUZZY EVERYTHING? ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Why Not Just Fuzzy-Match Everything?</div>
+  <p class="section-sub">A common question. Here's why the cascading 5-pass design matters.</p>
+
+  <div class="example-grid">
+    <div class="example-card" style="border-left: 3px solid var(--green);">
+      <div class="ex-scenario" style="color:var(--green);">Confidence Matters for ITC</div>
+      <div class="ex-row" style="grid-template-columns:1fr;"><span class="ex-val" style="font-family:inherit; color:var(--text-dim); font-size:12px;">
+        Input Tax Credit worth lakhs rides on match quality. A Pass 1 (IRN) match means the government already verified the invoice. A Pass 5 (loose) match means only the amounts roughly align &mdash; the CA needs to verify manually. Confidence scores drive the review queue priority.
+      </span></div>
+    </div>
+    <div class="example-card" style="border-left: 3px solid var(--amber);">
+      <div class="ex-scenario" style="color:var(--amber);">False Positives Are Expensive</div>
+      <div class="ex-row" style="grid-template-columns:1fr;"><span class="ex-val" style="font-family:inherit; color:var(--text-dim); font-size:12px;">
+        If everything was fuzzy-matched, two invoices from the same supplier with similar amounts but different dates could get incorrectly paired. The stricter passes prevent this &mdash; Pass 2 requires the invoice number to match exactly (after normalization), catching 70%+ of cases with high confidence before fuzzy logic even runs.
+      </span></div>
+    </div>
+    <div class="example-card" style="border-left: 3px solid var(--red);">
+      <div class="ex-scenario" style="color:var(--red);">Performance</div>
+      <div class="ex-row" style="grid-template-columns:1fr;"><span class="ex-val" style="font-family:inherit; color:var(--text-dim); font-size:12px;">
+        Fuzzy matching is O(n&times;m) &mdash; every book entry vs every GSTR-2B entry. Exact matching uses hash indexes &mdash; O(n). By catching 70%+ in Passes 1-2, the expensive fuzzy pass only runs on the 30% residue.
+      </span></div>
+    </div>
+  </div>
+
+  <!-- ===== SOURCE FILES ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--text-dim)"></span> Source Files</div>
+
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:32px;">
+    <table style="width:100%; font-size:12px; border-collapse:collapse;">
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">invoice_normalizer/normalizer.py</td><td style="padding:6px 0; color:var(--text-dim);">6-step normalization pipeline</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">invoice_normalizer/matcher.py</td><td style="padding:6px 0; color:var(--text-dim);">similarity_score() and find_best_match() using rapidfuzz</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">invoice_normalizer/models.py</td><td style="padding:6px 0; color:var(--text-dim);">NormalizerConfig, NormalizedResult, MatchResult</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/irn_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 1 &mdash; IRN exact match</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/exact_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 2 &mdash; GSTIN + normalized inv # + value</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/fuzzy_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 3 &mdash; GSTIN + fuzzy inv # (rapidfuzz &ge; 0.85)</td></tr>
+      <tr style="border-bottom:1px solid var(--border);"><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/amount_date_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 4 &mdash; GSTIN + amount &plusmn;2% + date &plusmn;7 days</td></tr>
+      <tr><td style="padding:6px 0; color:var(--cyan); font-family:'SF Mono',monospace;">reconciliation/passes/loose_match.py</td><td style="padding:6px 0; color:var(--text-dim);">Pass 5 &mdash; GSTIN + amount &plusmn;1% only</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<script>
+// ===== Normalization logic (mirrors Python normalizer.py) =====
+const DEFAULT_PREFIXES = ["INV-", "INV/", "BILL-", "BILL/", "TAX-", "TAX/"];
+
+function normalize(inv) {
+  const original = inv;
+  let result = inv.trim();
+  const transforms = [];
+
+  // Strip known prefixes
+  const upper = result.toUpperCase();
+  for (const prefix of DEFAULT_PREFIXES) {
+    if (upper.startsWith(prefix.toUpperCase())) {
+      result = result.slice(prefix.length);
+      transforms.push("stripped_prefix:" + prefix);
+      break;
+    }
+  }
+
+  // Normalize separators
+  const noSep = result.replace(/[-/.\s]+/g, "");
+  if (noSep !== result) { transforms.push("normalized_separators"); result = noSep; }
+
+  // Strip special chars
+  const noSpecial = result.replace(/[^a-zA-Z0-9]/g, "");
+  if (noSpecial !== result) { transforms.push("stripped_special_chars"); result = noSpecial; }
+
+  // Strip leading zeros
+  const noZeros = result.replace(/^0+/, "") || "0";
+  if (noZeros !== result) { transforms.push("stripped_leading_zeros"); result = noZeros; }
+
+  // Case fold
+  const folded = result.toUpperCase();
+  if (folded !== result) { transforms.push("case_folded"); result = folded; }
+
+  return { original, normalized: result, transforms };
+}
+
+function similarity(a, b) {
+  // Simple Levenshtein ratio (mirrors rapidfuzz behavior)
+  const la = a.length, lb = b.length;
+  if (la === 0 && lb === 0) return 1.0;
+  const mx = Array.from({length: la+1}, () => new Array(lb+1).fill(0));
+  for (let i = 0; i <= la; i++) mx[i][0] = i;
+  for (let j = 0; j <= lb; j++) mx[0][j] = j;
+  for (let i = 1; i <= la; i++)
+    for (let j = 1; j <= lb; j++)
+      mx[i][j] = Math.min(mx[i-1][j]+1, mx[i][j-1]+1, mx[i-1][j-1] + (a[i-1]===b[j-1]?0:1));
+  return 1.0 - mx[la][lb] / Math.max(la, lb);
+}
+
+function runNormalize() {
+  const input = document.getElementById('norm-input').value;
+  if (!input) return;
+  const r = normalize(input);
+  const panel = document.getElementById('norm-result');
+  panel.innerHTML = `
+    <div><span class="label">Original: </span><span style="color:var(--red);text-decoration:line-through;">${r.original}</span></div>
+    <div><span class="label">Normalized: </span><span class="value">${r.normalized}</span></div>
+    <div><span class="label">Transforms: </span><span class="transform">${r.transforms.length ? r.transforms.join(" &rarr; ") : "(none &mdash; already clean)"}</span></div>
+  `;
+}
+
+function runMatch() {
+  const a = document.getElementById('match-a').value;
+  const b = document.getElementById('match-b').value;
+  if (!a || !b) return;
+  const na = normalize(a), nb = normalize(b);
+  const exact = na.normalized === nb.normalized;
+  const score = exact ? 1.0 : similarity(na.normalized, nb.normalized);
+  const panel = document.getElementById('match-result');
+
+  let pass, color, conf;
+  if (exact) { pass = "Pass 2 &middot; EXACT_MATCH"; color = "var(--accent)"; conf = "0.95"; }
+  else if (score >= 0.85) { pass = "Pass 3 &middot; FUZZY_INVOICE"; color = "var(--amber)"; conf = "0.80"; }
+  else { pass = "Would NOT match on invoice #"; color = "var(--red)"; conf = "&mdash;"; }
+
+  panel.innerHTML = `
+    <div><span class="label">Books normalized: </span><span style="color:var(--cyan);">${na.normalized}</span> <span class="transform">(${na.transforms.join(", ") || "clean"})</span></div>
+    <div><span class="label">GSTR-2B normalized: </span><span style="color:var(--amber);">${nb.normalized}</span> <span class="transform">(${nb.transforms.join(", ") || "clean"})</span></div>
+    <div><span class="label">Exact match? </span><span style="color:${exact ? 'var(--green)' : 'var(--red)'}; font-weight:700;">${exact ? 'YES' : 'NO'}</span></div>
+    <div><span class="label">Similarity: </span><span style="color:var(--accent2); font-weight:700;">${(score*100).toFixed(1)}%</span></div>
+    <div style="margin-top:6px;"><span class="label">Would match at: </span><span style="color:${color}; font-weight:700;">${pass}</span> <span class="label">(confidence: </span><span style="font-weight:700;">${conf}</span><span class="label">)</span></div>
+  `;
+}
+
+// Auto-run on load
+document.addEventListener('DOMContentLoaded', () => { runNormalize(); runMatch(); });
+</script>
+
+</body>
+</html>

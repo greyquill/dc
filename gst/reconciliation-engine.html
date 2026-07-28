@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reconciliation Engine — GST Co-Pilot</title>
+<style>
+  :root {
+    --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
+    --text: #e2e8f0; --text-dim: #8892a4;
+    --accent: #60a5fa; --accent2: #818cf8; --green: #34d399; --amber: #fbbf24;
+    --red: #f87171; --cyan: #22d3ee; --purple: #a78bfa; --pink: #f472b6; --orange: #fb923c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+  .header { text-align: center; padding: 48px 24px 32px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #1a0f1f 0%, var(--bg) 100%); }
+  .header h1 { font-size: 32px; font-weight: 700; background: linear-gradient(135deg, var(--red), var(--orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  .header p { color: var(--text-dim); font-size: 15px; max-width: 780px; margin: 0 auto; }
+  .header-nav { margin-top: 16px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .header-nav a { color: var(--accent); text-decoration: none; font-size: 12px; padding: 4px 12px; border: 1px solid rgba(96,165,250,0.4); border-radius: 12px; transition: all .2s; }
+  .header-nav a:hover { background: rgba(96,165,250,0.1); border-color: var(--accent); }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+  .section-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .section-sub { font-size: 13px; color: var(--text-dim); margin-top: -12px; margin-bottom: 20px; max-width: 900px; }
+
+  /* Flow ladder for 5 passes */
+  .pass-ladder { position: relative; margin-bottom: 48px; }
+  .pass-row { display: grid; grid-template-columns: 110px 1fr 140px; gap: 20px; align-items: stretch; padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: all .2s; position: relative; }
+  .pass-row:hover { transform: translateX(4px); border-color: var(--accent2); }
+  .pass-row.selected { border-color: var(--accent2); box-shadow: 0 0 0 1px var(--accent2); }
+  .pass-row .ladder-left { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; border-right: 1px solid var(--border); padding-right: 20px; }
+  .pass-row .pl-num { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .pass-row .pl-badge { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; padding: 3px 10px; border-radius: 6px; }
+  .pass-row .ladder-mid { display: flex; flex-direction: column; justify-content: center; }
+  .pass-row .pl-name { font-family: 'SF Mono', monospace; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .pass-row .pl-keys { font-size: 12px; color: var(--text-dim); }
+  .pass-row .pl-meta { font-size: 10px; color: var(--text-dim); margin-top: 6px; }
+  .pass-row .ladder-right { display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 1px solid var(--border); padding-left: 20px; }
+  .pass-row .pl-conf { font-size: 24px; font-weight: 700; color: var(--accent2); }
+  .pass-row .pl-conf-lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; }
+  .pass-row.p1 { border-left: 4px solid var(--green); } .pass-row.p1 .pl-badge { background: rgba(52,211,153,0.15); color: var(--green); }
+  .pass-row.p2 { border-left: 4px solid var(--accent); } .pass-row.p2 .pl-badge { background: rgba(96,165,250,0.15); color: var(--accent); }
+  .pass-row.p3 { border-left: 4px solid var(--amber); } .pass-row.p3 .pl-badge { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .pass-row.p4 { border-left: 4px solid var(--orange); } .pass-row.p4 .pl-badge { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .pass-row.p5 { border-left: 4px solid var(--red); } .pass-row.p5 .pl-badge { background: rgba(248,113,113,0.15); color: var(--red); }
+
+  /* Detail panel for passes */
+  .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 48px; }
+  .detail-panel.empty { border-style: dashed; padding: 32px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  .detail-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .detail-header h3 { font-size: 18px; font-weight: 600; font-family: 'SF Mono', monospace; }
+  .detail-body { padding: 22px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .detail-section { margin-bottom: 18px; }
+  .detail-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .detail-section ul { list-style: none; padding: 0; }
+  .detail-section li { font-size: 12px; padding: 4px 0; display: flex; gap: 6px; }
+  .detail-section li::before { content: "›"; color: var(--accent2); font-weight: 700; }
+  .detail-code { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-family: 'SF Mono', monospace; font-size: 11px; line-height: 1.6; overflow-x: auto; color: var(--text-dim); white-space: pre-wrap; }
+  .detail-code .k { color: var(--accent); } .detail-code .s { color: var(--green); } .detail-code .c { color: #4a5568; } .detail-code .n { color: var(--purple); }
+
+  /* Flow diagram */
+  .flow-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 48px; }
+  .flow-diagram h3 { font-size: 15px; margin-bottom: 18px; }
+  .flow-row { display: grid; grid-template-columns: 180px 32px 1fr; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(42,53,72,0.4); }
+  .flow-row:last-child { border-bottom: none; }
+  .flow-lbl { font-family: 'SF Mono', monospace; font-size: 12px; color: var(--accent2); }
+  .flow-arr { color: var(--text-dim); text-align: center; }
+  .flow-desc { font-size: 12px; color: var(--text-dim); }
+  .flow-desc code { color: var(--cyan); font-family: 'SF Mono', monospace; font-size: 11px; }
+
+  /* Mismatch cards */
+  .mismatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .mismatch-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .mismatch-card .mm-type { font-family: 'SF Mono', monospace; font-size: 12px; font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+  .mismatch-card .mm-desc { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; line-height: 1.5; }
+  .mismatch-card .mm-impact { font-size: 11px; color: var(--red); font-weight: 600; }
+
+  /* Priority bands */
+  .priority-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .priority-card { border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; }
+  .priority-card.crit { background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(248,113,113,0.04)); border: 1px solid rgba(248,113,113,0.3); }
+  .priority-card.high { background: linear-gradient(135deg, rgba(251,146,60,0.15), rgba(251,146,60,0.04)); border: 1px solid rgba(251,146,60,0.3); }
+  .priority-card.med  { background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.04)); border: 1px solid rgba(251,191,36,0.3); }
+  .priority-card.low  { background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.04)); border: 1px solid rgba(52,211,153,0.3); }
+  .priority-card .pr-band { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .priority-card .pr-range { font-family: 'SF Mono', monospace; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .priority-card .pr-sla { font-size: 11px; color: var(--text-dim); }
+
+  /* Factor chips */
+  .factor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 32px; }
+  .factor-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .factor-chip .f-lbl { font-family: 'SF Mono', monospace; font-size: 11px; color: var(--text); }
+  .factor-chip .f-pts { font-size: 14px; font-weight: 700; color: var(--red); }
+
+  /* Sample report */
+  .report-sample { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 48px; }
+  .report-sample h3 { font-size: 15px; margin-bottom: 14px; }
+  .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .report-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; text-align: center; }
+  .report-stat .rs-num { font-size: 22px; font-weight: 700; color: var(--accent2); }
+  .report-stat .rs-lbl { font-size: 10px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+  @media (max-width: 900px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .pass-row { grid-template-columns: 1fr; gap: 10px; }
+    .pass-row .ladder-left, .pass-row .ladder-right { border: none; padding: 0; flex-direction: row; justify-content: flex-start; }
+    .flow-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Reconciliation Engine</h1>
+  <p>A 5-pass deterministic matching engine that reconciles a company's purchase register against its vendor-filed GSTR-2B. Each pass trades strictness for recall &mdash; surviving entries drop into the next pass, never backwards.</p>
+  <div class="header-nav">
+    <a href="index.html">&larr; Architecture Overview</a>
+    <a href="invoice-matching.html">&larr; Invoice Matching Logic</a>
+    <a href="data-flow.html">End-to-End Data Flow &rarr;</a>
+    <a href="reconciliation-workbench.html">Reconciliation Workbench &rarr;</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== INPUT/OUTPUT FLOW ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--accent)"></span> Engine Signature</div>
+  <p class="section-sub">Everything runs through a single entry point. Inputs are already-parsed, already-validated rows. Output is a full per-entry breakdown plus aggregate counters.</p>
+
+  <div class="flow-diagram">
+    <h3 style="color:var(--accent);">reconcile(books, gstr2b, config) &rarr; ReconciliationReport</h3>
+    <div class="flow-row">
+      <div class="flow-lbl">books</div>
+      <div class="flow-arr">&rarr;</div>
+      <div class="flow-desc">Purchase register rows (parsed by <code>excel_parser</code>) after validation by <code>invoice_validator</code>.</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-lbl">gstr2b</div>
+      <div class="flow-arr">&rarr;</div>
+      <div class="flow-desc">GSTR-2B invoices (parsed by <code>gstr2b_parser</code>) with IRN, GSTIN, normalized invoice #, dedup hashes.</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-lbl">config</div>
+      <div class="flow-arr">&rarr;</div>
+      <div class="flow-desc">Tolerances: <code>value_tolerance=1.0</code>, <code>date_tolerance_days=7</code>, <code>fuzzy_threshold=0.85</code>.</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-lbl">Report</div>
+      <div class="flow-arr">&larr;</div>
+      <div class="flow-desc">Summary counts + <code>entries[]</code> with <code>match_category</code>, <code>match_confidence</code>, <code>match_pass</code>, <code>mismatch_types[]</code>, <code>auto_resolved</code>, and the full <code>books_record</code> + <code>gstr2b_record</code> for audit.</div>
+    </div>
+  </div>
+
+  <!-- ===== 5-PASS LADDER ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--red)"></span> The 5-Pass Ladder</div>
+  <p class="section-sub">Click any pass to see exactly how it matches, what confidence it emits, and why it sits where it does.</p>
+
+  <div class="pass-ladder">
+    <div class="pass-row p1" onclick="selectPass(1)" id="pass-row-1">
+      <div class="ladder-left"><div class="pl-num">Pass 1</div><div class="pl-badge">Certain</div></div>
+      <div class="ladder-mid"><div class="pl-name">IRN_EXACT</div><div class="pl-keys">Match by Invoice Reference Number (cryptographic e-invoice hash)</div><div class="pl-meta">Used only for e-invoiced B2B supplies &middot; passes/irn_match.py</div></div>
+      <div class="ladder-right"><div class="pl-conf">1.00</div><div class="pl-conf-lbl">confidence</div></div>
+    </div>
+    <div class="pass-row p2" onclick="selectPass(2)" id="pass-row-2">
+      <div class="ladder-left"><div class="pl-num">Pass 2</div><div class="pl-badge">Strict</div></div>
+      <div class="ladder-mid"><div class="pl-name">EXACT_MATCH</div><div class="pl-keys">GSTIN + normalized invoice # + value (&plusmn; Rs 1)</div><div class="pl-meta">The happy path &middot; passes/exact_match.py</div></div>
+      <div class="ladder-right"><div class="pl-conf">0.95</div><div class="pl-conf-lbl">confidence</div></div>
+    </div>
+    <div class="pass-row p3" onclick="selectPass(3)" id="pass-row-3">
+      <div class="ladder-left"><div class="pl-num">Pass 3</div><div class="pl-badge">Fuzzy</div></div>
+      <div class="ladder-mid"><div class="pl-name">FUZZY_INVOICE</div><div class="pl-keys">GSTIN exact + fuzzy invoice # (similarity &ge; 0.85 via rapidfuzz)</div><div class="pl-meta">Handles OCR errors and ERP export drift &middot; passes/fuzzy_match.py</div></div>
+      <div class="ladder-right"><div class="pl-conf">0.80</div><div class="pl-conf-lbl">confidence</div></div>
+    </div>
+    <div class="pass-row p4" onclick="selectPass(4)" id="pass-row-4">
+      <div class="ladder-left"><div class="pl-num">Pass 4</div><div class="pl-badge">Review</div></div>
+      <div class="ladder-mid"><div class="pl-name">AMOUNT_DATE</div><div class="pl-keys">GSTIN + amount (&plusmn;2%) + date (&plusmn;7 days). Invoice # unreconcilable.</div><div class="pl-meta">Always flags requires_review &middot; passes/amount_date_match.py</div></div>
+      <div class="ladder-right"><div class="pl-conf">0.65</div><div class="pl-conf-lbl">confidence</div></div>
+    </div>
+    <div class="pass-row p5" onclick="selectPass(5)" id="pass-row-5">
+      <div class="ladder-left"><div class="pl-num">Pass 5</div><div class="pl-badge">Loose</div></div>
+      <div class="ladder-mid"><div class="pl-name">LOOSE_MATCH</div><div class="pl-keys">GSTIN + amount (&plusmn;1%) only. Last resort before declaring missing.</div><div class="pl-meta">Always requires_review &middot; passes/loose_match.py</div></div>
+      <div class="ladder-right"><div class="pl-conf">0.45</div><div class="pl-conf-lbl">confidence</div></div>
+    </div>
+  </div>
+
+  <div class="detail-panel empty" id="pass-detail">
+    Click any pass row above for the matching recipe, algorithm, and typical use cases.
+  </div>
+
+  <!-- ===== PRE AND POST STEPS ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--green)"></span> Full Engine Pipeline</div>
+  <p class="section-sub">The 5 passes are sandwiched between preparation and resolution steps &mdash; ordering matters.</p>
+
+  <div class="flow-diagram">
+    <h3 style="color:var(--green);">engine.reconcile() — step by step</h3>
+    <div class="flow-row"><div class="flow-lbl">Step 1 · Dedup</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>duplicate_detector.py</code> &mdash; exact duplicates are removed, near-duplicates flagged for review.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 2 · Pass 1-5</div><div class="flow-arr">&rarr;</div><div class="flow-desc">Sequential matching. Each pass consumes a slice of the unmatched pool.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 3 · Mismatch detect</div><div class="flow-arr">&rarr;</div><div class="flow-desc">For matched pairs, diff each field. Populate <code>mismatch_types[]</code>.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 4 · Auto-resolve</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>auto_resolver.py</code> &mdash; promote trivial mismatches back to MATCHED.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 5 · Cross-period</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>cross_period.py</code> &mdash; residue searches adjacent 2B periods (late filers) with month penalty.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 6 · Classify</div><div class="flow-arr">&rarr;</div><div class="flow-desc">Unmatched books &rarr; MISSING_IN_GSTR2B &middot; Unmatched 2B &rarr; MISSING_IN_BOOKS.</div></div>
+    <div class="flow-row"><div class="flow-lbl">Step 7 · Confidence</div><div class="flow-arr">&rarr;</div><div class="flow-desc"><code>confidence.py</code> &mdash; adjust per-entry score with vendor grade &amp; cross-period penalties.</div></div>
+  </div>
+
+  <!-- ===== MISMATCH TYPES ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--amber)"></span> Mismatch Types</div>
+  <p class="section-sub">Even inside MATCHED pairs, individual fields can disagree. Each type carries a downstream ITC risk weight.</p>
+
+  <div class="mismatch-grid">
+    <div class="mismatch-card">
+      <div class="mm-type">TAXABLE_VALUE</div>
+      <div class="mm-desc">Net (pre-tax) invoice value differs between books and 2B.</div>
+      <div class="mm-impact">Risk weight: +50</div>
+    </div>
+    <div class="mismatch-card">
+      <div class="mm-type">TAX_AMOUNT</div>
+      <div class="mm-desc">CGST/SGST/IGST/cess don't match &mdash; direct ITC mismatch.</div>
+      <div class="mm-impact">Risk weight: +60</div>
+    </div>
+    <div class="mismatch-card">
+      <div class="mm-type">TAX_RATE</div>
+      <div class="mm-desc">Effective GST rate implied by the numbers differs.</div>
+      <div class="mm-impact">Risk weight: +40</div>
+    </div>
+    <div class="mismatch-card">
+      <div class="mm-type">DATE</div>
+      <div class="mm-desc">Invoice dates differ by more than tolerance.</div>
+      <div class="mm-impact">Risk weight: +10</div>
+    </div>
+    <div class="mismatch-card">
+      <div class="mm-type">INVOICE_NUMBER_FORMAT</div>
+      <div class="mm-desc">Matched fuzzy but invoice # strings differ &mdash; format drift.</div>
+      <div class="mm-impact">Risk weight: +5 (warn)</div>
+    </div>
+    <div class="mismatch-card">
+      <div class="mm-type">REVERSE_CHARGE</div>
+      <div class="mm-desc">Books claims reverse charge but 2B does not (or vice versa).</div>
+      <div class="mm-impact">Risk weight: +30</div>
+    </div>
+  </div>
+
+  <!-- ===== AUTO-RESOLVER ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--cyan)"></span> Auto-Resolver Rules</div>
+  <p class="section-sub">Small, deterministic fixes that take a mismatched pair back to MATCHED without human review.</p>
+
+  <div class="detail-panel" style="margin-bottom: 40px;">
+    <div class="detail-body">
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section">
+            <h4>Rule 1 · Rounding</h4>
+            <ul>
+              <li>Value difference &le; Rs 1 (absolute)</li>
+              <li>Each tax component delta within proportional tolerance</li>
+              <li>Dates and GSTINs already exact</li>
+              <li>Marks entry as auto_resolved=true, MATCHED</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <h4>Rule 2 · Date-only drift</h4>
+            <ul>
+              <li>All numeric fields exact</li>
+              <li>Date difference &le; 3 days</li>
+              <li>Invoice # exact (post-normalization)</li>
+              <li>Common cause: book-date vs invoice-date convention</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="detail-section">
+            <h4>Rule 3 · Invoice # format-only</h4>
+            <ul>
+              <li>Normalized invoice # identical (prefix strip, zero strip, case fold)</li>
+              <li>All other fields already exact</li>
+              <li>Original strings differ (e.g. <code>INV-001/24</code> vs <code>inv1/24</code>)</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <h4>Never auto-resolves</h4>
+            <ul>
+              <li>Tax amount mismatches beyond rounding</li>
+              <li>Different GSTINs (even if visually similar)</li>
+              <li>Pass 4 / Pass 5 matches (always require review)</li>
+              <li>Reverse-charge flag disagreements</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CONFIDENCE ADJUSTMENT ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> Confidence Adjustment</div>
+  <p class="section-sub">The pass baseline is just the start &mdash; confidence moves up or down based on secondary signals.</p>
+
+  <div class="factor-grid">
+    <div class="factor-chip"><div class="f-lbl">Exact value match</div><div class="f-pts" style="color:var(--green);">+0.05</div></div>
+    <div class="factor-chip"><div class="f-lbl">Exact date match</div><div class="f-pts" style="color:var(--green);">+0.03</div></div>
+    <div class="factor-chip"><div class="f-lbl">Vendor grade A (high compliance)</div><div class="f-pts" style="color:var(--green);">+0.03</div></div>
+    <div class="factor-chip"><div class="f-lbl">Vendor grade C (low compliance)</div><div class="f-pts">-0.05</div></div>
+    <div class="factor-chip"><div class="f-lbl">Cross-period (per month offset)</div><div class="f-pts">-0.05</div></div>
+    <div class="factor-chip"><div class="f-lbl">IRN available but not used</div><div class="f-pts">-0.02</div></div>
+  </div>
+
+  <!-- ===== ITC RISK ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--orange)"></span> ITC Risk Scoring</div>
+  <p class="section-sub">Once reconciliation completes, every non-MATCHED (or mismatched) entry is scored 0-100 and bucketed. This drives the finance-team action queue.</p>
+
+  <div class="priority-grid">
+    <div class="priority-card crit">
+      <div class="pr-band" style="color:var(--red);">Critical</div>
+      <div class="pr-range" style="color:var(--red);">71-100</div>
+      <div class="pr-sla">3-day SLA &middot; immediate vendor follow-up</div>
+    </div>
+    <div class="priority-card high">
+      <div class="pr-band" style="color:var(--orange);">High</div>
+      <div class="pr-range" style="color:var(--orange);">51-70</div>
+      <div class="pr-sla">7-day SLA &middot; confirm with vendor this week</div>
+    </div>
+    <div class="priority-card med">
+      <div class="pr-band" style="color:var(--amber);">Medium</div>
+      <div class="pr-range" style="color:var(--amber);">31-50</div>
+      <div class="pr-sla">15-day SLA &middot; batch follow-up</div>
+    </div>
+    <div class="priority-card low">
+      <div class="pr-band" style="color:var(--green);">Low</div>
+      <div class="pr-range" style="color:var(--green);">0-30</div>
+      <div class="pr-sla">30-day SLA &middot; monitor at month-end</div>
+    </div>
+  </div>
+
+  <div class="factor-grid">
+    <div class="factor-chip"><div class="f-lbl">MISSING_IN_GSTR2B</div><div class="f-pts">+80</div></div>
+    <div class="factor-chip"><div class="f-lbl">TAX_AMOUNT_MISMATCH</div><div class="f-pts">+60</div></div>
+    <div class="factor-chip"><div class="f-lbl">TAXABLE_VALUE_MISMATCH</div><div class="f-pts">+50</div></div>
+    <div class="factor-chip"><div class="f-lbl">CROSS_PERIOD_MATCH</div><div class="f-pts">+20</div></div>
+    <div class="factor-chip"><div class="f-lbl">VENDOR_LOW_COMPLIANCE</div><div class="f-pts">+15</div></div>
+    <div class="factor-chip"><div class="f-lbl">HIGH_VALUE (>= Rs 1L)</div><div class="f-pts">+10</div></div>
+    <div class="factor-chip"><div class="f-lbl">DATE_ONLY_MISMATCH</div><div class="f-pts">+10</div></div>
+  </div>
+
+  <!-- ===== SAMPLE REPORT ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--purple)"></span> Sample Report Output</div>
+  <p class="section-sub">Shape of the final <code>ReconciliationReport</code> for a typical month with 200 vendor invoices.</p>
+
+  <div class="report-sample">
+    <h3 style="color:var(--purple);">ReconciliationReport (illustrative)</h3>
+    <div class="report-grid">
+      <div class="report-stat"><div class="rs-num" style="color:var(--green);">142</div><div class="rs-lbl">Matched</div></div>
+      <div class="report-stat"><div class="rs-num" style="color:var(--cyan);">18</div><div class="rs-lbl">Auto-resolved</div></div>
+      <div class="report-stat"><div class="rs-num" style="color:var(--amber);">14</div><div class="rs-lbl">Mismatched</div></div>
+      <div class="report-stat"><div class="rs-num" style="color:var(--accent2);">9</div><div class="rs-lbl">Probable matches</div></div>
+      <div class="report-stat"><div class="rs-num" style="color:var(--red);">12</div><div class="rs-lbl">Missing in 2B</div></div>
+      <div class="report-stat"><div class="rs-num" style="color:var(--pink);">5</div><div class="rs-lbl">Missing in books</div></div>
+      <div class="report-stat"><div class="rs-num" style="color:var(--orange);">3</div><div class="rs-lbl">Duplicates</div></div>
+    </div>
+    <div class="detail-code" style="margin-top:20px;">
+{
+  <span class="k">"total_books_entries"</span>: <span class="n">200</span>,
+  <span class="k">"total_gstr2b_entries"</span>: <span class="n">195</span>,
+  <span class="k">"matched"</span>: <span class="n">142</span>,
+  <span class="k">"auto_resolved"</span>: <span class="n">18</span>,
+  <span class="k">"mismatched"</span>: <span class="n">14</span>,
+  <span class="k">"probable_matches"</span>: <span class="n">9</span>,
+  <span class="k">"missing_in_gstr2b"</span>: <span class="n">12</span>,
+  <span class="k">"missing_in_books"</span>: <span class="n">5</span>,
+  <span class="k">"duplicates_detected"</span>: <span class="n">3</span>,
+  <span class="k">"entries"</span>: [
+    {
+      <span class="k">"supplier_gstin"</span>: <span class="s">"29ABCDE1234F1Z5"</span>,
+      <span class="k">"invoice_number"</span>: <span class="s">"INV-2024/0412"</span>,
+      <span class="k">"match_category"</span>: <span class="s">"MATCHED"</span>,
+      <span class="k">"match_pass"</span>: <span class="s">"EXACT_MATCH"</span>,
+      <span class="k">"match_confidence"</span>: <span class="n">0.98</span>,
+      <span class="k">"books_value"</span>: <span class="n">125000.00</span>,
+      <span class="k">"gstr2b_value"</span>: <span class="n">125000.00</span>,
+      <span class="k">"mismatch_types"</span>: [],
+      <span class="k">"auto_resolved"</span>: <span class="n">false</span>
+    },
+    <span class="c">// ... one entry per reconciled pair or unmatched record</span>
+  ]
+}
+    </div>
+  </div>
+
+</div>
+
+<script>
+const PASSES = {
+  1: {
+    name: "IRN_EXACT", color: "var(--green)", confidence: 1.0,
+    role: "Pass 1 is the only pass that can emit 100% confidence because it relies on a cryptographically signed field (the IRN) that the GSTN portal guarantees is unique per invoice.",
+    recipe: [
+      "Filter both sides to rows with non-empty IRN",
+      "Exact string compare on IRN",
+      "No tolerances, no normalization",
+      "Emit MATCHED with confidence 1.0"
+    ],
+    why: "IRNs only exist for e-invoiced B2B supplies above the mandated turnover threshold. For those, this pass is near 100% recall.",
+    emits: "match_pass = IRN_EXACT, confidence = 1.0, requires_review = false",
+    code: "# passes/irn_match.py\nfor books_row in unmatched_books:\n  if not books_row.irn: continue\n  match = next((g for g in unmatched_2b if g.irn == books_row.irn), None)\n  if match:\n    yield ReconciliationEntry(..., match_pass='IRN_EXACT', confidence=1.0)"
+  },
+  2: {
+    name: "EXACT_MATCH", color: "var(--accent)", confidence: 0.95,
+    role: "The workhorse pass. Handles the majority of non-e-invoice supplies from compliant vendors.",
+    recipe: [
+      "Compare supplier GSTIN (exact)",
+      "Normalize both invoice numbers (prefix, separators, leading zeros, case)",
+      "Compare normalized invoice # (exact)",
+      "Compare invoice value within Rs 1 tolerance",
+      "Emit MATCHED at 0.95; confidence.py may lift it"
+    ],
+    why: "Catches anything where the vendor filed correctly and the books entry was captured correctly.",
+    emits: "match_pass = EXACT_MATCH, confidence = 0.95 (adjustable), requires_review = false",
+    code: "# passes/exact_match.py\nkey = (row.gstin, normalize(row.invoice_number))\nif key in gstr2b_index:\n  candidate = gstr2b_index[key]\n  if abs(row.value - candidate.value) <= config.value_tolerance:\n    yield match(row, candidate, pass='EXACT_MATCH', conf=0.95)"
+  },
+  3: {
+    name: "FUZZY_INVOICE", color: "var(--amber)", confidence: 0.80,
+    role: "Catches OCR drift and ERP export quirks where the invoice number strings differ slightly.",
+    recipe: [
+      "GSTIN must still match exactly (no fuzz there)",
+      "rapidfuzz.token_sort_ratio on normalized invoice #",
+      "Accept pairs with similarity >= 0.85",
+      "Value tolerance relaxed to 0.5%"
+    ],
+    why: "Real-world invoice numbers frequently carry typos or stray characters (e.g. unicode dash vs ASCII hyphen, trailing space).",
+    emits: "match_pass = FUZZY_INVOICE_NUMBER, confidence = 0.80, requires_review = false (but flagged)",
+    code: "# passes/fuzzy_match.py\nfrom rapidfuzz.fuzz import token_sort_ratio\n\nfor b in unmatched_books:\n  candidates = gstr2b_by_gstin.get(b.gstin, [])\n  best = max(candidates, key=lambda c: token_sort_ratio(b.inv, c.inv), default=None)\n  if best and token_sort_ratio(b.inv, best.inv) >= 85:\n    yield match(b, best, pass='FUZZY_INVOICE', conf=0.80)"
+  },
+  4: {
+    name: "AMOUNT_DATE", color: "var(--orange)", confidence: 0.65,
+    role: "For entries where invoice # is completely unrecognisable but amount and date still line up.",
+    recipe: [
+      "GSTIN exact",
+      "Invoice value within +-2%",
+      "Invoice date within +-7 days",
+      "Ignore invoice # entirely",
+      "Always sets requires_review = true"
+    ],
+    why: "Common when a vendor restarted invoice numbering, or books captured a GRN# instead of the vendor invoice#.",
+    emits: "match_pass = AMOUNT_DATE_MATCH, confidence = 0.65, requires_review = true",
+    code: "# passes/amount_date_match.py\nfor b in unmatched_books:\n  for g in unmatched_2b:\n    if b.gstin != g.gstin: continue\n    if abs(b.value - g.value) / g.value > 0.02: continue\n    if abs((b.date - g.date).days) > 7: continue\n    yield match(b, g, pass='AMOUNT_DATE_MATCH', conf=0.65, review=True)"
+  },
+  5: {
+    name: "LOOSE_MATCH", color: "var(--red)", confidence: 0.45,
+    role: "Last resort before declaring an entry missing. Only amount must agree, within tight tolerance.",
+    recipe: [
+      "GSTIN exact",
+      "Invoice value within +-1%",
+      "No date constraint (but date proximity boosts confidence)",
+      "Always requires_review = true",
+      "Often ends up MISSING after reviewer action"
+    ],
+    why: "Catches lingering residue where reviewer can decide quickly from amount alone.",
+    emits: "match_pass = LOOSE_MATCH, confidence = 0.45, requires_review = true",
+    code: "# passes/loose_match.py\nfor b in unmatched_books:\n  for g in unmatched_2b:\n    if b.gstin != g.gstin: continue\n    if abs(b.value - g.value) / g.value > 0.01: continue\n    yield match(b, g, pass='LOOSE_MATCH', conf=0.45, review=True)"
+  }
+};
+
+let selectedPass = null;
+
+function selectPass(n) {
+  const p = PASSES[n];
+  const panel = document.getElementById('pass-detail');
+  document.querySelectorAll('.pass-row').forEach(r => r.classList.remove('selected'));
+
+  if (selectedPass === n) {
+    selectedPass = null;
+    panel.className = 'detail-panel empty';
+    panel.innerHTML = 'Click any pass row above for the matching recipe, algorithm, and typical use cases.';
+    return;
+  }
+
+  selectedPass = n;
+  document.getElementById('pass-row-' + n).classList.add('selected');
+
+  const recipe = p.recipe.map(r => `<li>${r}</li>`).join('');
+  panel.className = 'detail-panel';
+  panel.innerHTML = `
+    <div class="detail-header">
+      <h3 style="color:${p.color};">Pass ${n} · ${p.name}</h3>
+      <div><span style="font-size:22px; font-weight:700; color:${p.color};">${p.confidence.toFixed(2)}</span><span style="font-size:10px; color:var(--text-dim); margin-left:4px; text-transform:uppercase;">base confidence</span></div>
+    </div>
+    <div class="detail-body">
+      <p style="font-size:13px; color:var(--text-dim); margin-bottom:18px;">${p.role}</p>
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section">
+            <h4>Recipe</h4>
+            <ul>${recipe}</ul>
+          </div>
+          <div class="detail-section">
+            <h4>Why it's at this strictness</h4>
+            <ul><li>${p.why}</li></ul>
+          </div>
+          <div class="detail-section">
+            <h4>What it emits</h4>
+            <ul><li>${p.emits}</li></ul>
+          </div>
+        </div>
+        <div>
+          <div class="detail-section">
+            <h4>Pseudo-code</h4>
+            <div class="detail-code">${p.code.replace(/</g,'&lt;')}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+
+</body>
+</html>

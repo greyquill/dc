@@ -1,0 +1,2590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Internals — Champ Agent Swarm</title>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2234;
+    --border: #2a3548;
+    --text: #e2e8f0;
+    --text-dim: #8892a4;
+    --accent: #60a5fa;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --cyan: #22d3ee;
+    --purple: #a78bfa;
+    --pink: #f472b6;
+    --orange: #fb923c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0f1729 0%, var(--bg) 100%);
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--cyan), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header p {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .header-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .header-nav a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+    padding: 4px 12px;
+    border: 1px solid rgba(96,165,250,0.3);
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+  .header-nav a:hover {
+    background: rgba(96,165,250,0.1);
+    border-color: var(--accent);
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-top: -12px;
+    margin-bottom: 20px;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  /* ===== MODULE GRID ===== */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .module-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .module-card.selected {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(96,165,250,0.08), rgba(129,140,248,0.05));
+  }
+  .module-card .mod-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    font-family: 'Fira Code', monospace;
+  }
+  .module-card .mod-role {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .module-card .mod-stats {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .mod-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .mod-badge-fn { background: rgba(96,165,250,0.15); color: var(--accent); }
+  .mod-badge-type { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .mod-badge-dep { background: rgba(52,211,153,0.15); color: var(--green); }
+  .mod-badge-root { background: rgba(251,191,36,0.15); color: var(--amber); }
+
+  /* ===== LAYER GROUPS ===== */
+  .layer-group {
+    margin-bottom: 24px;
+  }
+  .layer-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .layer-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ===== DETAIL PANEL ===== */
+  .detail-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+    transition: all 0.3s;
+  }
+  .detail-panel.empty {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 32px;
+  }
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .detail-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+  }
+  .detail-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .detail-body { font-size: 13px; }
+  .detail-section {
+    margin-bottom: 16px;
+  }
+  .detail-section h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 800px) {
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== FUNCTION LIST ===== */
+  .fn-list { list-style: none; }
+  .fn-list li {
+    padding: 8px 12px;
+    border-left: 2px solid var(--border);
+    margin-bottom: 4px;
+    font-size: 12px;
+    transition: border-color 0.2s;
+  }
+  .fn-list li:hover {
+    border-left-color: var(--accent);
+    background: rgba(96,165,250,0.04);
+  }
+  .fn-name {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .fn-sig {
+    font-family: 'Fira Code', monospace;
+    color: var(--text-dim);
+    font-size: 11px;
+  }
+  .fn-desc {
+    color: var(--text-dim);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  /* ===== TYPE LIST ===== */
+  .type-list { list-style: none; }
+  .type-list li {
+    padding: 6px 12px;
+    border-left: 2px solid rgba(167,139,250,0.3);
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  .type-name {
+    font-family: 'Fira Code', monospace;
+    color: var(--purple);
+    font-weight: 600;
+  }
+
+  /* ===== DEP CHIPS ===== */
+  .dep-chip {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(52,211,153,0.1);
+    color: var(--green);
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 2px;
+  }
+  .dep-chip:hover {
+    background: rgba(52,211,153,0.2);
+  }
+
+  /* ===== FSM DIAGRAM ===== */
+  .fsm-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .fsm-grid {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-width: 600px;
+  }
+  .fsm-node {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 90px;
+    border: 2px solid;
+    position: relative;
+  }
+  .fsm-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    color: var(--text-dim);
+    font-size: 18px;
+  }
+  .fsm-arrow-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: -4px;
+  }
+  .fsm-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .fsm-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .fsm-branch-arrow {
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* ===== FLOW DIAGRAM ===== */
+  .flow-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    padding: 0 8px;
+    color: var(--text-dim);
+    font-size: 16px;
+  }
+  .flow-connector {
+    text-align: center;
+    padding: 4px 0;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+
+  /* ===== DATA SCHEMA TABLE ===== */
+  .schema-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .schema-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .schema-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(42,53,72,0.5);
+    vertical-align: top;
+  }
+  .schema-table tr:hover td {
+    background: rgba(96,165,250,0.04);
+  }
+  .schema-table code {
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ===== TABS ===== */
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .tab-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+  .tab-btn.active {
+    background: rgba(96,165,250,0.1);
+    color: var(--accent);
+    border-color: rgba(96,165,250,0.3);
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ===== TAGS ===== */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .tag-blue { background: rgba(96,165,250,0.15); color: var(--accent); }
+  .tag-purple { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .tag-green { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-amber { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .tag-red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .tag-cyan { background: rgba(34,211,238,0.15); color: var(--cyan); }
+  .tag-pink { background: rgba(244,114,182,0.15); color: var(--pink); }
+  .tag-orange { background: rgba(251,146,60,0.15); color: var(--orange); }
+
+  /* ===== DEPENDENCY GRAPH ===== */
+  /* dep graph: visual layered layout */
+  .dg-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .dg-layer {
+    margin-bottom: 4px;
+    position: relative;
+  }
+  .dg-layer-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 10px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .dg-nodes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0 4px 12px;
+  }
+  .dg-node {
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 1.5px solid;
+    white-space: nowrap;
+  }
+  .dg-node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 2;
+  }
+  .dg-node .dg-badge {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+  }
+  .dg-connector-row {
+    display: flex;
+    justify-content: center;
+    padding: 2px 0;
+    color: var(--text-dim);
+    font-size: 14px;
+    letter-spacing: 6px;
+    opacity: 0.35;
+  }
+  /* hover tooltip for deps */
+  .dg-node .dg-tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-weight: 400;
+    white-space: normal;
+    width: max-content;
+    max-width: 260px;
+    z-index: 10;
+    color: var(--text-dim);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    line-height: 1.5;
+  }
+  .dg-node:hover .dg-tip { display: block; }
+  .dg-tip-label { color: var(--text); font-weight: 600; margin-bottom: 4px; }
+  .dg-tip-dep { color: var(--green); }
+  .dg-tip-by { color: var(--amber); }
+
+  /* bar chart */
+  .dg-bar-section {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 800px) { .dg-bar-section { grid-template-columns: 1fr; } }
+  .dg-bars { list-style: none; }
+  .dg-bars li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+  .dg-bar-name {
+    font-family: 'Fira Code', monospace;
+    color: var(--cyan);
+    min-width: 160px;
+    cursor: pointer;
+  }
+  .dg-bar-name:hover { text-decoration: underline; }
+  .dg-bar-track {
+    flex: 1;
+    height: 14px;
+    background: rgba(42,53,72,0.5);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .dg-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s;
+  }
+  .dg-bar-val {
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: right;
+  }
+
+  /* ===== ROUTING TREE ===== */
+  .route-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .route-node {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: inline-block;
+    margin: 4px;
+  }
+  .route-branch {
+    margin-left: 32px;
+    border-left: 2px solid var(--border);
+    padding-left: 16px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+  .route-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  /* ===== SHARED STATE DIAGRAM ===== */
+  .state-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .state-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .state-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Fira Code', monospace;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .state-card .state-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .state-field {
+    font-size: 11px;
+    padding: 3px 0;
+    display: flex;
+    gap: 8px;
+  }
+  .state-field-name {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent);
+    min-width: 100px;
+  }
+  .state-field-type {
+    color: var(--purple);
+    font-family: 'Fira Code', monospace;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <h1>System Internals</h1>
+  <p>Complete visual reference for every module, function, type, and data flow in the Champ agent swarm harness. Built for maintainers.</p>
+  <div class="header-nav">
+    <a href="agent-swarm-architecture.html" style="border-color:rgba(167,139,250,0.5); color:var(--purple);">Agent Architecture &rarr;</a>
+    <a href="event-log-viewer.html" style="border-color:rgba(52,211,153,0.5); color:var(--green);">Event Log &rarr;</a>
+    <a href="#work-packet">Work Packet</a>
+    <a href="#modules">29 Modules</a>
+    <a href="#dep-graph">Dependency Graph</a>
+    <a href="#fsm">Packet Lifecycle FSM</a>
+    <a href="#fix-loop">Fix Loop (Ralph Loop)</a>
+    <a href="#prompt-pipeline">Prompt Assembly</a>
+    <a href="#cli-routing">CLI Routing</a>
+    <a href="#shared-state">Shared State</a>
+    <a href="#data-flow">Data Flow</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== SECTION: WORK PACKET ===== -->
+  <div class="section" id="work-packet">
+    <div class="section-title">
+      <span class="dot" style="background:var(--accent)"></span>
+      What is a Work Packet?
+    </div>
+    <p class="section-subtitle">The work packet is the fundamental unit of communication in the swarm. Every task — from a one-line fix to a full feature — travels as a packet.</p>
+
+    <!-- Concept card -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px;">
+      <div class="card" style="border-color:rgba(96,165,250,0.3);">
+        <h3 style="color:var(--accent); margin-bottom:12px;">The Analogy</h3>
+        <p style="font-size:13px; color:var(--text-dim); line-height:1.7;">
+          Think of a work packet as a <strong style="color:var(--text);">sealed envelope</strong> you hand to an agent. Inside the envelope:
+        </p>
+        <ul style="font-size:12px; color:var(--text-dim); margin-top:8px; padding-left:20px; line-height:2;">
+          <li><strong style="color:var(--accent);">Instruction</strong> — what to do ("implement user authentication")</li>
+          <li><strong style="color:var(--green);">Context</strong> — files to read, directories to explore, reference docs, notes</li>
+          <li><strong style="color:var(--purple);">Expected Output</strong> — what kind of deliverable (files, PR, report, plan)</li>
+          <li><strong style="color:var(--amber);">Success Criteria</strong> — how to know it's done correctly</li>
+          <li><strong style="color:var(--red);">Test Command</strong> — a shell command to verify the result</li>
+        </ul>
+        <p style="font-size:12px; color:var(--text-dim); margin-top:12px;">
+          The agent opens the envelope, does the work, and returns a <strong style="color:var(--green);">Work Result</strong> — a structured response with status, summary, output files, and test results.
+        </p>
+      </div>
+
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green); margin-bottom:12px;">Why Packets?</h3>
+        <div style="font-size:12px; color:var(--text-dim); line-height:1.8;">
+          <div style="padding:8px 0; border-bottom:1px solid var(--border);">
+            <strong style="color:var(--text);">Any agent can invoke any other agent</strong><br>
+            Packets are the universal protocol — no hierarchy, no special channels. Dev can ask QA to verify. QA can ask Dev to fix. Champ orchestrates all of them.
+          </div>
+          <div style="padding:8px 0; border-bottom:1px solid var(--border);">
+            <strong style="color:var(--text);">Full audit trail</strong><br>
+            Every packet gets a unique ID (<code style="color:var(--cyan);">wp-{hex8}</code>), phase history with timestamps, and an event log entry. Nothing happens without a record.
+          </div>
+          <div style="padding:8px 0; border-bottom:1px solid var(--border);">
+            <strong style="color:var(--text);">Retry-safe</strong><br>
+            Packets track their phase (PENDING → DONE/FAILED) and fix iteration count. A failed packet can be restarted from scratch. The fix loop can re-run verification multiple times.
+          </div>
+          <div style="padding:8px 0;">
+            <strong style="color:var(--text);">Decoupled</strong><br>
+            The board (shared/packets.json) is just a JSON file. Any process can read it, any process can write to it. No server, no database, no message queue.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual packet anatomy -->
+    <div class="card" style="border-color:rgba(96,165,250,0.25); background:linear-gradient(135deg, rgba(96,165,250,0.04), rgba(167,139,250,0.04));">
+      <h3 style="margin-bottom:16px;">Packet Anatomy — Every Field Explained</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+        <!-- Left: identity & routing -->
+        <div>
+          <div style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Identity &amp; Routing</div>
+          <table class="schema-table">
+            <tr><td style="width:130px;"><code>id</code></td><td><code style="color:var(--amber);">wp-{hex8}</code> — unique ID generated from crypto.randomUUID()</td></tr>
+            <tr><td><code>agent</code></td><td>Target agent name (e.g., "dev", "qa", "architect")</td></tr>
+            <tr><td><code>invoked_by</code></td><td>Who created it — "human" for CLI, or another agent's name</td></tr>
+            <tr><td><code>priority</code></td><td><span class="tag tag-red">P0</span> <span class="tag tag-amber">P1</span> <span class="tag tag-green">P2</span> — urgency level (default P1)</td></tr>
+            <tr><td><code>timeout_minutes</code></td><td>Max execution time (default 60)</td></tr>
+            <tr><td><code>complexity</code></td><td><span class="tag tag-green">simple</span> <span class="tag tag-amber">medium</span> <span class="tag tag-red">complex</span> — drives model selection and fix loop limits</td></tr>
+          </table>
+
+          <div style="font-size:11px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Lifecycle State</div>
+          <table class="schema-table">
+            <tr><td style="width:130px;"><code>status</code></td><td>Legacy: pending → accepted → in_progress → done/failed/blocked</td></tr>
+            <tr><td><code>phase</code></td><td>FSM: PENDING → ACCEPTED → EXECUTING → VERIFYING → FIXING → DONE/FAILED/BLOCKED/CANCELLED</td></tr>
+            <tr><td><code>phase_history</code></td><td>Array of <code>{phase, timestamp, reason}</code> — full transition audit</td></tr>
+            <tr><td><code>active</code></td><td>Boolean — false once in a terminal phase</td></tr>
+            <tr><td><code>fix_iteration</code></td><td>Current fix loop count (0-indexed, resets on restart)</td></tr>
+          </table>
+        </div>
+
+        <!-- Right: payload -->
+        <div>
+          <div style="font-size:11px; font-weight:600; color:var(--green); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Payload — The Actual Work</div>
+          <table class="schema-table">
+            <tr><td style="width:130px;"><code>instruction</code></td><td>Free-text task description. This becomes the core of the agent's prompt.</td></tr>
+            <tr>
+              <td><code>context</code></td>
+              <td>
+                <code>.files</code> — specific file paths to read<br>
+                <code>.directories</code> — dirs to explore<br>
+                <code>.references</code> — related packet IDs or doc links<br>
+                <code>.notes</code> — free-text extra context
+              </td>
+            </tr>
+            <tr>
+              <td><code>expected_output</code></td>
+              <td>
+                <code>.type</code> — one of: <span class="tag tag-blue">files</span> <span class="tag tag-purple">pr</span> <span class="tag tag-green">report</span> <span class="tag tag-amber">review</span> <span class="tag tag-cyan">plan</span> <span class="tag tag-pink">decision</span><br>
+                <code>.description</code> — what the output should contain
+              </td>
+            </tr>
+            <tr><td><code>success_criteria</code></td><td>String array — each criterion is checked against the result</td></tr>
+            <tr><td><code>test_command</code></td><td>Shell command to verify output (e.g., <code>bun test</code>)</td></tr>
+          </table>
+
+          <div style="font-size:11px; font-weight:600; color:var(--orange); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Optional — Verification</div>
+          <table class="schema-table">
+            <tr>
+              <td style="width:130px;"><code>verificationSpec</code></td>
+              <td>
+                Structured checks array: <code>{type, command, required}</code><br>
+                Types: test, typecheck, lint, build, runtime, security, performance
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Packet → Result flow -->
+    <div style="margin-top:20px;">
+      <div style="display:flex; align-items:stretch; gap:0; flex-wrap:wrap;">
+        <!-- Packet box -->
+        <div style="flex:1; min-width:280px; padding:16px; background:rgba(96,165,250,0.06); border:2px solid rgba(96,165,250,0.3); border-radius:12px 0 0 12px;">
+          <div style="font-size:13px; font-weight:600; color:var(--accent); margin-bottom:8px;">WorkPacket</div>
+          <div style="font-size:11px; color:var(--text-dim); font-family:'Fira Code', monospace; line-height:1.8;">
+            id: "wp-a1b2c3d4"<br>
+            agent: "dev"<br>
+            instruction: "Add JWT auth middleware"<br>
+            context.files: ["src/server.ts"]<br>
+            success_criteria: ["All tests pass"]<br>
+            test_command: "bun test"<br>
+            complexity: "medium"<br>
+            phase: "PENDING"
+          </div>
+          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createPacket()</code></div>
+          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/packets.json</code></div>
+        </div>
+
+        <!-- Arrow -->
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 16px; min-width:120px;">
+          <div style="font-size:10px; color:var(--text-dim); text-align:center; margin-bottom:4px;">Agent processes</div>
+          <div style="font-size:24px; color:var(--accent);">→ → →</div>
+          <div style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:4px;">Fix loop may<br>cycle 3-10 times</div>
+        </div>
+
+        <!-- Result box -->
+        <div style="flex:1; min-width:280px; padding:16px; background:rgba(52,211,153,0.06); border:2px solid rgba(52,211,153,0.3); border-radius:0 12px 12px 0;">
+          <div style="font-size:13px; font-weight:600; color:var(--green); margin-bottom:8px;">WorkResult</div>
+          <div style="font-size:11px; color:var(--text-dim); font-family:'Fira Code', monospace; line-height:1.8;">
+            packet_id: "wp-a1b2c3d4"<br>
+            status: "done"<br>
+            summary: "Added JWT middleware..."<br>
+            output_files: ["src/middleware/auth.ts"]<br>
+            tests_passed: true<br>
+            criteria_met: { "All tests pass": true }<br>
+            verificationResult.passed: true
+          </div>
+          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createResult()</code></div>
+          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/results.json</code></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How packets flow -->
+    <div style="margin-top:20px;">
+      <div class="card" style="border-color:rgba(251,191,36,0.25);">
+        <h3 style="color:var(--amber); margin-bottom:12px;">How Packets Flow Through the System</h3>
+        <div style="display:flex; align-items:center; justify-content:center; gap:0; flex-wrap:wrap; padding:8px 0;">
+          <div style="padding:8px 12px; border-radius:6px; background:rgba(136,146,164,0.1); border:1px solid var(--border); font-size:11px; text-align:center;">
+            <strong>Human / Agent</strong><br>
+            <span style="color:var(--text-dim);">creates packet via<br>CLI invoke or follow_up</span>
+          </div>
+          <div style="padding:0 8px; color:var(--text-dim);">→</div>
+          <div style="padding:8px 12px; border-radius:6px; background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); font-size:11px; text-align:center;">
+            <strong style="color:var(--accent);">Board</strong><br>
+            <span style="color:var(--text-dim);">postPacket() writes<br>to packets.json</span>
+          </div>
+          <div style="padding:0 8px; color:var(--text-dim);">→</div>
+          <div style="padding:8px 12px; border-radius:6px; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); font-size:11px; text-align:center;">
+            <strong style="color:var(--amber);">Runner</strong><br>
+            <span style="color:var(--text-dim);">builds prompt,<br>launches in tmux</span>
+          </div>
+          <div style="padding:0 8px; color:var(--text-dim);">→</div>
+          <div style="padding:8px 12px; border-radius:6px; background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.3); font-size:11px; text-align:center;">
+            <strong style="color:var(--purple);">Claude</strong><br>
+            <span style="color:var(--text-dim);">processes prompt,<br>emits workresult block</span>
+          </div>
+          <div style="padding:0 8px; color:var(--text-dim);">→</div>
+          <div style="padding:8px 12px; border-radius:6px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); font-size:11px; text-align:center;">
+            <strong style="color:var(--red);">Verifier</strong><br>
+            <span style="color:var(--text-dim);">runs test command<br>+ structured checks</span>
+          </div>
+          <div style="padding:0 8px; color:var(--text-dim);">→</div>
+          <div style="padding:8px 12px; border-radius:6px; background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.3); font-size:11px; text-align:center;">
+            <strong style="color:var(--green);">Board</strong><br>
+            <span style="color:var(--text-dim);">saveResult() writes<br>to results.json</span>
+          </div>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:12px; text-align:center;">
+          If verification fails and iterations remain, the packet loops back through the <strong style="color:var(--orange);">Fix Loop</strong> (EXECUTING → VERIFYING → FIXING → EXECUTING).
+          <br>Agents can also emit <code style="color:var(--cyan);">follow_up_packets</code> in their result to spawn new work.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION: MODULE OVERVIEW ===== -->
+  <div class="section" id="modules">
+    <div class="section-title">
+      <span class="dot" style="background:var(--cyan)"></span>
+      Harness Modules (29)
+    </div>
+    <p class="section-subtitle">Click any module to explore its exported functions, types, and dependencies.</p>
+    <div id="module-grid-container"></div>
+    <div class="detail-panel empty" id="module-detail">
+      Click any module above to see its functions, types, imports, and role in the system.
+    </div>
+  </div>
+
+  <!-- ===== SECTION: DEPENDENCY GRAPH ===== -->
+  <div class="section" id="dep-graph">
+    <div class="section-title">
+      <span class="dot" style="background:var(--green)"></span>
+      Module Dependency Graph
+    </div>
+    <p class="section-subtitle">Directed edges show which modules import from which. Root modules have no harness dependencies.</p>
+    <div id="dep-graph-container"></div>
+  </div>
+
+  <!-- ===== SECTION: PACKET LIFECYCLE FSM ===== -->
+  <div class="section" id="fsm">
+    <div class="section-title">
+      <span class="dot" style="background:var(--amber)"></span>
+      Work Packet Lifecycle FSM
+    </div>
+    <p class="section-subtitle">Every work packet transitions through these phases. Defined in protocol.ts PHASE_TRANSITIONS.</p>
+    <div id="fsm-container"></div>
+  </div>
+
+  <!-- ===== SECTION: FIX LOOP ===== -->
+  <div class="section" id="fix-loop">
+    <div class="section-title">
+      <span class="dot" style="background:var(--red)"></span>
+      Fix Loop (Ralph Loop)
+    </div>
+    <p class="section-subtitle">The execute-verify-fix cycle in runner.ts runWithFixLoop(). Bounded by complexity: simple=3, medium=5, complex=10 iterations.</p>
+    <div id="fix-loop-container"></div>
+  </div>
+
+  <!-- ===== SECTION: PROMPT ASSEMBLY ===== -->
+  <div class="section" id="prompt-pipeline">
+    <div class="section-title">
+      <span class="dot" style="background:var(--purple)"></span>
+      Prompt Assembly Pipeline
+    </div>
+    <p class="section-subtitle">How a work packet becomes a fully enriched prompt sent to Claude. Spans runner.ts, prompt-utils.ts, skill-loader.ts, and prompt-enricher.ts.</p>
+    <div id="prompt-pipeline-container"></div>
+  </div>
+
+  <!-- ===== SECTION: CLI ROUTING ===== -->
+  <div class="section" id="cli-routing">
+    <div class="section-title">
+      <span class="dot" style="background:var(--orange)"></span>
+      CLI Command Routing
+    </div>
+    <p class="section-subtitle">The invoke command's size-aware routing decision tree. Defined in cli.ts.</p>
+    <div id="cli-routing-container"></div>
+  </div>
+
+  <!-- ===== SECTION: SHARED STATE ===== -->
+  <div class="section" id="shared-state">
+    <div class="section-title">
+      <span class="dot" style="background:var(--cyan)"></span>
+      Shared State &amp; File Schema
+    </div>
+    <p class="section-subtitle">All JSON/JSONL files in shared/ that form the communication layer between agents.</p>
+    <div id="shared-state-container"></div>
+  </div>
+
+  <!-- ===== SECTION: DATA FLOW ===== -->
+  <div class="section" id="data-flow">
+    <div class="section-title">
+      <span class="dot" style="background:var(--pink)"></span>
+      End-to-End Data Flow
+    </div>
+    <p class="section-subtitle">From CLI invocation to completed work result — every module touched and every file written.</p>
+    <div id="data-flow-container"></div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// MODULE DATA — all 29 harness modules
+// ============================================================
+const MODULES = {
+  "protocol.ts": {
+    name: "protocol.ts",
+    role: "Core types, FSM transitions, packet/result factories",
+    layer: "foundation",
+    deps: [],
+    fns: [
+      { name: "createPacket", sig: "(opts) → WorkPacket", desc: "Factory: wp-{hex8} ID, phase=PENDING, fix_iteration=0" },
+      { name: "createResult", sig: "(opts) → WorkResult", desc: "Factory: fills all defaults, created_at=now" },
+      { name: "transitionPhase", sig: "(packet, to, reason?) → WorkPacket", desc: "Validates FSM edge, appends to phase_history, syncs status" },
+      { name: "inferPhase", sig: "(packet) → PacketPhase", desc: "Returns packet.phase or maps legacy status" },
+      { name: "isValidTransition", sig: "(from, to) → boolean", desc: "Checks PHASE_TRANSITIONS[from] includes to" },
+      { name: "isTerminalPhase", sig: "(phase) → boolean", desc: "DONE, FAILED, BLOCKED, or CANCELLED" },
+      { name: "phaseToStatus", sig: "(phase) → PacketStatus", desc: "Maps phase enum to legacy status for compat" },
+      { name: "restartPacket", sig: "(packet) → WorkPacket", desc: "FAILED/BLOCKED → PENDING, resets fix_iteration" }
+    ],
+    types: [
+      "WorkPacket", "WorkResult", "PacketStatus", "PacketPhase", "OutputType",
+      "PhaseTransition", "StructuredError", "ErrorCategory", "ProgressEvent",
+      "VerificationEvidence", "VerificationResult", "VerificationSpec",
+      "WorkPacketContext", "WorkPacketOutput"
+    ],
+    constants: ["PHASE_TRANSITIONS", "TERMINAL_PHASES", "MAX_FIX_ITERATIONS", "PacketStatus", "PacketPhase", "OutputType", "ErrorCategory"]
+  },
+
+  "board.ts": {
+    name: "board.ts",
+    role: "Read/write shared board — packets, results, events, memory",
+    layer: "foundation",
+    deps: ["protocol.ts"],
+    fns: [
+      { name: "postPacket", sig: "(packet) → WorkPacket", desc: "Push to packets.json, create workspace dir, log event" },
+      { name: "getPacket", sig: "(id) → WorkPacket | undefined", desc: "Find packet by ID in packets.json" },
+      { name: "listPackets", sig: "(filters?) → WorkPacket[]", desc: "Filter by agent, status, invoked_by" },
+      { name: "updatePacketStatus", sig: "(id, status) → void", desc: "Update status field, log status_changed event" },
+      { name: "updatePacket", sig: "(id, updates) → void", desc: "Spread partial updates over packet" },
+      { name: "saveResult", sig: "(result) → void", desc: "Append to results.json, sync packet status" },
+      { name: "getResult", sig: "(id) → WorkResult | undefined", desc: "Find first result for packet_id" },
+      { name: "listResults", sig: "(agent?) → WorkResult[]", desc: "All results, optionally filtered by agent" },
+      { name: "logEvent", sig: "(type, data, agent?) → void", desc: "Append JSON line to event_log.jsonl" },
+      { name: "readMemory", sig: "(key?) → entry | store", desc: "Read one key or entire memory.json" },
+      { name: "writeMemory", sig: "(key, value, agent?) → void", desc: "Write keyed entry with timestamp + author" },
+      { name: "boardSummary", sig: "() → BoardSummary", desc: "Counts by_status, by_agent, progress_pct" },
+      { name: "initPacketWorkspace", sig: "(id) → string", desc: "Create shared/packets/{id}/ directory" },
+      { name: "initResultWorkspace", sig: "(id) → string", desc: "Create shared/results/{id}/ directory" },
+      { name: "getPacketWorkspacePath", sig: "(id) → string", desc: "Path to shared/packets/{id}/" },
+      { name: "getResultDirPath", sig: "(id) → string", desc: "Path to shared/results/{id}/" }
+    ],
+    types: ["SwarmEvent", "BoardSummary"],
+    constants: []
+  },
+
+  "registry.ts": {
+    name: "registry.ts",
+    role: "Agent discovery, Zod-validated manifest parsing from agents/ directory",
+    layer: "foundation",
+    deps: [],
+    fns: [
+      { name: "discoverAgents", sig: "() → Map<string, AgentManifest>", desc: "Scan agents/ dir, parse all agent.yaml" },
+      { name: "discoverAgentsWithErrors", sig: "() → ScanResult", desc: "Same but includes validation errors" },
+      { name: "getAgent", sig: "(name) → AgentManifest | undefined", desc: "Lookup single agent" },
+      { name: "listAgentNames", sig: "() → string[]", desc: "All agent directory names" },
+      { name: "getAgentPrompt", sig: "(name) → string | undefined", desc: "Read agents/{name}/prompt.md" },
+      { name: "buildManifest", sig: "(entry, dir, raw) → AgentManifest", desc: "Fill defaults (model=sonnet, timeout=300s, retries=2)" },
+      { name: "validateManifest", sig: "(entry, raw) → ok/error", desc: "Zod safeParse with readable errors" },
+      { name: "scanAgentDir", sig: "(baseDir) → ScanResult", desc: "Read dir entries, skip _ and . prefixes, parse yaml" },
+      { name: "readPromptFile", sig: "(baseDir, name) → string?", desc: "Read prompt.md if exists" }
+    ],
+    types: ["AgentManifest", "AgentInput", "AgentOutput", "ScanResult"],
+    constants: ["AgentManifestSchema"]
+  },
+
+  "prompt-utils.ts": {
+    name: "prompt-utils.ts",
+    role: "Prompt assembly helpers — anti-scope, permitted tools, workresult parsing",
+    layer: "foundation",
+    deps: ["protocol.ts", "registry.ts"],
+    fns: [
+      { name: "parseWorkResult", sig: "(stdout) → Partial<WorkResult> | null", desc: "Regex-extract workresult fenced block, parse JSON" },
+      { name: "appendAntiScope", sig: "(sections[], agent?) → void", desc: "Inject avoid_when as Anti-Scope section" },
+      { name: "appendPermittedTools", sig: "(sections[], agent?) → void", desc: "Inject allowed_tools as Permitted Tools section" },
+      { name: "appendWorkPacketSections", sig: "(sections[], packet) → void", desc: "Append instruction, files, criteria, test command" }
+    ],
+    types: [],
+    constants: []
+  },
+
+  "model-resolver.ts": {
+    name: "model-resolver.ts",
+    role: "Complexity → model mapping with env/config overrides",
+    layer: "foundation",
+    deps: [],
+    fns: [
+      { name: "resolveModel", sig: "(complexity) → string", desc: "Chain: env var → .champ/config.json → COMPLEXITY_MODEL_MAP" },
+      { name: "getFallbacks", sig: "(complexity) → string[]", desc: "Fallback model list for complexity level" }
+    ],
+    types: ["Complexity"],
+    constants: ["COMPLEXITY_MODEL_MAP"]
+  },
+
+  "skill-loader.ts": {
+    name: "skill-loader.ts",
+    role: "Load and resolve {{skill:name}} template references in prompts",
+    layer: "foundation",
+    deps: [],
+    fns: [
+      { name: "resolveSkillRefs", sig: "(text, visited?, depth?) → string", desc: "Recursive replacement, max depth 5, cycle detection" },
+      { name: "loadSkill", sig: "(name) → SkillManifest | null", desc: "Read skill file, estimate tokens (chars/4)" },
+      { name: "loadSkills", sig: "(names[]) → string", desc: "Load multiple skills, concatenate" },
+      { name: "resolveSkillPath", sig: "(name) → string | null", desc: "Check global then local skill dirs" },
+      { name: "listSkills", sig: "() → SkillManifest[]", desc: "Scan both skill directories" }
+    ],
+    types: ["SkillManifest"],
+    constants: []
+  },
+
+  "sub-registry.ts": {
+    name: "sub-registry.ts",
+    role: "Sub-agent discovery for mini-swarm master agents",
+    layer: "foundation",
+    deps: ["registry.ts"],
+    fns: [
+      { name: "discoverSubAgents", sig: "(baseDir) → Map<string, AgentManifest>", desc: "Scan sub-agents/ directory" },
+      { name: "getSubAgent", sig: "(baseDir, name) → AgentManifest?", desc: "Single sub-agent lookup" },
+      { name: "getSubAgentPrompt", sig: "(baseDir, name) → string?", desc: "Read sub-agent prompt.md" },
+      { name: "getSubAgentKnowledge", sig: "(baseDir, name) → string[]", desc: "Read all .md files from knowledge/" }
+    ],
+    types: [],
+    constants: []
+  },
+
+  "worktree.ts": {
+    name: "worktree.ts",
+    role: "Git worktree create/remove for per-agent isolation",
+    layer: "infrastructure",
+    deps: [],
+    fns: [
+      { name: "createWorktree", sig: "(runId, packetId) → {path, branch}", desc: "Idempotent. Path: .champ/worktrees/{run}/{packet}/" },
+      { name: "removeWorktree", sig: "(runId, packetId) → void", desc: "git worktree remove --force + branch -D" },
+      { name: "listWorktrees", sig: "(runId?) → WorktreeInfo[]", desc: "Parse git worktree list --porcelain" },
+      { name: "cleanupRunWorktrees", sig: "(runId) → void", desc: "Remove all worktrees for a run" },
+      { name: "generateRunId", sig: "() → string", desc: "run-{Date.now base36}" },
+      { name: "currentRunId", sig: "() → string", desc: "CHAMP_RUN_ID env or generate" }
+    ],
+    types: ["WorktreeInfo"],
+    constants: []
+  },
+
+  "mcp-registry.ts": {
+    name: "mcp-registry.ts",
+    role: "Load MCP server registry, validate availability, build config JSON",
+    layer: "infrastructure",
+    deps: [],
+    fns: [
+      { name: "loadMCPRegistry", sig: "() → MCPRegistry", desc: "Read config/mcp-servers.yaml, resolve env vars, cached" },
+      { name: "resolveMCPServers", sig: "(names[]) → MCPServerConfig[]", desc: "Lookup named servers, throw if not found" },
+      { name: "validateMCPAvailability", sig: "(names[]) → {available, missing}", desc: "Check registry + env vars" },
+      { name: "buildMCPConfigJson", sig: "(servers[]) → string", desc: "Serialize for claude --mcp-config" },
+      { name: "clearMCPRegistryCache", sig: "() → void", desc: "Reset in-process cache" }
+    ],
+    types: ["MCPTransport", "MCPServerConfig", "MCPRegistry"],
+    constants: []
+  },
+
+  "concurrency.ts": {
+    name: "concurrency.ts",
+    role: "Slot-based concurrency cap for parallel agent execution",
+    layer: "infrastructure",
+    deps: ["board.ts"],
+    fns: [
+      { name: "acquireSlot", sig: "(packetId, agent) → boolean", desc: "Non-blocking. false if at cap. Idempotent" },
+      { name: "releaseSlot", sig: "(packetId) → void", desc: "Remove from running. Safe to call multiple times" },
+      { name: "waitForSlot", sig: "(packetId, agent, opts?) → void", desc: "Blocking poll with Atomics.wait, max 5min" },
+      { name: "hasAvailableSlot", sig: "() → boolean", desc: "running.length < cap" },
+      { name: "getConcurrencyStatus", sig: "() → ConcurrencyStatus", desc: "Current slot usage" },
+      { name: "getConcurrencyCap", sig: "() → number", desc: "CHAMP_CONCURRENCY_CAP env or default 5" },
+      { name: "resetConcurrencyState", sig: "() → void", desc: "Clear all slots" }
+    ],
+    types: ["RunningSlot", "ConcurrencyState", "ConcurrencyStatus"],
+    constants: ["DEFAULT_CONCURRENCY_CAP"]
+  },
+
+  "notify.ts": {
+    name: "notify.ts",
+    role: "Notification dispatch for agent events (log + optional email)",
+    layer: "infrastructure",
+    deps: ["board.ts"],
+    fns: [
+      { name: "notify", sig: "(level, message, opts?) → void", desc: "Log event + email if CHAMP_NOTIFY_ENABLED=1" }
+    ],
+    types: ["NotifyLevel", "NotifyOpts"],
+    constants: []
+  },
+
+  "contracts.ts": {
+    name: "contracts.ts",
+    role: "Derive input/output contracts from agent manifests, validate at boundaries",
+    layer: "infrastructure",
+    deps: ["registry.ts", "protocol.ts"],
+    fns: [
+      { name: "deriveContract", sig: "(manifest) → AgentContract", desc: "Map manifest inputs/outputs to typed ContractFields" },
+      { name: "validateInputs", sig: "(packet, contract) → ValidationResult", desc: "Check required inputs present in packet" },
+      { name: "validateOutputs", sig: "(result, contract) → ValidationResult", desc: "Check required outputs on status=done" }
+    ],
+    types: ["ContractFieldType", "ContractField", "AgentContract", "ValidationResult"],
+    constants: []
+  },
+
+  "verifier.ts": {
+    name: "verifier.ts",
+    role: "Run structured verification checks on agent outputs",
+    layer: "execution",
+    deps: ["protocol.ts"],
+    fns: [
+      { name: "runVerification", sig: "(spec, workingDir) → VerificationResult", desc: "Run all checks via execSync, collect evidence, compute confidence" }
+    ],
+    types: [],
+    constants: []
+  },
+
+  "prompt-enricher.ts": {
+    name: "prompt-enricher.ts",
+    role: "Enrich prompts with verification feedback, memory, board context, sibling status",
+    layer: "execution",
+    deps: ["protocol.ts", "registry.ts", "progress-ledger.ts", "team-state.ts", "board.ts"],
+    fns: [
+      { name: "enrichPrompt", sig: "(base, packet, agent, ctx?, budget?) → string", desc: "Assemble 4 sections, drop by priority on budget overflow" },
+      { name: "injectVerificationFeedback", sig: "(packet) → string", desc: "Last 3 failures from ledger. HIGHEST priority, never dropped" },
+      { name: "injectMemoryEntries", sig: "(packet, agent) → string", desc: "Keyword-scored memory entries, top 8" },
+      { name: "injectBoardContext", sig: "(packet, ctx?) → string", desc: "Sibling packet phases, max 10" },
+      { name: "injectSiblingStatus", sig: "(packet, ctx?) → string", desc: "Team state for runId. LOWEST priority" }
+    ],
+    types: ["EnrichContext"],
+    constants: ["DEFAULT_ENRICH_BUDGET"]
+  },
+
+  "progress-ledger.ts": {
+    name: "progress-ledger.ts",
+    role: "Append-only progress ledger per packet for fix loop history",
+    layer: "execution",
+    deps: ["protocol.ts"],
+    fns: [
+      { name: "appendLedgerEntry", sig: "(packetId, entry) → LedgerEntry", desc: "Append to ledgers/{id}.json, auto-trim to 30" },
+      { name: "readLedger", sig: "(packetId) → ProgressLedger | null", desc: "Read ledger file" },
+      { name: "trimLedger", sig: "(packetId, max?) → void", desc: "Keep last N entries (default 30)" }
+    ],
+    types: ["LedgerEntry", "ProgressLedger"],
+    constants: []
+  },
+
+  "turn-tracker.ts": {
+    name: "turn-tracker.ts",
+    role: "Track conversation turns per packet — tokens, tools, burn rate",
+    layer: "execution",
+    deps: [],
+    fns: [
+      { name: "appendTurn", sig: "(packetId, event) → void", desc: "Append JSONL to turns/{id}.jsonl" },
+      { name: "summarizeTurns", sig: "(packetId, opts?) → TurnSummary", desc: "Totals, tool counts, burn rate (tokens/min)" }
+    ],
+    types: ["TurnEvent", "TurnSummary"],
+    constants: []
+  },
+
+  "team-state.ts": {
+    name: "team-state.ts",
+    role: "Per-agent state writes, team-wide aggregation across runs",
+    layer: "execution",
+    deps: [],
+    fns: [
+      { name: "writeAgentState", sig: "(runId, agent, state) → void", desc: "Write to runs/{runId}/agents/{agent}/state.json" },
+      { name: "readAgentState", sig: "(runId, agent) → AgentState | null", desc: "Read state file" },
+      { name: "updateAgentState", sig: "(runId, agent, updates) → AgentState", desc: "Merge partial updates" },
+      { name: "aggregateTeamState", sig: "(runId) → TeamState", desc: "Scan all agents, compute summary" },
+      { name: "initAgentState", sig: "(runId, agent, packetId?) → AgentState", desc: "status=pending, started_at=now" },
+      { name: "completeAgentState", sig: "(runId, agent, summary, artifacts?) → AgentState", desc: "Mark done + duration" },
+      { name: "failAgentState", sig: "(runId, agent, error) → AgentState", desc: "Mark failed + error" },
+      { name: "listRuns", sig: "() → string[]", desc: "List run directories" }
+    ],
+    types: ["AgentRunStatus", "AgentState", "TeamSummary", "TeamState"],
+    constants: []
+  },
+
+  "cost-tracker.ts": {
+    name: "cost-tracker.ts",
+    role: "Parse token usage, calculate cost, maintain cost ledger",
+    layer: "execution",
+    deps: [],
+    fns: [
+      { name: "parseTokenUsage", sig: "(output) → TokenUsage | null", desc: "Regex: 3 patterns for token extraction" },
+      { name: "calculateCost", sig: "(tokens, model) → number", desc: "Lookup pricing, compute USD cost" },
+      { name: "recordCost", sig: "(packetId, agent, model, output) → CostEntry | null", desc: "Parse + calc + append to cost-ledger.json" },
+      { name: "recordCostFromTokens", sig: "(packetId, agent, model, tokens) → CostEntry", desc: "Direct recording" },
+      { name: "getCostSummary", sig: "() → CostSummary", desc: "Aggregate by agent and model" },
+      { name: "getPacketCost", sig: "(packetId) → CostEntry[]", desc: "Filter ledger by packet" },
+      { name: "formatCostReport", sig: "(summary) → string", desc: "Human-readable report" }
+    ],
+    types: ["ModelPricing", "TokenUsage", "CostEntry", "CostLedger", "CostSummary"],
+    constants: ["MODEL_PRICING"]
+  },
+
+  "role-router.ts": {
+    name: "role-router.ts",
+    role: "Score-based task routing — intent detection, keyword scoring, memory learning",
+    layer: "orchestration",
+    deps: ["registry.ts", "board.ts"],
+    fns: [
+      { name: "routeTask", sig: "(task, phase?) → RouteResult", desc: "3-layer: intent regex → keyword index → memory. Scores + confidence" },
+      { name: "recordRoutingDecision", sig: "(task, agent) → void", desc: "Write to memory for future learning" },
+      { name: "invalidateRouterCache", sig: "() → void", desc: "Clear cached keyword index" }
+    ],
+    types: ["Confidence", "RouteResult"],
+    constants: []
+  },
+
+  "task-classifier.ts": {
+    name: "task-classifier.ts",
+    role: "Classify task size for CLI routing decisions",
+    layer: "orchestration",
+    deps: ["board.ts", "runner.ts"],
+    fns: [
+      { name: "classifyTaskSize", sig: "(instruction, override?) → TaskSize", desc: "Pattern matching: trivial > explore > small > large > word count > medium" },
+      { name: "escalateSmallTask", sig: "(packetId, agent) → action", desc: "1st fail: model upgrade, 2nd: size upgrade, 3rd: exhausted" },
+      { name: "trackSmallTask", sig: "(packetId) → void", desc: "Register for escalation tracking" },
+      { name: "registerSizeEscalationHook", sig: "() → void", desc: "Wire into fix loop exhaustion" },
+      { name: "clearEscalationState", sig: "(packetId) → void", desc: "Clear in-memory state" }
+    ],
+    types: ["TaskSize"],
+    constants: ["EXPLORATION_PATTERNS", "MODIFICATION_PATTERNS", "TRIVIAL_PATTERNS"]
+  },
+
+  "stall-detector.ts": {
+    name: "stall-detector.ts",
+    role: "Detect stalled agents, nudge via tmux, escalate to blocked",
+    layer: "orchestration",
+    deps: ["protocol.ts", "board.ts", "tmux-runner.ts"],
+    fns: [
+      { name: "detectStalls", sig: "(config?) → string[]", desc: "Scan active packets, nudge or block stalled ones" },
+      { name: "checkForStall", sig: "(packetId) → {stalled, reason?}", desc: "Check elapsed vs complexity timeout" },
+      { name: "markStalled", sig: "(packetId, reason?) → void", desc: "Transition to BLOCKED, log, notify hooks" },
+      { name: "nudgeOrBlock", sig: "(packetId, reason, config?) → action", desc: "Escalation ladder: nudge → block" },
+      { name: "listStalledPackets", sig: "() → WorkPacket[]", desc: "Filter for phase=BLOCKED" },
+      { name: "onStall", sig: "(callback) → void", desc: "Register stall notification hook" },
+      { name: "readPaneOutput", sig: "(paneId, lines?) → string", desc: "Capture tmux pane output" },
+      { name: "detectInteractivePrompt", sig: "(output) → boolean", desc: "Check for [y/n], prompts, etc." }
+    ],
+    types: ["NudgeConfig", "OnStallCallback"],
+    constants: ["STALL_TIMEOUTS", "DEFAULT_NUDGE_CONFIG"]
+  },
+
+  "escalation.ts": {
+    name: "escalation.ts",
+    role: "Create and execute escalation plans when fix loop exhausts",
+    layer: "orchestration",
+    deps: ["protocol.ts", "board.ts", "notify.ts", "runner.ts"],
+    fns: [
+      { name: "createEscalationPlan", sig: "(packet, iterations, opts?) → EscalationPlan", desc: "Strategy: human | retry-with-context | reroute | decompose" },
+      { name: "executeEscalation", sig: "(packet, iterations, opts?) → EscalationPlan", desc: "Create plan + fire side effects (notify, log)" },
+      { name: "listEscalations", sig: "(filter?) → EscalationRecord[]", desc: "Read + filter escalations.json" },
+      { name: "resolveEscalation", sig: "(id, note?) → EscalationRecord", desc: "Mark resolved, throw if already" },
+      { name: "registerEscalationHook", sig: "(opts?) → void", desc: "Wire into fix loop exhaustion hook" }
+    ],
+    types: ["EscalationStrategy", "EscalationStatus", "EscalationRecord", "EscalationOpts", "EscalationPlan"],
+    constants: []
+  },
+
+  "tmux-runner.ts": {
+    name: "tmux-runner.ts",
+    role: "Async tmux pane execution, DAG-based parallel orchestration",
+    layer: "execution",
+    deps: ["mcp-registry.ts", "concurrency.ts", "cost-tracker.ts", "protocol.ts", "registry.ts", "board.ts", "prompt-utils.ts"],
+    fns: [
+      { name: "shouldUseTmux", sig: "() → boolean", desc: "false if CHAMP_NO_TMUX=1, else check which tmux" },
+      { name: "tmuxRun", sig: "(opts) → TmuxPaneInfo", desc: "Non-blocking: write files, launch window, register pane" },
+      { name: "tmuxRunSync", sig: "(opts) → WorkResult", desc: "Blocking: wait for slot, launch, poll exit_code every 1s" },
+      { name: "tmuxRunParallel", sig: "(opts[]) → Promise<WorkResult[]>", desc: "Async: poll slots at 500ms, launch as available" },
+      { name: "tmuxRunDAG", sig: "(phases[], opts?) → Promise<WorkResult[]>", desc: "Sequential phases, parallel within phase" },
+      { name: "listPanes", sig: "() → TmuxPaneInfo[]", desc: "Read panes.json" },
+      { name: "killPane", sig: "(packetId) → void", desc: "Kill tmux window, release slot" },
+      { name: "killAllPanes", sig: "() → void", desc: "Kill entire tmux session" },
+      { name: "attachPane", sig: "(packetId) → void", desc: "Select tmux window" },
+      { name: "archivePacket", sig: "(packetId) → void", desc: "Move to shared/archive/{id}/" },
+      { name: "checkPromptSize", sig: "(prompt, agent) → void", desc: "Throw if >600K chars, warn at 80%" },
+      { name: "reapOrphanedPanes", sig: "() → void", desc: "Find dead PIDs, mark failed" },
+      { name: "isPaneComplete", sig: "(packetId) → boolean", desc: "Check for exit_code file" },
+      { name: "readPaneResult", sig: "(packetId) → WorkResult | null", desc: "Read result.json from result dir" },
+      { name: "killPaneWithCheckpoint", sig: "(packetId) → string | null", desc: "Save stdout, kill, release slot" },
+      { name: "updatePaneStatus", sig: "(packetId, status) → void", desc: "Update in panes.json" },
+      { name: "ensureSession", sig: "() → void", desc: "Create champ tmux session if needed" }
+    ],
+    types: ["TmuxRunOptions", "TmuxPaneInfo", "DAGPhase"],
+    constants: ["TMUX_SESSION"]
+  },
+
+  "runner.ts": {
+    name: "runner.ts",
+    role: "Core agent execution — build prompt, invoke Claude, fix loop FSM",
+    layer: "execution",
+    deps: ["protocol.ts", "verifier.ts", "registry.ts", "board.ts", "prompt-utils.ts", "skill-loader.ts", "tmux-runner.ts", "progress-ledger.ts", "worktree.ts", "prompt-enricher.ts", "mcp-registry.ts", "contracts.ts", "turn-tracker.ts"],
+    fns: [
+      { name: "buildAgentPrompt", sig: "(packet) → string", desc: "prompt.md → skill refs → anti-scope → tools → work packet" },
+      { name: "runWithClaudeCode", sig: "(packet, opts?) → WorkResult", desc: "Full pipeline: prompt → enrich → worktree → MCP → tmux/exec → parse → validate → save" },
+      { name: "runTestCommand", sig: "(packet) → {passed, output}", desc: "execSync with 300s timeout" },
+      { name: "runWithFixLoop", sig: "(packet, opts?) → FixLoopResult", desc: "Execute → Verify → Fix cycle, bounded by complexity" },
+      { name: "onFixLoopExhausted", sig: "(callback) → void", desc: "Register exhaustion hook" }
+    ],
+    types: ["FixLoopOptions", "FixLoopResult", "OnFixLoopExhaustedCallback"],
+    constants: []
+  },
+
+  "sub-runner.ts": {
+    name: "sub-runner.ts",
+    role: "Sub-agent execution with architecture context and knowledge injection",
+    layer: "execution",
+    deps: ["protocol.ts", "sub-registry.ts", "board.ts", "model-resolver.ts", "prompt-utils.ts", "skill-loader.ts", "registry.ts", "tmux-runner.ts"],
+    fns: [
+      { name: "buildSubAgentPrompt", sig: "(packet, baseDir, agent, opts?) → string", desc: "prompt + skills + arch context + knowledge + anti-scope + packet" },
+      { name: "runSubAgent", sig: "(packet, baseDir, agent, opts?) → WorkResult", desc: "Build prompt, resolve model, tmux or execSync" }
+    ],
+    types: [],
+    constants: []
+  },
+
+  "planner.ts": {
+    name: "planner.ts",
+    role: "Plan creation, approval workflow, codebase mapping",
+    layer: "orchestration",
+    deps: ["role-router.ts", "board.ts", "worktree.ts"],
+    fns: [
+      { name: "createPlan", sig: "(task, opts?) → PlanArtifact", desc: "Route subtasks, heuristic decomposition, DAG validation" },
+      { name: "getPlan", sig: "(runId) → PlanArtifact | null", desc: "Read plan file" },
+      { name: "showPlan", sig: "(runId) → string", desc: "Format as readable text" },
+      { name: "approvePlan", sig: "(runId) → PlanArtifact", desc: "Set status=approved" },
+      { name: "rejectPlan", sig: "(runId, reason) → PlanArtifact", desc: "Set status=rejected + reason" },
+      { name: "editPlan", sig: "(runId, edits) → PlanArtifact", desc: "Patch, remove, reorder + re-validate DAG" },
+      { name: "mapCodebase", sig: "(rootDir, opts?) → CodebaseMap", desc: "Dir tree (depth 4, 5000 chars), key file annotations" }
+    ],
+    types: ["PlanStatus", "DispatchStrategy", "PlannedPacket", "PlanArtifact", "PlanOpts", "PlanEdits", "CodebaseMap"],
+    constants: []
+  },
+
+  "pipeline.ts": {
+    name: "pipeline.ts",
+    role: "Multi-stage pipeline execution — plan → execute → verify",
+    layer: "orchestration",
+    deps: ["board.ts", "worktree.ts", "stage-roster.ts", "planner.ts"],
+    fns: [
+      { name: "runPipeline", sig: "(stages, opts?) → Promise<PipelineResult>", desc: "Sequential stages, accumulated artifacts, halt on failure" },
+      { name: "resumePipeline", sig: "(runId, stages?) → Promise<PipelineResult>", desc: "Find first incomplete stage, resume" },
+      { name: "cancelPipeline", sig: "(runId) → void", desc: "Skip remaining stages, mark cancelled" },
+      { name: "getPipelineStatus", sig: "(runId) → PipelineStatus | null", desc: "Read run file, return summary" },
+      { name: "listPipelineRuns", sig: "() → PipelineStatus[]", desc: "All runs sorted by created_at desc" }
+    ],
+    types: ["PipelineRunStatus", "StageStatus", "StageResult", "PipelineStage", "StageContext", "PipelineRun", "PipelineResult", "PipelineStatus"],
+    constants: ["PLAN_STAGE", "EXECUTE_STAGE", "VERIFY_STAGE", "DEFAULT_STAGES"]
+  },
+
+  "stage-roster.ts": {
+    name: "stage-roster.ts",
+    role: "Load pipeline stage rosters from config",
+    layer: "orchestration",
+    deps: ["registry.ts"],
+    fns: [
+      { name: "loadRoster", sig: "(configPath?) → StageRoster", desc: "Read config/stage-roster.yaml, default stages" },
+      { name: "validateRoster", sig: "(roster) → RosterValidationResult", desc: "Check agents exist and are active" },
+      { name: "getStageConfig", sig: "(roster, stage) → StageAgentConfig?", desc: "Case-insensitive lookup" },
+      { name: "listStages", sig: "(roster) → string[]", desc: "Stage name array" }
+    ],
+    types: ["StageAgentConfig", "StageRoster", "RosterValidationResult"],
+    constants: []
+  },
+
+  "session-metrics.ts": {
+    name: "session-metrics.ts",
+    role: "Compute session-level metrics — tokens, cost, duration, outcome",
+    layer: "orchestration",
+    deps: ["turn-tracker.ts", "board.ts", "cost-tracker.ts"],
+    fns: [
+      { name: "computeSessionMetrics", sig: "(runId) → SessionMetrics", desc: "Aggregate turns, costs, packet outcomes" },
+      { name: "finalizeSession", sig: "(runId) → SessionMetrics", desc: "Compute + persist + append to session log" },
+      { name: "formatSessionMetrics", sig: "(metrics) → string", desc: "Human-readable report" },
+      { name: "formatSessionComparison", sig: "(a, b) → string", desc: "Side-by-side with deltas" },
+      { name: "listSessionSummaries", sig: "(limit?) → SessionLogEntry[]", desc: "Read session-log.jsonl, most recent first" },
+      { name: "generateSessionId", sig: "(date?) → string", desc: "session-YYYYMMDD-NNN" },
+      { name: "initSessionMetadata", sig: "(runId, opts?) → SessionRunMetadata", desc: "Write to runs/{runId}/run.json" },
+      { name: "getSessionMetadata", sig: "(runId) → SessionRunMetadata | null", desc: "Read run.json" },
+      { name: "persistSessionMetrics", sig: "(runId, metrics) → void", desc: "Write metrics JSON file" },
+      { name: "getOrComputeSessionMetrics", sig: "(runId) → SessionMetrics", desc: "Cache-first computation" },
+      { name: "appendToSessionLog", sig: "(metrics) → void", desc: "Append to session-log.jsonl" }
+    ],
+    types: ["AgentUtilization", "SessionMetrics", "SessionRunMetadata", "SessionLogEntry"],
+    constants: []
+  }
+};
+
+// ============================================================
+// LAYER CONFIG
+// ============================================================
+const LAYERS = {
+  foundation:     { label: "Foundation Layer", color: "var(--cyan)",   desc: "Core types, data access, agent discovery" },
+  infrastructure: { label: "Infrastructure Layer", color: "var(--green)",  desc: "Git, MCP, concurrency, notifications, contracts" },
+  execution:      { label: "Execution Layer", color: "var(--accent)", desc: "Agent invocation, prompt building, verification, tmux" },
+  orchestration:  { label: "Orchestration Layer", color: "var(--purple)", desc: "Routing, planning, pipelines, stall detection, escalation" }
+};
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+let selectedModule = null;
+
+function selectModule(name) {
+  if (selectedModule === name) {
+    selectedModule = null;
+    document.querySelectorAll('.module-card').forEach(c => c.classList.remove('selected'));
+    const panel = document.getElementById('module-detail');
+    panel.innerHTML = 'Click any module above to see its functions, types, imports, and role in the system.';
+    panel.className = 'detail-panel empty';
+    return;
+  }
+
+  selectedModule = name;
+  const mod = MODULES[name];
+
+  document.querySelectorAll('.module-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.module === name);
+  });
+
+  const panel = document.getElementById('module-detail');
+  panel.className = 'detail-panel';
+
+  const layerInfo = LAYERS[mod.layer];
+  const layerTag = `<span class="tag" style="background:${layerInfo.color}22; color:${layerInfo.color};">${mod.layer}</span>`;
+  const fnCountTag = `<span class="tag tag-blue">${mod.fns.length} functions</span>`;
+  const typeCountTag = mod.types.length > 0 ? `<span class="tag tag-purple">${mod.types.length} types</span>` : '';
+  const depsTag = mod.deps.length > 0 ? `<span class="tag tag-green">${mod.deps.length} deps</span>` : '<span class="tag tag-amber">root</span>';
+
+  const depsHtml = mod.deps.length > 0
+    ? mod.deps.map(d => `<span class="dep-chip" onclick="event.stopPropagation(); selectModule('${d}')">${d}</span>`).join('')
+    : '<span style="font-size:12px; color:var(--text-dim);">None (root module)</span>';
+
+  // Find dependedBy
+  const dependedBy = Object.keys(MODULES).filter(k => MODULES[k].deps.includes(name));
+  const dependedByHtml = dependedBy.length > 0
+    ? dependedBy.map(d => `<span class="dep-chip" onclick="event.stopPropagation(); selectModule('${d}')">${d}</span>`).join('')
+    : '<span style="font-size:12px; color:var(--text-dim);">None (leaf module)</span>';
+
+  const fnsHtml = mod.fns.map(f => `
+    <li>
+      <span class="fn-name">${f.name}</span><span class="fn-sig">${f.sig}</span>
+      <div class="fn-desc">${f.desc}</div>
+    </li>
+  `).join('');
+
+  const typesHtml = mod.types.length > 0
+    ? `<div class="detail-section"><h4>Exported Types &amp; Interfaces</h4><ul class="type-list">${mod.types.map(t => `<li><span class="type-name">${t}</span></li>`).join('')}</ul></div>`
+    : '';
+
+  const constantsHtml = mod.constants.length > 0
+    ? `<div class="detail-section"><h4>Exported Constants</h4><ul class="type-list">${mod.constants.map(c => `<li><span class="type-name" style="color:var(--amber);">${c}</span></li>`).join('')}</ul></div>`
+    : '';
+
+  panel.innerHTML = `
+    <div class="detail-header">
+      <h3>${mod.name}</h3>
+      <div class="detail-tags">${layerTag} ${fnCountTag} ${typeCountTag} ${depsTag}</div>
+    </div>
+    <div class="detail-body">
+      <p style="font-size:13px; color:var(--text-dim); margin-bottom:16px;">${mod.role}</p>
+      <div class="detail-grid">
+        <div>
+          <div class="detail-section">
+            <h4>Imports From (upstream)</h4>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">${depsHtml}</div>
+          </div>
+          <div class="detail-section">
+            <h4>Imported By (downstream)</h4>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">${dependedByHtml}</div>
+          </div>
+          ${typesHtml}
+          ${constantsHtml}
+        </div>
+        <div>
+          <div class="detail-section">
+            <h4>Exported Functions</h4>
+            <ul class="fn-list">${fnsHtml}</ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ============================================================
+// INIT: Render module grid
+// ============================================================
+function renderModuleGrid() {
+  const container = document.getElementById('module-grid-container');
+  let html = '';
+
+  for (const [layerKey, layerInfo] of Object.entries(LAYERS)) {
+    const mods = Object.values(MODULES).filter(m => m.layer === layerKey);
+    html += `<div class="layer-group">`;
+    html += `<div class="layer-label"><span style="color:${layerInfo.color};">${layerInfo.label}</span> &mdash; ${layerInfo.desc}</div>`;
+    html += `<div class="module-grid">`;
+    for (const mod of mods) {
+      const depsLabel = mod.deps.length > 0 ? `${mod.deps.length} deps` : 'root';
+      const depClass = mod.deps.length > 0 ? 'mod-badge-dep' : 'mod-badge-root';
+      html += `
+        <div class="module-card" data-module="${mod.name}" onclick="selectModule('${mod.name}')">
+          <div class="mod-name">${mod.name}</div>
+          <div class="mod-role">${mod.role}</div>
+          <div class="mod-stats">
+            <span class="mod-badge mod-badge-fn">${mod.fns.length} fn</span>
+            ${mod.types.length > 0 ? `<span class="mod-badge mod-badge-type">${mod.types.length} types</span>` : ''}
+            <span class="mod-badge ${depClass}">${depsLabel}</span>
+          </div>
+        </div>
+      `;
+    }
+    html += `</div></div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderModuleGrid();
+
+// ============================================================
+// RENDER: Dependency Graph
+// ============================================================
+function renderDepGraph() {
+  const container = document.getElementById('dep-graph-container');
+  const layerOrder = ['foundation', 'infrastructure', 'execution', 'orchestration'];
+  const layerColors = {
+    foundation: 'var(--cyan)',
+    infrastructure: 'var(--green)',
+    execution: 'var(--accent)',
+    orchestration: 'var(--purple)'
+  };
+  const layerBgs = {
+    foundation: 'rgba(34,211,238,',
+    infrastructure: 'rgba(52,211,153,',
+    execution: 'rgba(96,165,250,',
+    orchestration: 'rgba(167,139,250,'
+  };
+
+  // Compute importedBy counts
+  const importedBy = {};
+  for (const [name, mod] of Object.entries(MODULES)) {
+    for (const d of mod.deps) {
+      if (!importedBy[d]) importedBy[d] = [];
+      importedBy[d].push(name);
+    }
+  }
+
+  // Build layer sections with nodes
+  let html = '<div class="dg-wrap">';
+
+  for (const layer of layerOrder) {
+    const info = LAYERS[layer];
+    const color = layerColors[layer];
+    const bgBase = layerBgs[layer];
+    const mods = Object.entries(MODULES).filter(([_, m]) => m.layer === layer).sort((a, b) => a[0].localeCompare(b[0]));
+
+    html += `<div class="dg-layer">`;
+    html += `<div class="dg-layer-label" style="background:${bgBase}0.12); color:${color};">${info.label} <span style="font-weight:400; opacity:0.7;">&mdash; ${mods.length} modules</span></div>`;
+    html += `<div class="dg-nodes">`;
+
+    for (const [name, mod] of mods) {
+      const isRoot = mod.deps.length === 0;
+      const depCount = mod.deps.length;
+      const byCount = (importedBy[name] || []).length;
+
+      // Tooltip content
+      let tipHtml = `<div class="dg-tip-label">${name}</div>`;
+      tipHtml += `<div style="margin-bottom:4px; font-size:10px;">${mod.role}</div>`;
+      if (mod.deps.length > 0) {
+        tipHtml += `<div><span class="dg-tip-dep">imports:</span> ${mod.deps.join(', ')}</div>`;
+      } else {
+        tipHtml += `<div style="color:var(--amber);">root module (no imports)</div>`;
+      }
+      if ((importedBy[name] || []).length > 0) {
+        tipHtml += `<div><span class="dg-tip-by">used by:</span> ${importedBy[name].join(', ')}</div>`;
+      }
+
+      // Badge = number of downstream consumers
+      const badgeHtml = byCount > 0
+        ? `<span class="dg-badge" style="background:${bgBase}0.9); color:#000;">${byCount}</span>`
+        : '';
+
+      const borderStyle = isRoot
+        ? `border-color:${color}; border-style:solid; background:${bgBase}0.12);`
+        : `border-color:${bgBase}0.4); border-style:solid; background:${bgBase}0.06);`;
+
+      html += `
+        <div class="dg-node" style="${borderStyle}" onclick="selectModule('${name}')">
+          ${name.replace('.ts', '')}
+          ${badgeHtml}
+          <div class="dg-tip">${tipHtml}</div>
+        </div>`;
+    }
+
+    html += `</div></div>`;
+
+    // Connector arrows between layers
+    if (layer !== 'orchestration') {
+      html += `<div class="dg-connector-row">▼ ▼ ▼ ▼ ▼</div>`;
+    }
+  }
+
+  // Bar charts: Most Imported + Most Dependencies
+  const importCounts = {};
+  for (const mod of Object.values(MODULES)) {
+    for (const d of mod.deps) { importCounts[d] = (importCounts[d] || 0) + 1; }
+  }
+  const topImported = Object.entries(importCounts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+  const maxImported = topImported.length > 0 ? topImported[0][1] : 1;
+
+  const depCounts = Object.entries(MODULES).map(([n, m]) => [n, m.deps.length]).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const maxDeps = depCounts.length > 0 ? depCounts[0][1] : 1;
+
+  html += `<div class="dg-bar-section">`;
+
+  // Most imported
+  html += `<div><div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:10px;">Most Imported <span style="font-weight:400; color:var(--text-dim);">(how many modules depend on it)</span></div>`;
+  html += `<ul class="dg-bars">`;
+  for (const [name, count] of topImported) {
+    const pct = (count / maxImported * 100).toFixed(0);
+    const color = LAYERS[MODULES[name].layer] ? layerColors[MODULES[name].layer] : 'var(--accent)';
+    html += `<li>
+      <span class="dg-bar-name" onclick="selectModule('${name}')">${name}</span>
+      <div class="dg-bar-track"><div class="dg-bar-fill" style="width:${pct}%; background:${color};"></div></div>
+      <span class="dg-bar-val" style="color:${color};">${count}</span>
+    </li>`;
+  }
+  html += `</ul></div>`;
+
+  // Most dependencies
+  html += `<div><div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:10px;">Most Dependencies <span style="font-weight:400; color:var(--text-dim);">(how many modules it imports)</span></div>`;
+  html += `<ul class="dg-bars">`;
+  for (const [name, count] of depCounts) {
+    if (count === 0) continue;
+    const pct = (count / maxDeps * 100).toFixed(0);
+    const color = LAYERS[MODULES[name].layer] ? layerColors[MODULES[name].layer] : 'var(--accent)';
+    html += `<li>
+      <span class="dg-bar-name" onclick="selectModule('${name}')">${name}</span>
+      <div class="dg-bar-track"><div class="dg-bar-fill" style="width:${pct}%; background:${color};"></div></div>
+      <span class="dg-bar-val" style="color:${color};">${count}</span>
+    </li>`;
+  }
+  html += `</ul></div>`;
+
+  html += `</div>`; // bar section
+  html += `</div>`; // dg-wrap
+
+  container.innerHTML = html;
+}
+
+renderDepGraph();
+
+// ============================================================
+// RENDER: Packet Lifecycle FSM
+// ============================================================
+function renderFSM() {
+  const container = document.getElementById('fsm-container');
+
+  container.innerHTML = `
+    <div class="fsm-container">
+      <div style="margin-bottom:16px; font-size:12px; color:var(--text-dim);">
+        Defined in <code style="color:var(--cyan);">protocol.ts</code> → <code style="color:var(--cyan);">PHASE_TRANSITIONS</code>.
+        Arrows show valid transitions. Terminal phases have no outgoing edges.
+      </div>
+
+      <!-- Main happy path -->
+      <div class="fsm-row">
+        <div class="fsm-node" style="border-color:var(--text-dim); background:rgba(136,146,164,0.1);">
+          PENDING
+          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">initial state</div>
+        </div>
+        <div class="fsm-arrow">→</div>
+        <div class="fsm-node" style="border-color:var(--accent); background:rgba(96,165,250,0.1);">
+          ACCEPTED
+          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">agent claimed</div>
+        </div>
+        <div class="fsm-arrow">→</div>
+        <div class="fsm-node" style="border-color:var(--amber); background:rgba(251,191,36,0.1);">
+          EXECUTING
+          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">running Claude</div>
+        </div>
+        <div class="fsm-arrow">→</div>
+        <div class="fsm-node" style="border-color:var(--purple); background:rgba(167,139,250,0.1);">
+          VERIFYING
+          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">running checks</div>
+        </div>
+        <div class="fsm-arrow">→</div>
+        <div class="fsm-node" style="border-color:var(--green); background:rgba(52,211,153,0.1);">
+          DONE ✓
+          <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">terminal</div>
+        </div>
+      </div>
+
+      <!-- Fix loop branch -->
+      <div style="display:flex; justify-content:center; margin: 8px 0;">
+        <div style="width: 600px; display:flex; justify-content: center;">
+          <div style="text-align:center;">
+            <div style="color:var(--text-dim); font-size:12px;">↓ verification failed</div>
+            <div class="fsm-node" style="border-color:var(--orange); background:rgba(251,146,60,0.1); margin: 8px auto;">
+              FIXING
+              <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">retry iteration</div>
+            </div>
+            <div style="color:var(--text-dim); font-size:12px;">↑ loops back to EXECUTING</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error/blocked branches -->
+      <div style="display:flex; justify-content:center; gap: 32px; margin-top: 16px; flex-wrap: wrap;">
+        <div style="text-align:center;">
+          <div style="font-size:10px; color:var(--text-dim); margin-bottom:4px;">from EXECUTING, FIXING, VERIFYING</div>
+          <div class="fsm-node" style="border-color:var(--red); background:rgba(248,113,113,0.1);">
+            FAILED ✗
+            <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">terminal (can restart)</div>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:10px; color:var(--text-dim); margin-bottom:4px;">from ACCEPTED, EXECUTING, FIXING, VERIFYING</div>
+          <div class="fsm-node" style="border-color:var(--pink); background:rgba(244,114,182,0.1);">
+            BLOCKED
+            <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">terminal (can restart)</div>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:10px; color:var(--text-dim); margin-bottom:4px;">from PENDING, ACCEPTED, EXECUTING, FIXING</div>
+          <div class="fsm-node" style="border-color:var(--text-dim); background:rgba(136,146,164,0.08);">
+            CANCELLED
+            <div style="font-size:9px; color:var(--text-dim); margin-top:2px;">terminal (final)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restart path -->
+      <div style="text-align:center; margin-top:16px; padding-top:12px; border-top:1px dashed var(--border);">
+        <div style="font-size:11px; color:var(--text-dim);">
+          <span style="color:var(--red);">FAILED</span> / <span style="color:var(--pink);">BLOCKED</span>
+          → <code style="color:var(--cyan);">restartPacket()</code> →
+          <span style="color:var(--text-dim);">PENDING</span> (resets fix_iteration to 0)
+        </div>
+      </div>
+
+      <!-- Transition table -->
+      <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+        <h4 style="font-size:12px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">PHASE_TRANSITIONS Table</h4>
+        <table class="schema-table">
+          <tr><th>From</th><th>Valid Targets</th></tr>
+          <tr><td><code>PENDING</code></td><td>ACCEPTED, CANCELLED</td></tr>
+          <tr><td><code>ACCEPTED</code></td><td>EXECUTING, BLOCKED, CANCELLED</td></tr>
+          <tr><td><code>EXECUTING</code></td><td>VERIFYING, FAILED, BLOCKED, CANCELLED</td></tr>
+          <tr><td><code>VERIFYING</code></td><td>DONE, FIXING, FAILED, BLOCKED</td></tr>
+          <tr><td><code>FIXING</code></td><td>EXECUTING, FAILED, BLOCKED, CANCELLED</td></tr>
+          <tr><td><code>DONE</code></td><td><span style="color:var(--text-dim);">∅ (terminal)</span></td></tr>
+          <tr><td><code>FAILED</code></td><td>PENDING (restart only)</td></tr>
+          <tr><td><code>BLOCKED</code></td><td>PENDING (restart only)</td></tr>
+          <tr><td><code>CANCELLED</code></td><td><span style="color:var(--text-dim);">∅ (terminal, no restart)</span></td></tr>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+renderFSM();
+
+// ============================================================
+// RENDER: Fix Loop (Ralph Loop)
+// ============================================================
+function renderFixLoop() {
+  const container = document.getElementById('fix-loop-container');
+
+  container.innerHTML = `
+    <div class="flow-container">
+      <div style="margin-bottom:16px; font-size:12px; color:var(--text-dim);">
+        Implemented in <code style="color:var(--cyan);">runner.ts</code> → <code style="color:var(--cyan);">runWithFixLoop()</code>.
+        Each iteration: execute agent → verify output → fix or finish.
+      </div>
+
+      <!-- Iteration limits -->
+      <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        <div style="padding:8px 16px; border-radius:6px; background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.2);">
+          <div style="font-size:10px; color:var(--green); font-weight:600;">SIMPLE</div>
+          <div style="font-size:18px; font-weight:700; color:var(--green);">3</div>
+          <div style="font-size:9px; color:var(--text-dim);">max iterations</div>
+        </div>
+        <div style="padding:8px 16px; border-radius:6px; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.2);">
+          <div style="font-size:10px; color:var(--amber); font-weight:600;">MEDIUM</div>
+          <div style="font-size:18px; font-weight:700; color:var(--amber);">5</div>
+          <div style="font-size:9px; color:var(--text-dim);">max iterations</div>
+        </div>
+        <div style="padding:8px 16px; border-radius:6px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.2);">
+          <div style="font-size:10px; color:var(--red); font-weight:600;">COMPLEX</div>
+          <div style="font-size:18px; font-weight:700; color:var(--red);">10</div>
+          <div style="font-size:9px; color:var(--text-dim);">max iterations</div>
+        </div>
+      </div>
+
+      <!-- Loop diagram -->
+      <div style="position:relative;">
+        <!-- Entry -->
+        <div class="flow-row">
+          <div class="flow-step" style="background:rgba(136,146,164,0.15); color:var(--text);">
+            runWithFixLoop(packet)
+          </div>
+        </div>
+        <div class="flow-connector">▼</div>
+
+        <!-- Step 1: Accept -->
+        <div class="flow-row">
+          <div class="flow-step" style="background:rgba(96,165,250,0.15); color:var(--accent);">
+            <span style="background:var(--accent); color:#000; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-right:4px;">1</span> PENDING → ACCEPTED
+          </div>
+          <div class="flow-arrow">→</div>
+          <div style="font-size:11px; color:var(--text-dim);">transitionPhase()</div>
+        </div>
+        <div class="flow-connector">▼</div>
+
+        <!-- Loop boundary -->
+        <div style="border:2px dashed var(--border); border-radius:12px; padding:16px; margin:8px 0;">
+          <div style="font-size:11px; font-weight:600; color:var(--orange); margin-bottom:12px;">
+            ⟳ ITERATION LOOP (while iteration &lt; maxIterations)
+          </div>
+
+          <!-- Step 2: Execute -->
+          <div class="flow-row">
+            <div class="flow-step" style="background:rgba(251,191,36,0.15); color:var(--amber);">
+              <span style="background:var(--amber); color:#000; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-right:4px;">2</span> EXECUTING
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step" style="background:rgba(96,165,250,0.1); color:var(--accent);">
+              runWithClaudeCode(packet)
+            </div>
+          </div>
+          <div class="flow-connector">▼</div>
+
+          <!-- Bail check -->
+          <div class="flow-row">
+            <div style="font-size:11px; color:var(--text-dim); padding:4px 12px; border:1px dashed var(--border); border-radius:6px;">
+              Agent returned TIMEOUT or RESOURCE_UNAVAILABLE? → bail immediately to FAILED
+            </div>
+          </div>
+          <div class="flow-connector">▼</div>
+
+          <!-- Step 3: Verify -->
+          <div class="flow-row">
+            <div class="flow-step" style="background:rgba(167,139,250,0.15); color:var(--purple);">
+              <span style="background:var(--purple); color:#fff; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-right:4px;">3</span> VERIFYING
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step" style="background:rgba(167,139,250,0.1); color:var(--purple);">
+              runVerification(spec) <span style="color:var(--text-dim);">or</span> runTestCommand()
+            </div>
+          </div>
+          <div class="flow-connector">▼</div>
+
+          <!-- Ledger -->
+          <div class="flow-row">
+            <div style="font-size:11px; color:var(--text-dim); padding:4px 12px;">
+              appendLedgerEntry() — records verdict, score, summary, test output
+            </div>
+          </div>
+          <div class="flow-connector">▼</div>
+
+          <!-- Branch: pass or fail -->
+          <div style="display:flex; justify-content:center; gap:32px; flex-wrap:wrap;">
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--green); font-weight:600; margin-bottom:4px;">PASS</div>
+              <div class="flow-step" style="background:rgba(52,211,153,0.15); color:var(--green);">
+                <span style="background:var(--green); color:#000; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-right:4px;">4</span> → DONE
+              </div>
+              <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">return result</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:10px; color:var(--red); font-weight:600; margin-bottom:4px;">FAIL + iterations remain</div>
+              <div class="flow-step" style="background:rgba(251,146,60,0.15); color:var(--orange);">
+                <span style="background:var(--orange); color:#000; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-right:4px;">5</span> → FIXING
+              </div>
+              <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">↑ loop back to step <span style="background:var(--amber); color:#000; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; font-size:9px; font-weight:700;">2</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exhaustion -->
+        <div class="flow-connector">▼ iterations exhausted</div>
+        <div class="flow-row">
+          <div class="flow-step" style="background:rgba(248,113,113,0.15); color:var(--red);">
+            <span style="background:var(--red); color:#000; display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; font-size:11px; font-weight:700; margin-right:4px;">6</span> → FAILED
+          </div>
+          <div class="flow-arrow">→</div>
+          <div style="font-size:11px; color:var(--text-dim);">
+            call exhaustion hooks (escalation, size escalation)
+          </div>
+        </div>
+      </div>
+
+      <!-- Connected modules -->
+      <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border);">
+        <h4 style="font-size:12px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">Modules Involved</h4>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="dep-chip" onclick="selectModule('runner.ts')">runner.ts</span>
+          <span class="dep-chip" onclick="selectModule('protocol.ts')">protocol.ts</span>
+          <span class="dep-chip" onclick="selectModule('verifier.ts')">verifier.ts</span>
+          <span class="dep-chip" onclick="selectModule('progress-ledger.ts')">progress-ledger.ts</span>
+          <span class="dep-chip" onclick="selectModule('prompt-enricher.ts')">prompt-enricher.ts</span>
+          <span class="dep-chip" onclick="selectModule('escalation.ts')">escalation.ts</span>
+          <span class="dep-chip" onclick="selectModule('task-classifier.ts')">task-classifier.ts</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+renderFixLoop();
+
+// ============================================================
+// RENDER: Prompt Assembly Pipeline
+// ============================================================
+function renderPromptPipeline() {
+  const container = document.getElementById('prompt-pipeline-container');
+
+  container.innerHTML = `
+    <div class="flow-container">
+      <div style="margin-bottom:16px; font-size:12px; color:var(--text-dim);">
+        Trace from work packet to fully assembled prompt. Spans 4 modules across 6 stages.
+      </div>
+
+      <!-- Stage 1: Base Prompt -->
+      <div style="margin-bottom:16px; padding:12px; border-left:3px solid var(--cyan); background:rgba(34,211,238,0.04); border-radius:0 8px 8px 0;">
+        <div style="font-size:11px; font-weight:600; color:var(--cyan); margin-bottom:4px;">Stage 1: Base Prompt</div>
+        <div class="flow-row" style="justify-content:flex-start;">
+          <div class="flow-step" style="background:rgba(96,165,250,0.1); color:var(--accent);">getAgentPrompt(name)</div>
+          <div class="flow-arrow">→</div>
+          <div style="font-size:11px; color:var(--text-dim);">Read agents/{name}/prompt.md</div>
+        </div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">registry.ts</span></div>
+      </div>
+
+      <!-- Stage 2: Skill Resolution -->
+      <div style="margin-bottom:16px; padding:12px; border-left:3px solid var(--green); background:rgba(52,211,153,0.04); border-radius:0 8px 8px 0;">
+        <div style="font-size:11px; font-weight:600; color:var(--green); margin-bottom:4px;">Stage 2: Skill Resolution</div>
+        <div class="flow-row" style="justify-content:flex-start;">
+          <div class="flow-step" style="background:rgba(52,211,153,0.1); color:var(--green);">resolveSkillRefs(text)</div>
+          <div class="flow-arrow">→</div>
+          <div style="font-size:11px; color:var(--text-dim);">Replace {{skill:name}} → content (recursive, max depth 5)</div>
+        </div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">skill-loader.ts</span> — Checks skills/global/ then skills/agent-local/</div>
+      </div>
+
+      <!-- Stage 3: Anti-Scope & Tools -->
+      <div style="margin-bottom:16px; padding:12px; border-left:3px solid var(--amber); background:rgba(251,191,36,0.04); border-radius:0 8px 8px 0;">
+        <div style="font-size:11px; font-weight:600; color:var(--amber); margin-bottom:4px;">Stage 3: Anti-Scope &amp; Permitted Tools</div>
+        <div class="flow-row" style="justify-content:flex-start; gap:8px;">
+          <div class="flow-step" style="background:rgba(251,191,36,0.1); color:var(--amber);">appendAntiScope()</div>
+          <div style="font-size:11px; color:var(--text-dim);">+</div>
+          <div class="flow-step" style="background:rgba(251,191,36,0.1); color:var(--amber);">appendPermittedTools()</div>
+        </div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">prompt-utils.ts</span> — From agent.yaml avoid_when[] and allowed_tools[]</div>
+      </div>
+
+      <!-- Stage 4: Work Packet Sections -->
+      <div style="margin-bottom:16px; padding:12px; border-left:3px solid var(--purple); background:rgba(167,139,250,0.04); border-radius:0 8px 8px 0;">
+        <div style="font-size:11px; font-weight:600; color:var(--purple); margin-bottom:4px;">Stage 4: Work Packet Injection</div>
+        <div class="flow-row" style="justify-content:flex-start;">
+          <div class="flow-step" style="background:rgba(167,139,250,0.1); color:var(--purple);">appendWorkPacketSections()</div>
+          <div class="flow-arrow">→</div>
+          <div style="font-size:11px; color:var(--text-dim);">Instruction, files, dirs, refs, notes, criteria, test command</div>
+        </div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">prompt-utils.ts</span></div>
+      </div>
+
+      <!-- Stage 5: Enrichment -->
+      <div style="margin-bottom:16px; padding:12px; border-left:3px solid var(--pink); background:rgba(244,114,182,0.04); border-radius:0 8px 8px 0;">
+        <div style="font-size:11px; font-weight:600; color:var(--pink); margin-bottom:4px;">Stage 5: Runtime Enrichment (budget-aware, priority-ordered)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+          <div style="padding:8px; border:1px solid rgba(248,113,113,0.3); border-radius:6px;">
+            <div style="font-size:10px; color:var(--red); font-weight:600;">P0 — HIGHEST (never dropped)</div>
+            <div style="font-size:11px; color:var(--text);">injectVerificationFeedback()</div>
+            <div style="font-size:10px; color:var(--text-dim);">Last 3 failures from progress ledger</div>
+          </div>
+          <div style="padding:8px; border:1px solid rgba(251,191,36,0.3); border-radius:6px;">
+            <div style="font-size:10px; color:var(--amber); font-weight:600;">P1 — Memory</div>
+            <div style="font-size:11px; color:var(--text);">injectMemoryEntries()</div>
+            <div style="font-size:10px; color:var(--text-dim);">Keyword-scored memory, top 8 entries</div>
+          </div>
+          <div style="padding:8px; border:1px solid rgba(96,165,250,0.3); border-radius:6px;">
+            <div style="font-size:10px; color:var(--accent); font-weight:600;">P2 — Board Context</div>
+            <div style="font-size:11px; color:var(--text);">injectBoardContext()</div>
+            <div style="font-size:10px; color:var(--text-dim);">Sibling packet phases, max 10</div>
+          </div>
+          <div style="padding:8px; border:1px solid rgba(136,146,164,0.3); border-radius:6px;">
+            <div style="font-size:10px; color:var(--text-dim); font-weight:600;">P3 — LOWEST (dropped first)</div>
+            <div style="font-size:11px; color:var(--text);">injectSiblingStatus()</div>
+            <div style="font-size:10px; color:var(--text-dim);">Team state for current run</div>
+          </div>
+        </div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Module: <span style="color:var(--cyan);">prompt-enricher.ts</span> — Budget: ~750 tokens. Drops P3 → P2 → P1 on overflow. P0 never dropped.</div>
+      </div>
+
+      <!-- Stage 6: Sub-agent extras -->
+      <div style="padding:12px; border-left:3px solid var(--orange); background:rgba(251,146,60,0.04); border-radius:0 8px 8px 0;">
+        <div style="font-size:11px; font-weight:600; color:var(--orange); margin-bottom:4px;">Stage 6: Sub-Agent Extras (sub-runner.ts only)</div>
+        <div class="flow-row" style="justify-content:flex-start; gap:8px;">
+          <div class="flow-step" style="background:rgba(251,146,60,0.1); color:var(--orange);">architecture-context.json</div>
+          <div style="font-size:11px; color:var(--text-dim);">+</div>
+          <div class="flow-step" style="background:rgba(251,146,60,0.1); color:var(--orange);">knowledge/*.md</div>
+        </div>
+        <div style="font-size:10px; color:var(--text-dim); margin-top:4px;">Module: <span style="color:var(--cyan);">sub-runner.ts</span> — Injected between base prompt and work packet sections</div>
+      </div>
+    </div>
+  `;
+}
+
+renderPromptPipeline();
+
+// ============================================================
+// RENDER: CLI Routing
+// ============================================================
+function renderCLIRouting() {
+  const container = document.getElementById('cli-routing-container');
+
+  container.innerHTML = `
+    <div class="route-tree">
+      <div style="margin-bottom:16px; font-size:12px; color:var(--text-dim);">
+        <code style="color:var(--cyan);">bun src/cli.ts invoke &lt;agent&gt; "task"</code> —
+        The --size flag (or auto-classification via task-classifier.ts) determines the execution path.
+      </div>
+
+      <!-- Root -->
+      <div class="route-node" style="background:rgba(96,165,250,0.15); color:var(--accent); border:1px solid rgba(96,165,250,0.3);">
+        invoke &lt;agent&gt; "instruction" --size=?
+      </div>
+
+      <div class="route-branch">
+        <!-- Trivial -->
+        <div class="route-label">size = <strong style="color:var(--green);">trivial</strong></div>
+        <div class="route-node" style="background:rgba(52,211,153,0.1); color:var(--green); border:1px solid rgba(52,211,153,0.2);">
+          Shell mapping (bun test, bun run typecheck, etc.)
+        </div>
+        <div class="route-branch">
+          <div class="route-label" style="color:var(--text-dim);">If no shell mapping found → fall through to explore</div>
+        </div>
+
+        <!-- Explore -->
+        <div class="route-label" style="margin-top:12px;">size = <strong style="color:var(--cyan);">explore</strong></div>
+        <div class="route-node" style="background:rgba(34,211,238,0.1); color:var(--cyan); border:1px solid rgba(34,211,238,0.2);">
+          Override agent → "explore" → skip planner/router → direct invoke
+        </div>
+
+        <!-- Small -->
+        <div class="route-label" style="margin-top:12px;">size = <strong style="color:var(--amber);">small</strong></div>
+        <div class="route-node" style="background:rgba(251,191,36,0.1); color:var(--amber); border:1px solid rgba(251,191,36,0.2);">
+          Register escalation tracking → Role Router → create packet → tmux launch
+        </div>
+        <div class="route-branch">
+          <div style="font-size:11px; color:var(--text-dim);">
+            On fix loop exhaust: 1st → model upgrade, 2nd → reclassify as medium, 3rd → give up
+          </div>
+        </div>
+
+        <!-- Medium / Large -->
+        <div class="route-label" style="margin-top:12px;">size = <strong style="color:var(--purple);">medium</strong> / <strong style="color:var(--red);">large</strong></div>
+        <div class="route-node" style="background:rgba(167,139,250,0.1); color:var(--purple); border:1px solid rgba(167,139,250,0.2);">
+          Full pipeline: Planner → Router → create packet → post to board → tmux launch
+        </div>
+      </div>
+
+      <!-- CLI commands table -->
+      <div style="margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+        <h4 style="font-size:12px; font-weight:600; color:var(--text-dim); margin-bottom:8px;">All CLI Commands (13+ groups)</h4>
+        <table class="schema-table">
+          <tr><th>Command</th><th>Description</th><th>Key Options</th></tr>
+          <tr><td><code>agents</code></td><td>List all discovered agents</td><td>—</td></tr>
+          <tr><td><code>invoke</code></td><td>Send work packet + launch</td><td>--files, --dirs, --refs, --notes, --size, --model, --no-run</td></tr>
+          <tr><td><code>board</code></td><td>Show board summary</td><td>--watch (poll 2s)</td></tr>
+          <tr><td><code>packets</code></td><td>List work packets</td><td>--agent, --status, --stalled</td></tr>
+          <tr><td><code>show</code></td><td>Packet details + result</td><td>--history (phase + ledger)</td></tr>
+          <tr><td><code>prompt</code></td><td>Preview assembled prompt</td><td>--size, --dry-enriched</td></tr>
+          <tr><td><code>panes</code></td><td>List active tmux panes</td><td>—</td></tr>
+          <tr><td><code>attach</code></td><td>Attach to running pane</td><td>—</td></tr>
+          <tr><td><code>kill</code></td><td>Kill running pane(s)</td><td>--all</td></tr>
+          <tr><td><code>logs</code></td><td>View agent output</td><td>--stderr, --follow</td></tr>
+          <tr><td><code>restart</code></td><td>Restart BLOCKED/FAILED</td><td>—</td></tr>
+          <tr><td><code>route</code></td><td>Dry-run task routing</td><td>--phase</td></tr>
+          <tr><td><code>stream</code></td><td>Tail event_log.jsonl</td><td>—</td></tr>
+          <tr><td><code>plan *</code></td><td>show / approve / reject / edit / create</td><td>--reason, --remove, --set-agent</td></tr>
+          <tr><td><code>pipeline *</code></td><td>run / status / resume / cancel / list</td><td>--prd, --run-id</td></tr>
+          <tr><td><code>session *</code></td><td>metrics / list / compare</td><td>--json, --limit</td></tr>
+          <tr><td><code>worktrees *</code></td><td>list / clean</td><td>--run</td></tr>
+          <tr><td><code>mcp *</code></td><td>list / check</td><td>—</td></tr>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+renderCLIRouting();
+
+// ============================================================
+// RENDER: Shared State
+// ============================================================
+function renderSharedState() {
+  const container = document.getElementById('shared-state-container');
+
+  container.innerHTML = `
+    <div class="state-grid">
+      <!-- packets.json -->
+      <div class="state-card" style="border-color:rgba(96,165,250,0.3);">
+        <h4>shared/packets.json</h4>
+        <div class="state-desc">Work queue — the central registry of all tasks in the system.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: cli.ts, board.ts, runner.ts</span>
+          <span class="tag tag-blue">readers: everyone</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">id</span><span class="state-field-type">wp-{hex8}</span></div>
+        <div class="state-field"><span class="state-field-name">agent</span><span class="state-field-type">string</span></div>
+        <div class="state-field"><span class="state-field-name">instruction</span><span class="state-field-type">string</span></div>
+        <div class="state-field"><span class="state-field-name">status</span><span class="state-field-type">PacketStatus</span></div>
+        <div class="state-field"><span class="state-field-name">phase</span><span class="state-field-type">PacketPhase</span></div>
+        <div class="state-field"><span class="state-field-name">phase_history</span><span class="state-field-type">PhaseTransition[]</span></div>
+        <div class="state-field"><span class="state-field-name">context</span><span class="state-field-type">{files, dirs, refs, notes}</span></div>
+        <div class="state-field"><span class="state-field-name">fix_iteration</span><span class="state-field-type">number</span></div>
+        <div class="state-field"><span class="state-field-name">complexity</span><span class="state-field-type">simple|medium|complex</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          Human runs <code>invoke</code> → cli.ts calls postPacket() to insert<br>
+          Fix loop runs → runner.ts calls updatePacketStatus() on each phase change<br>
+          Champ orchestrator → reads all packets to decompose PRDs into sub-tasks<br>
+          <code>board</code> / <code>packets</code> CLI → reads to show status dashboard<br>
+          prompt-enricher → reads sibling packets for board context injection<br>
+          stall-detector → scans active packets to find stalled agents
+        </div>
+      </div>
+
+      <!-- results.json -->
+      <div class="state-card" style="border-color:rgba(52,211,153,0.3);">
+        <h4>shared/results.json</h4>
+        <div class="state-desc">Completed work — every agent's output is stored here permanently.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: runner.ts, tmux-runner.ts</span>
+          <span class="tag tag-blue">readers: cli.ts, board.ts, session-metrics.ts</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">packet_id</span><span class="state-field-type">wp-{hex8}</span></div>
+        <div class="state-field"><span class="state-field-name">status</span><span class="state-field-type">done|failed|blocked</span></div>
+        <div class="state-field"><span class="state-field-name">summary</span><span class="state-field-type">string</span></div>
+        <div class="state-field"><span class="state-field-name">output_files</span><span class="state-field-type">string[]</span></div>
+        <div class="state-field"><span class="state-field-name">tests_passed</span><span class="state-field-type">boolean | null</span></div>
+        <div class="state-field"><span class="state-field-name">error</span><span class="state-field-type">string | StructuredError</span></div>
+        <div class="state-field"><span class="state-field-name">follow_up_packets</span><span class="state-field-type">Partial&lt;WorkPacket&gt;[]</span></div>
+        <div class="state-field"><span class="state-field-name">verificationResult</span><span class="state-field-type">VerificationResult</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          Fix loop pass → runner.ts saves result with status=done, tests_passed=true<br>
+          Fix loop exhausted → runner.ts saves result with status=failed, error=FAILED_TEST<br>
+          Agent emits follow_up_packets → champ reads them to spawn new work<br>
+          <code>show &lt;id&gt;</code> CLI → reads result to display alongside packet details<br>
+          boardSummary() → counts done/failed results for progress percentage
+        </div>
+      </div>
+
+      <!-- event_log.jsonl -->
+      <div class="state-card" style="border-color:rgba(251,191,36,0.3);">
+        <h4>shared/event_log.jsonl</h4>
+        <div class="state-desc">Append-only audit trail — never modified, only appended to.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: board.ts (almost every module calls logEvent)</span>
+          <span class="tag tag-blue">readers: cli.ts stream, session-metrics.ts</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">timestamp</span><span class="state-field-type">ISO8601</span></div>
+        <div class="state-field"><span class="state-field-name">agent</span><span class="state-field-type">string</span></div>
+        <div class="state-field"><span class="state-field-name">type</span><span class="state-field-type">event type string</span></div>
+        <div class="state-field"><span class="state-field-name">data</span><span class="state-field-type">Record&lt;string, unknown&gt;</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          Packet posted → board.ts logs "packet_posted"<br>
+          Phase transition → runner.ts logs "fix_loop_iteration", "fix_loop_passed", "fix_loop_exhausted"<br>
+          Route decision → role-router.ts logs "route_decision" with scores<br>
+          Stall detected → stall-detector.ts logs "stall_detected" / "stall_nudge"<br>
+          <code>stream</code> CLI → tails this file in real-time with color formatting
+        </div>
+      </div>
+
+      <!-- memory.json -->
+      <div class="state-card" style="border-color:rgba(167,139,250,0.3);">
+        <h4>shared/memory.json</h4>
+        <div class="state-desc">Shared learnings — agents teach each other across invocations.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: any agent (via board.ts writeMemory)</span>
+          <span class="tag tag-blue">readers: prompt-enricher.ts, role-router.ts</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">entries.{key}.value</span><span class="state-field-type">any</span></div>
+        <div class="state-field"><span class="state-field-name">entries.{key}.updated_at</span><span class="state-field-type">ISO8601</span></div>
+        <div class="state-field"><span class="state-field-name">entries.{key}.updated_by</span><span class="state-field-type">string</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          Agent discovers a pattern → writes memory entry for others to learn from<br>
+          prompt-enricher → keyword-scores memory entries, injects top 8 into agent prompt<br>
+          role-router → reads "routing_decisions" key to improve future task routing<br>
+          Humans can inspect shared memory via <code>board</code> CLI to see what agents learned
+        </div>
+      </div>
+
+      <!-- panes.json -->
+      <div class="state-card" style="border-color:rgba(244,114,182,0.3);">
+        <h4>shared/panes.json</h4>
+        <div class="state-desc">Live tmux session registry — tracks which agents are running where.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: tmux-runner.ts</span>
+          <span class="tag tag-blue">readers: cli.ts panes/attach/kill, stall-detector.ts</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">session</span><span class="state-field-type">"champ"</span></div>
+        <div class="state-field"><span class="state-field-name">panes[].paneId</span><span class="state-field-type">string</span></div>
+        <div class="state-field"><span class="state-field-name">panes[].packetId</span><span class="state-field-type">wp-{hex8}</span></div>
+        <div class="state-field"><span class="state-field-name">panes[].agent</span><span class="state-field-type">string</span></div>
+        <div class="state-field"><span class="state-field-name">panes[].pid</span><span class="state-field-type">number</span></div>
+        <div class="state-field"><span class="state-field-name">panes[].status</span><span class="state-field-type">running|completed|failed|timeout</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          tmuxRun() launches agent → registers pane with PID + packetId<br>
+          tmuxRunSync() polls exit_code → updates pane status to "completed"<br>
+          Timeout → killPaneWithCheckpoint() marks "failed", saves stdout<br>
+          <code>panes</code> CLI → lists all running/completed agent panes<br>
+          <code>attach &lt;id&gt;</code> CLI → selects the tmux window to watch live<br>
+          reapOrphanedPanes() on startup → checks PIDs, marks dead ones as failed
+        </div>
+      </div>
+
+      <!-- concurrency.json -->
+      <div class="state-card" style="border-color:rgba(34,211,238,0.3);">
+        <h4>shared/concurrency.json</h4>
+        <div class="state-desc">Slot-based concurrency gate — prevents too many agents from running at once.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: concurrency.ts (via tmux-runner.ts)</span>
+          <span class="tag tag-blue">readers: tmux-runner.ts (before launching)</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">cap</span><span class="state-field-type">number (default 5)</span></div>
+        <div class="state-field"><span class="state-field-name">running[]</span><span class="state-field-type">RunningSlot[]</span></div>
+        <div class="state-field"><span class="state-field-name">updatedAt</span><span class="state-field-type">ISO8601</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          tmuxRunSync() → acquireSlot() before launch, blocks if at cap<br>
+          tmuxRunParallel() → polls hasAvailableSlot() at 500ms intervals<br>
+          Agent finishes → releaseSlot() frees position for next queued agent<br>
+          Timeout/kill → killPaneWithCheckpoint() releases slot automatically<br>
+          CHAMP_CONCURRENCY_CAP=N env → overrides the default cap of 5
+        </div>
+      </div>
+
+      <!-- cost-ledger.json -->
+      <div class="state-card" style="border-color:rgba(251,146,60,0.3);">
+        <h4>shared/cost-ledger.json</h4>
+        <div class="state-desc">Token usage and cost tracking — every Claude invocation logged with USD cost.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: cost-tracker.ts (via tmux-runner.ts)</span>
+          <span class="tag tag-blue">readers: session-metrics.ts, cli.ts session</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">entries[].packetId</span><span class="state-field-type">wp-{hex8}</span></div>
+        <div class="state-field"><span class="state-field-name">entries[].tokens</span><span class="state-field-type">{in, out, cacheRead, cacheWrite}</span></div>
+        <div class="state-field"><span class="state-field-name">entries[].costUsd</span><span class="state-field-type">number</span></div>
+        <div class="state-field"><span class="state-field-name">totalCostUsd</span><span class="state-field-type">number</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          Agent completes → tmux-runner parses stdout for token counts, records cost<br>
+          Pricing: haiku=$0.80/$4, sonnet=$3/$15, opus=$15/$75 per million tokens<br>
+          <code>session &lt;run-id&gt;</code> CLI → aggregates costs by agent and model<br>
+          <code>sessions compare</code> → side-by-side cost comparison between runs
+        </div>
+      </div>
+
+      <!-- escalations.json -->
+      <div class="state-card" style="border-color:rgba(248,113,113,0.3);">
+        <h4>shared/escalations.json</h4>
+        <div class="state-desc">Escalation records — when agents can't fix a problem after all retries.</div>
+        <div style="margin:8px 0; display:flex; gap:6px; flex-wrap:wrap;">
+          <span class="tag tag-red">writers: escalation.ts (via runner.ts exhaustion hook)</span>
+          <span class="tag tag-blue">readers: cli.ts, human operators</span>
+        </div>
+        <div class="state-field"><span class="state-field-name">[].id</span><span class="state-field-type">esc-{uuid}</span></div>
+        <div class="state-field"><span class="state-field-name">[].strategy</span><span class="state-field-type">human|retry|reroute|decompose</span></div>
+        <div class="state-field"><span class="state-field-name">[].status</span><span class="state-field-type">pending_human|auto_queued|resolved</span></div>
+        <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border); font-size:10px; color:var(--text-dim); line-height:1.7;">
+          <strong style="color:var(--text);">Typical scenarios:</strong><br>
+          Fix loop exhausted → escalation hook fires, picks strategy based on config<br>
+          "human" strategy → sends critical notification, waits for human intervention<br>
+          "reroute" strategy → re-queues the packet to a different agent<br>
+          "decompose" strategy → sends task to champ to break into smaller sub-tasks<br>
+          Human resolves → resolveEscalation() marks as resolved with a note
+        </div>
+      </div>
+
+      <!-- Per-packet files -->
+      <div class="state-card" style="border-color:rgba(96,165,250,0.2); grid-column: 1 / -1;">
+        <h4>Per-Packet Directories</h4>
+        <div class="state-desc">Each work packet gets workspace and result directories with execution artifacts.</div>
+        <table class="schema-table" style="margin-top:8px;">
+          <tr><th>Path</th><th>Contents</th><th>Written By</th><th>Read By</th></tr>
+          <tr><td><code>shared/packets/{id}/</code></td><td>packet.json, prompt.md, run.sh</td><td>tmux-runner.ts tmuxRun()</td><td>tmux (executes run.sh)</td></tr>
+          <tr><td><code>shared/results/{id}/</code></td><td>stdout.txt, stderr.txt, exit_code, result.json, checkpoint.txt</td><td>tmux process + tmux-runner.ts</td><td>tmux-runner.ts (polls exit_code), cli.ts logs</td></tr>
+          <tr><td><code>shared/ledgers/{id}.json</code></td><td>ProgressLedger (fix loop history)</td><td>progress-ledger.ts</td><td>prompt-enricher.ts (injects last 3 failures into retry prompt)</td></tr>
+          <tr><td><code>shared/turns/{id}.jsonl</code></td><td>TurnEvent JSONL (conversation turns)</td><td>turn-tracker.ts</td><td>session-metrics.ts (aggregates token totals + burn rate)</td></tr>
+          <tr><td><code>shared/pipeline-runs/{runId}.json</code></td><td>PipelineRun state</td><td>pipeline.ts</td><td>cli.ts pipeline status/resume/cancel</td></tr>
+          <tr><td><code>shared/pipeline-runs/{runId}/plan.json</code></td><td>PlanArtifact</td><td>planner.ts</td><td>cli.ts plan show/approve/reject/edit, pipeline.ts</td></tr>
+          <tr><td><code>shared/runs/{runId}/agents/{name}/state.json</code></td><td>AgentState</td><td>team-state.ts</td><td>prompt-enricher.ts (sibling status injection)</td></tr>
+          <tr><td><code>shared/runs/{runId}/run.json</code></td><td>SessionRunMetadata</td><td>session-metrics.ts</td><td>session-metrics.ts (compute metrics)</td></tr>
+          <tr><td><code>shared/session-log.jsonl</code></td><td>SessionLogEntry JSONL</td><td>session-metrics.ts</td><td>cli.ts sessions list/compare</td></tr>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+renderSharedState();
+
+// ============================================================
+// RENDER: End-to-End Data Flow
+// ============================================================
+function renderDataFlow() {
+  const container = document.getElementById('data-flow-container');
+
+  container.innerHTML = `
+    <div class="flow-container">
+      <div style="margin-bottom:16px; font-size:12px; color:var(--text-dim);">
+        Complete trace: CLI invocation → packet creation → agent execution → result storage.
+        Every module touched and every file written at each step.
+      </div>
+
+      <!-- Step 1 -->
+      <div style="margin-bottom:20px; padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(96,165,250,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--accent); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">1</span>
+          <strong style="color:var(--accent);">CLI Entry</strong>
+          <span class="tag tag-blue">cli.ts</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-dim);">
+          User runs <code>bun src/cli.ts invoke dev "implement auth"</code>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:8px;">
+          → <strong>classifyTaskSize()</strong> determines routing (trivial/explore/small/medium/large)<br>
+          → <strong>routeTask()</strong> scores agents if no explicit agent given<br>
+          → <strong>reapOrphanedPanes()</strong> cleans dead tmux processes on startup
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="margin-bottom:20px; padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(52,211,153,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--green); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">2</span>
+          <strong style="color:var(--green);">Packet Creation</strong>
+          <span class="tag tag-green">protocol.ts</span>
+          <span class="tag tag-green">board.ts</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          → <strong>createPacket()</strong> generates wp-{hex8} ID, sets phase=PENDING, fix_iteration=0<br>
+          → <strong>postPacket()</strong> writes to shared/packets.json<br>
+          → <strong>initPacketWorkspace()</strong> creates shared/packets/{id}/<br>
+          → <strong>logEvent("packet_posted")</strong> appends to event_log.jsonl
+        </div>
+        <div style="font-size:10px; color:var(--cyan); margin-top:6px;">
+          Files written: packets.json, event_log.jsonl, shared/packets/{id}/
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="margin-bottom:20px; padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(167,139,250,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--purple); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">3</span>
+          <strong style="color:var(--purple);">Prompt Assembly</strong>
+          <span class="tag tag-purple">runner.ts</span>
+          <span class="tag tag-purple">prompt-utils.ts</span>
+          <span class="tag tag-purple">skill-loader.ts</span>
+          <span class="tag tag-purple">prompt-enricher.ts</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          → <strong>buildAgentPrompt()</strong>: prompt.md → resolveSkillRefs → antiScope → tools → packet sections<br>
+          → <strong>enrichPrompt()</strong>: + verification feedback + memory + board context + sibling status<br>
+          → <strong>checkPromptSize()</strong>: throw if >600K chars, warn at 80%
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div style="margin-bottom:20px; padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(251,191,36,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--amber); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">4</span>
+          <strong style="color:var(--amber);">Pre-Flight Checks</strong>
+          <span class="tag tag-amber">worktree.ts</span>
+          <span class="tag tag-amber">mcp-registry.ts</span>
+          <span class="tag tag-amber">contracts.ts</span>
+          <span class="tag tag-amber">concurrency.ts</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          → <strong>createWorktree()</strong>: git worktree add for isolation (.champ/worktrees/{run}/{packet}/)<br>
+          → <strong>validateMCPAvailability()</strong>: fail fast with RESOURCE_UNAVAILABLE if MCP missing<br>
+          → <strong>validateInputs()</strong>: check required inputs per agent contract (warn only)<br>
+          → <strong>acquireSlot()</strong>: wait for concurrency slot (cap=5)
+        </div>
+        <div style="font-size:10px; color:var(--cyan); margin-top:6px;">
+          Files created: .champ/worktrees/{run}/{packet}/ (git worktree), temp MCP config JSON
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div style="margin-bottom:20px; padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(251,146,60,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--orange); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">5</span>
+          <strong style="color:var(--orange);">Agent Execution</strong>
+          <span class="tag tag-orange">tmux-runner.ts</span>
+          <span class="tag tag-orange">runner.ts</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          → <strong>tmuxRun()</strong>: write prompt.md + packet.json + run.sh → launch tmux window<br>
+          → <strong>tmuxRunSync()</strong>: poll exit_code every 1s until complete or timeout<br>
+          → Or <strong>execSync</strong> fallback: run claude CLI directly, capture stdout<br>
+          → <strong>parseWorkResult()</strong>: regex-extract workresult fenced block → JSON parse
+        </div>
+        <div style="font-size:10px; color:var(--cyan); margin-top:6px;">
+          Files written: shared/packets/{id}/prompt.md, run.sh, packet.json; shared/results/{id}/stdout.txt, stderr.txt, exit_code
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div style="margin-bottom:20px; padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(248,113,113,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--red); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">6</span>
+          <strong style="color:var(--red);">Verification &amp; Fix Loop</strong>
+          <span class="tag tag-red">verifier.ts</span>
+          <span class="tag tag-red">runner.ts</span>
+          <span class="tag tag-red">progress-ledger.ts</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          → <strong>runVerification()</strong>: execute all checks (test, typecheck, lint, build, etc.)<br>
+          → <strong>appendLedgerEntry()</strong>: record verdict, score, suggestions in ledger<br>
+          → On fail: <strong>transitionPhase(FIXING)</strong> → loop back to Step 5<br>
+          → On pass: <strong>transitionPhase(DONE)</strong> → proceed to Step 7
+        </div>
+        <div style="font-size:10px; color:var(--cyan); margin-top:6px;">
+          Files written: shared/ledgers/{id}.json (progress ledger)
+        </div>
+      </div>
+
+      <!-- Step 7 -->
+      <div style="padding:16px; border:1px solid var(--border); border-radius:8px; background:rgba(52,211,153,0.03);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <span style="background:var(--green); color:#000; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">7</span>
+          <strong style="color:var(--green);">Result Storage &amp; Cleanup</strong>
+          <span class="tag tag-green">board.ts</span>
+          <span class="tag tag-green">cost-tracker.ts</span>
+          <span class="tag tag-green">turn-tracker.ts</span>
+          <span class="tag tag-green">tmux-runner.ts</span>
+          <span class="tag tag-green">concurrency.ts</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim);">
+          → <strong>validateOutputs()</strong>: check required outputs per contract<br>
+          → <strong>appendTurn()</strong>: record conversation turn event<br>
+          → <strong>recordCost()</strong>: parse token usage, calculate USD, append to cost ledger<br>
+          → <strong>saveResult()</strong>: write to results.json, sync packet status<br>
+          → <strong>updatePaneStatus("completed")</strong>: mark tmux pane as completed/failed in panes.json<br>
+          → <strong>releaseSlot()</strong>: free concurrency slot so next queued agent can start<br>
+          → On timeout: <strong>killPaneWithCheckpoint()</strong>: saves partial stdout to checkpoint.txt, kills the tmux window, releases slot, marks pane failed
+        </div>
+        <div style="font-size:10px; color:var(--cyan); margin-top:6px;">
+          Files written: results.json, packets.json (status sync), panes.json (pane status), cost-ledger.json, turns/{id}.jsonl, event_log.jsonl
+        </div>
+        <div style="font-size:10px; color:var(--amber); margin-top:4px;">
+          Auto-freed: concurrency slot released, tmux pane marked done (window killed on timeout)
+        </div>
+        <div style="font-size:10px; color:var(--green); margin-top:4px;">
+          Auto-freed: git worktrees cleaned up via <code style="color:var(--cyan);">removeWorktree()</code> on all fix loop exit paths (success, exhaustion, unrecoverable failure)
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+renderDataFlow();
+</script>
+</body>
+</html>

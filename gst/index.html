@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GST Compliance Co-Pilot — Architecture</title>
+<style>
+  :root {
+    --bg: #0a0e17; --surface: #111827; --surface2: #1a2234; --border: #2a3548;
+    --text: #e2e8f0; --text-dim: #8892a4;
+    --accent: #60a5fa; --accent2: #818cf8; --green: #34d399; --amber: #fbbf24;
+    --red: #f87171; --cyan: #22d3ee; --purple: #a78bfa; --pink: #f472b6; --orange: #fb923c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; overflow-x: hidden; }
+
+  .header { text-align: center; padding: 48px 24px 32px; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #0f1729 0%, var(--bg) 100%); }
+  .header h1 { font-size: 32px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  .header p { color: var(--text-dim); font-size: 15px; max-width: 780px; margin: 0 auto; }
+  .header-meta { display: flex; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .header-meta .chip { font-size: 11px; padding: 3px 10px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); }
+  .header-nav { margin-top: 16px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .header-nav a { color: var(--cyan); text-decoration: none; font-size: 12px; padding: 4px 12px; border: 1px solid rgba(34,211,238,0.4); border-radius: 12px; transition: all .2s; }
+  .header-nav a:hover { background: rgba(34,211,238,0.1); border-color: var(--cyan); }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+  .section-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .section-title .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .section-sub { font-size: 13px; color: var(--text-dim); margin-top: -12px; margin-bottom: 20px; }
+
+  /* Legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 28px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); }
+  .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* Arch hierarchy */
+  .arch-section { margin-bottom: 48px; }
+  .arch-tier { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+  .arch-connector { text-align: center; padding: 6px 0; color: var(--text-dim); font-size: 18px; letter-spacing: 8px; opacity: 0.4; }
+  .arch-label { text-align: center; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 6px 0; margin-bottom: 8px; }
+  .agent-node { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; width: 240px; flex-shrink: 0; transition: transform .2s, box-shadow .2s; }
+  .agent-node:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .agent-node.wide { width: 100%; max-width: 920px; }
+  .agent-node .agent-icon { font-size: 22px; margin-bottom: 6px; }
+  .agent-node .agent-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .agent-node .agent-desc { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+  .agent-node .agent-type { display: inline-block; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; padding: 2px 8px; border-radius: 4px; margin-top: 8px; }
+  .type-api { background: rgba(96,165,250,0.15); color: var(--accent); border: 1px solid rgba(96,165,250,0.3); }
+  .type-ai { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .type-storage { background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+  .type-watsonx { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* Tabs */
+  .explorer-tabs { display: flex; gap: 4px; margin-bottom: 0; flex-wrap: wrap; }
+  .explorer-tab { padding: 10px 18px; border-radius: 8px 8px 0 0; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); border-bottom: none; background: var(--surface); color: var(--text-dim); transition: all .2s; display: flex; align-items: center; gap: 8px; }
+  .explorer-tab:hover { color: var(--text); background: var(--surface2); }
+  .explorer-tab.active { color: var(--text); background: var(--bg); border-bottom: 2px solid var(--bg); position: relative; z-index: 1; margin-bottom: -1px; }
+  .explorer-tab .tab-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .explorer-tab .tab-count { font-size: 10px; font-weight: 500; background: var(--surface2); padding: 1px 6px; border-radius: 10px; color: var(--text-dim); }
+  .explorer-pane { display: none; border-top: 1px solid var(--border); padding-top: 24px; margin-bottom: 48px; }
+  .explorer-pane.active { display: block; }
+
+  /* Intro card */
+  .mod-intro { background: linear-gradient(135deg, rgba(96,165,250,0.08), rgba(129,140,248,0.08)); border: 1px solid rgba(96,165,250,0.25); border-radius: 12px; padding: 22px; margin-bottom: 24px; display: flex; gap: 24px; align-items: flex-start; }
+  .mod-intro-left { flex: 1; }
+  .mod-intro-left h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .mod-intro-left p { font-size: 12px; color: var(--text-dim); margin-bottom: 10px; }
+  .mod-intro-right { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; font-size: 11px; min-width: 220px; }
+  .mod-intro-right dt { color: var(--text-dim); font-size: 10px; text-transform: uppercase; letter-spacing: .5px; margin-top: 8px; }
+  .mod-intro-right dt:first-child { margin-top: 0; }
+  .mod-intro-right dd { color: var(--text); font-weight: 500; margin-bottom: 2px; }
+
+  /* Module cards grid */
+  .mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .mod-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; position: relative; }
+  .mod-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); border-color: var(--accent2); }
+  .mod-card.selected { border-color: var(--accent2); background: linear-gradient(135deg, rgba(129,140,248,0.08), rgba(96,165,250,0.05)); }
+  .mod-card .m-name { font-weight: 600; font-size: 13px; margin-bottom: 4px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent2); }
+  .mod-card .m-role { font-size: 11px; color: var(--text-dim); line-height: 1.4; margin-bottom: 8px; }
+  .mod-card .m-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .mod-tag { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: .3px; }
+  .tag-py { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-ts { background: rgba(96,165,250,0.15); color: var(--accent); }
+  .tag-json { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .tag-tests { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .tag-core { background: rgba(248,113,113,0.15); color: var(--red); }
+
+  /* Detail panel */
+  .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: all .3s; }
+  .detail-panel.empty { border-style: dashed; padding: 32px; text-align: center; color: var(--text-dim); font-size: 13px; }
+  .detail-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .detail-header h3 { font-size: 17px; font-weight: 600; font-family: 'SF Mono', monospace; color: var(--accent2); }
+  .detail-header-tags { display: flex; gap: 6px; }
+  .detail-body { padding: 22px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .detail-section { margin-bottom: 18px; }
+  .detail-section:last-child { margin-bottom: 0; }
+  .detail-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .detail-section ul { list-style: none; padding: 0; }
+  .detail-section li { font-size: 12px; padding: 4px 0; display: flex; align-items: flex-start; gap: 6px; }
+  .detail-section li::before { content: "›"; color: var(--accent2); font-weight: 700; flex-shrink: 0; margin-top: -1px; }
+  .detail-code { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; line-height: 1.5; overflow-x: auto; color: var(--text-dim); white-space: pre-wrap; }
+  .detail-code .key { color: var(--accent); }
+  .detail-code .type { color: var(--purple); }
+  .detail-code .str { color: var(--green); }
+  .detail-code .cmt { color: #4a5568; }
+
+  /* Pipeline */
+  .pipeline { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin-bottom: 32px; }
+  .pipeline-stage { background: var(--surface2); border: 1px solid var(--border); padding: 14px 18px; text-align: center; min-width: 140px; flex: 1; }
+  .pipeline-stage:first-child { border-radius: 8px 0 0 8px; }
+  .pipeline-stage:last-child { border-radius: 0 8px 8px 0; }
+  .pipeline-stage .st-icon { font-size: 18px; margin-bottom: 4px; }
+  .pipeline-stage .st-name { font-weight: 600; font-size: 12px; margin-bottom: 2px; }
+  .pipeline-stage .st-mod { font-size: 10px; color: var(--text-dim); font-family: 'SF Mono', monospace; }
+  .pipeline-arrow { color: var(--accent); font-size: 18px; font-weight: bold; flex-shrink: 0; display: flex; align-items: center; padding: 0 6px; }
+
+  /* Recon passes */
+  .pass-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .pass-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; position: relative; }
+  .pass-card.p1 { border-left: 3px solid var(--green); }
+  .pass-card.p2 { border-left: 3px solid var(--accent); }
+  .pass-card.p3 { border-left: 3px solid var(--amber); }
+  .pass-card.p4 { border-left: 3px solid var(--orange); }
+  .pass-card.p5 { border-left: 3px solid var(--red); }
+  .pass-card .p-num { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .pass-card .p-name { font-size: 13px; font-weight: 700; margin: 4px 0 6px; font-family: 'SF Mono', monospace; }
+  .pass-card .p-keys { font-size: 11px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px; }
+  .pass-card .p-conf { font-size: 20px; font-weight: 700; color: var(--accent2); }
+  .pass-card .p-conf small { font-size: 10px; color: var(--text-dim); margin-left: 4px; font-weight: 400; }
+
+  /* Flow grid */
+  .flow-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+  .flow-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .flow-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .flow-card ul { list-style: none; padding: 0; }
+  .flow-card li { font-size: 12px; padding: 6px 0; color: var(--text-dim); border-bottom: 1px solid rgba(42,53,72,0.3); }
+  .flow-card li:last-child { border-bottom: none; }
+  .flow-card li strong { color: var(--text); font-family: 'SF Mono', monospace; font-size: 11px; }
+
+  /* Key-value grid */
+  .kv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kv-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .kv-card dt { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .kv-card dd { font-size: 13px; color: var(--text); font-weight: 500; font-family: 'SF Mono', 'Fira Code', monospace; word-break: break-all; }
+  .kv-card dd a { color: var(--cyan); text-decoration: none; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; text-align: center; }
+  .stat .stat-num { font-size: 28px; font-weight: 700; color: var(--accent2); }
+  .stat .stat-lbl { font-size: 11px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+
+  @media (max-width: 900px) {
+    .mod-intro { flex-direction: column; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .flow-grid { grid-template-columns: 1fr; }
+    .pipeline { flex-direction: column; }
+    .pipeline-stage { border-radius: 8px !important; }
+    .pipeline-arrow { transform: rotate(90deg); justify-content: center; }
+    .agent-node { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GST Compliance Co-Pilot</h1>
+  <p>Multi-agent GST reconciliation platform for Indian SMBs. Node.js API gateway + Python AI engine on IBM Code Engine with watsonx.ai invoice extraction and a 5-pass reconciliation engine.</p>
+  <div class="header-meta">
+    <span class="chip">162 tests · 88% coverage</span>
+    <span class="chip">Node 22 + Python 3.13</span>
+    <span class="chip">IBM watsonx.ai · COS · Code Engine</span>
+    <span class="chip">greyquill/gst-copilot</span>
+  </div>
+  <div class="header-nav">
+    <a href="data-flow.html">End-to-End Data Flow &rarr;</a>
+    <a href="invoice-matching.html">Invoice Matching Logic &rarr;</a>
+    <a href="reconciliation-engine.html">Reconciliation Engine &rarr;</a>
+    <a href="reconciliation-workbench.html">Reconciliation Workbench &rarr;</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background:var(--accent)"></div> Node.js API (public gateway)</div>
+    <div class="legend-item"><div class="legend-color" style="background:var(--green)"></div> Python AI (internal)</div>
+    <div class="legend-item"><div class="legend-color" style="background:var(--purple)"></div> watsonx.ai (LLM)</div>
+    <div class="legend-item"><div class="legend-color" style="background:var(--orange)"></div> IBM Cloud Object Storage</div>
+    <div class="legend-item"><div class="legend-color" style="background:var(--cyan)"></div> PostgreSQL (local dev)</div>
+    <div class="legend-item"><div class="legend-color" style="background:var(--red)"></div> Core reconciliation engine</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num">2</div><div class="stat-lbl">Microservices</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">AI Modules</div></div>
+    <div class="stat"><div class="stat-num">5</div><div class="stat-lbl">Matching Passes</div></div>
+    <div class="stat"><div class="stat-num">162</div><div class="stat-lbl">Python Tests</div></div>
+    <div class="stat"><div class="stat-num">88%</div><div class="stat-lbl">Coverage</div></div>
+    <div class="stat"><div class="stat-num">15</div><div class="stat-lbl">Build Phases</div></div>
+  </div>
+
+  <!-- ===== SERVICE HIERARCHY ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--accent)"></span> Service Architecture</div>
+  <p class="section-sub">Two-service split: Node.js handles the public edge, Python runs all intelligence. Inter-service calls are cluster-local HTTP.</p>
+
+  <div class="arch-section">
+    <div class="arch-label" style="color:var(--cyan);">CLIENT</div>
+    <div class="arch-tier">
+      <div class="agent-node" style="border-color:var(--cyan); width:280px;">
+        <div class="agent-icon">🧑‍💼</div>
+        <div class="agent-name">CA / Finance Team</div>
+        <div class="agent-desc">Uploads purchase register (Excel) + GSTR-2B (JSON). Receives reconciliation report with ITC risk scores.</div>
+        <span class="agent-type" style="background:rgba(34,211,238,0.15); color:var(--cyan); border:1px solid rgba(34,211,238,0.3);">Human-in-the-Loop</span>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#x2502; &#x2502; &#x2502;</div>
+
+    <div class="arch-label" style="color:var(--accent);">PUBLIC EDGE — Fastify Gateway</div>
+    <div class="arch-tier">
+      <div class="agent-node" style="border-color:var(--accent); width:420px; cursor:pointer;" onclick="switchExplorer('api')">
+        <div class="agent-icon">🌐</div>
+        <div class="agent-name"><span class="status-dot" style="background:var(--green)"></span> greyquill-api</div>
+        <div class="agent-desc">Fastify + TypeScript. 6 endpoints: health, ai-status, document CRUD, COS upload/download. Graceful 503 when DB/COS not configured.</div>
+        <span class="agent-type type-api">Node.js 22 · Fastify · Zod</span>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#x2502; &#x2502; &#x2502;</div>
+
+    <div class="arch-label" style="color:var(--green);">INTERNAL — Python AI Engine</div>
+    <div class="arch-tier">
+      <div class="agent-node" style="border-color:var(--green); width:420px; cursor:pointer;" onclick="switchExplorer('ai-main')">
+        <div class="agent-icon">🧠</div>
+        <div class="agent-name"><span class="status-dot" style="background:var(--green)"></span> greyquill-ai</div>
+        <div class="agent-desc">FastAPI + 8 specialist modules. Invoice extraction via watsonx, GSTR parsing, validation, normalization, 5-pass reconciliation, ITC risk scoring.</div>
+        <span class="agent-type type-ai">Python 3.13 · FastAPI · uv</span>
+      </div>
+    </div>
+
+    <div class="arch-connector">&#x2502; &#x2502; &#x2502;</div>
+
+    <div class="arch-label" style="color:var(--text-dim);">BACKING SERVICES</div>
+    <div class="arch-tier">
+      <div class="agent-node" style="border-color:var(--purple);">
+        <div class="agent-icon">🤖</div>
+        <div class="agent-name">watsonx.ai</div>
+        <div class="agent-desc">mistral-small-3-1-24b for invoice field extraction. Region: us-south.</div>
+        <span class="agent-type type-watsonx">Granite / Mistral</span>
+      </div>
+      <div class="agent-node" style="border-color:var(--orange);">
+        <div class="agent-icon">🗄️</div>
+        <div class="agent-name">IBM COS</div>
+        <div class="agent-desc">Object storage for invoices, GSTR JSON, purchase registers. Bucket: greyquill-gst-dev.</div>
+        <span class="agent-type type-storage">S3-compatible</span>
+      </div>
+      <div class="agent-node" style="border-color:var(--cyan);">
+        <div class="agent-icon">💾</div>
+        <div class="agent-name">PostgreSQL</div>
+        <div class="agent-desc">Documents table (UUID PK, jsonb metadata). Local dev only in v1 — cloud DB pending free tier.</div>
+        <span class="agent-type" style="background:rgba(34,211,238,0.15); color:var(--cyan); border:1px solid rgba(34,211,238,0.3);">Local dev · v1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODULE EXPLORER ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--accent2)"></span> Module Explorer</div>
+  <p class="section-sub">Click a tab to browse a module. Click any file card to see its role, key functions, inputs and outputs.</p>
+
+  <div class="explorer-tabs">
+    <div class="explorer-tab active" onclick="switchExplorer('api')" id="tab-api">
+      <span class="tab-dot" style="background:var(--accent)"></span> API Gateway
+      <span class="tab-count">6 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('watsonx')" id="tab-watsonx">
+      <span class="tab-dot" style="background:var(--purple)"></span> watsonx
+      <span class="tab-count">3 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('gstr')" id="tab-gstr">
+      <span class="tab-dot" style="background:var(--accent2)"></span> GSTR Parser
+      <span class="tab-count">7 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('excel')" id="tab-excel">
+      <span class="tab-dot" style="background:var(--cyan)"></span> Excel Parser
+      <span class="tab-count">5 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('validator')" id="tab-validator">
+      <span class="tab-dot" style="background:var(--amber)"></span> Validator
+      <span class="tab-count">7 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('normalizer')" id="tab-normalizer">
+      <span class="tab-dot" style="background:var(--pink)"></span> Normalizer
+      <span class="tab-count">3 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('reconciliation')" id="tab-reconciliation">
+      <span class="tab-dot" style="background:var(--red)"></span> Reconciliation
+      <span class="tab-count">12 files</span>
+    </div>
+    <div class="explorer-tab" onclick="switchExplorer('itc')" id="tab-itc">
+      <span class="tab-dot" style="background:var(--orange)"></span> ITC Risk
+      <span class="tab-count">3 files</span>
+    </div>
+  </div>
+
+  <!-- Panes: filled in the script at load, keeps the markup light -->
+  <div class="explorer-pane active" id="pane-api"></div>
+  <div class="explorer-pane" id="pane-watsonx"></div>
+  <div class="explorer-pane" id="pane-gstr"></div>
+  <div class="explorer-pane" id="pane-excel"></div>
+  <div class="explorer-pane" id="pane-validator"></div>
+  <div class="explorer-pane" id="pane-normalizer"></div>
+  <div class="explorer-pane" id="pane-reconciliation"></div>
+  <div class="explorer-pane" id="pane-itc"></div>
+
+  <!-- ===== DATA FLOW PIPELINE ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--green)"></span> End-to-End Pipeline</div>
+  <p class="section-sub">How a purchase register + GSTR-2B JSON become a risk-scored reconciliation report.</p>
+
+  <div class="pipeline">
+    <div class="pipeline-stage"><div class="st-icon">📥</div><div class="st-name">Upload</div><div class="st-mod">/api/storage/upload</div></div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-stage"><div class="st-icon">📑</div><div class="st-name">Parse</div><div class="st-mod">excel_parser / gstr_parser</div></div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-stage"><div class="st-icon">🔍</div><div class="st-name">Validate</div><div class="st-mod">invoice_validator</div></div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-stage"><div class="st-icon">🧹</div><div class="st-name">Normalize</div><div class="st-mod">invoice_normalizer</div></div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-stage"><div class="st-icon">🔗</div><div class="st-name">Reconcile</div><div class="st-mod">reconciliation.engine</div></div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-stage"><div class="st-icon">⚠️</div><div class="st-name">Score Risk</div><div class="st-mod">itc_risk.scorer</div></div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-stage"><div class="st-icon">📊</div><div class="st-name">Report</div><div class="st-mod">ReconciliationReport</div></div>
+  </div>
+
+  <!-- ===== 5-PASS RECONCILIATION ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--red)"></span> 5-Pass Reconciliation Strategy</div>
+  <p class="section-sub">Sequential matching with descending strictness. Each pass operates only on entries not yet matched by earlier passes.</p>
+
+  <div class="pass-grid">
+    <div class="pass-card p1">
+      <div class="p-num">Pass 1</div>
+      <div class="p-name">IRN_EXACT</div>
+      <div class="p-keys">Invoice Reference Number (e-invoice). Cryptographically-signed &mdash; no ambiguity possible.</div>
+      <div class="p-conf">1.00<small>confidence</small></div>
+    </div>
+    <div class="pass-card p2">
+      <div class="p-num">Pass 2</div>
+      <div class="p-name">EXACT_MATCH</div>
+      <div class="p-keys">GSTIN + normalized invoice # + value within tolerance. Standard invoice path.</div>
+      <div class="p-conf">0.95<small>confidence</small></div>
+    </div>
+    <div class="pass-card p3">
+      <div class="p-num">Pass 3</div>
+      <div class="p-name">FUZZY_INVOICE</div>
+      <div class="p-keys">GSTIN exact + fuzzy invoice # (0.85 similarity via rapidfuzz). OCR / formatting drift.</div>
+      <div class="p-conf">0.80<small>confidence</small></div>
+    </div>
+    <div class="pass-card p4">
+      <div class="p-num">Pass 4</div>
+      <div class="p-name">AMOUNT_DATE</div>
+      <div class="p-keys">GSTIN + amount (&plusmn;2%) + date (&plusmn;7 days). Invoice # unrecognisable. Review required.</div>
+      <div class="p-conf">0.65<small>confidence</small></div>
+    </div>
+    <div class="pass-card p5">
+      <div class="p-num">Pass 5</div>
+      <div class="p-name">LOOSE_MATCH</div>
+      <div class="p-keys">GSTIN + amount (&plusmn;1%) only. Last resort. Always flagged for manual review.</div>
+      <div class="p-conf">0.45<small>confidence</small></div>
+    </div>
+  </div>
+
+  <div class="flow-grid">
+    <div class="flow-card">
+      <h3>🔁 Auto-Resolver Rules</h3>
+      <ul>
+        <li><strong>Rounding diff</strong> &le; Rs 1 + proportional taxes &rarr; MATCHED</li>
+        <li><strong>Date-only diff</strong> &le; 3 days + exact values &rarr; MATCHED</li>
+        <li><strong>Invoice # format-only</strong> diff &rarr; MATCHED</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <h3>🎚️ Confidence Adjustments</h3>
+      <ul>
+        <li><strong>+0.05</strong> for exact value match</li>
+        <li><strong>+0.03</strong> for exact date match</li>
+        <li><strong>&plusmn;0.03</strong> for vendor compliance grade (A/B/C)</li>
+        <li><strong>-0.05 per month</strong> for cross-period matches</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== DEPLOYMENT ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--orange)"></span> Live Deployment</div>
+  <p class="section-sub">IBM Code Engine project <code style="color:var(--accent); font-family:monospace;">greyquill-gst</code> (jp-tok), built from git via buildpacks.</p>
+
+  <div class="kv-grid">
+    <div class="kv-card"><dt>API (public)</dt><dd><a href="https://greyquill-api.28qlxihql59b.jp-tok.codeengine.appdomain.cloud" target="_blank">greyquill-api.28qlxihql59b.jp-tok.codeengine.appdomain.cloud</a></dd></div>
+    <div class="kv-card"><dt>AI (cluster-local)</dt><dd>greyquill-ai.28qlxihql59b.svc.cluster.local</dd></div>
+    <div class="kv-card"><dt>Region</dt><dd>jp-tok (Japan)</dd></div>
+    <div class="kv-card"><dt>Build strategy</dt><dd>Buildpacks (no Dockerfiles)</dd></div>
+    <div class="kv-card"><dt>Scaling</dt><dd>0.5 vCPU, 1G, min-scale 1</dd></div>
+    <div class="kv-card"><dt>Secrets</dt><dd>watsonx-creds, cos-creds, github-creds</dd></div>
+    <div class="kv-card"><dt>watsonx.ai</dt><dd>us-south · mistral-small-3-1-24b-instruct-2503</dd></div>
+    <div class="kv-card"><dt>COS bucket</dt><dd>greyquill-gst-dev (jp-tok)</dd></div>
+  </div>
+
+  <div class="flow-grid">
+    <div class="flow-card">
+      <h3>✅ What's done</h3>
+      <ul>
+        <li><strong>Phases 0-8</strong>: repo, API, Python AI, service connectivity, local DB, COS, watsonx</li>
+        <li><strong>Phases 10-15</strong>: all 8 AI modules with 162 tests, 88% coverage</li>
+        <li><strong>Phase 9</strong>: both services deployed to Code Engine, running</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <h3>📋 Remaining</h3>
+      <ul>
+        <li><strong>Cloud Postgres</strong> — pick free tier (Neon / Supabase / CockroachDB)</li>
+        <li><strong>Wire endpoints</strong> — connect AI modules into `/extract`, `/reconcile` handlers</li>
+        <li><strong>UI</strong> — upload + dashboard for CA reviewers</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== OCR PIPELINE PERFORMANCE ===== -->
+  <div class="section-title"><span class="dot" style="background:var(--amber)"></span> OCR Pipeline Performance</div>
+  <p class="section-sub">End-to-end watsonx OCR extraction takes ~35-40 seconds. The LLM does NOT see the image &mdash; it only sees the text that OCR already produced.</p>
+
+  <div class="pass-grid" style="grid-template-columns: repeat(7, 1fr);">
+    <div class="pass-card p1" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 1</div>
+      <div class="p-name" style="font-size:11px;">Upload to COS</div>
+      <div class="p-conf" style="font-size:16px;">~1-2s</div>
+    </div>
+    <div class="pass-card p2" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 2</div>
+      <div class="p-name" style="font-size:11px;">COS Connection</div>
+      <div class="p-conf" style="font-size:16px;">~1-2s<small>cached</small></div>
+    </div>
+    <div class="pass-card p3" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 3</div>
+      <div class="p-name" style="font-size:11px; color:var(--red);">watsonx OCR</div>
+      <div class="p-conf" style="font-size:16px; color:var(--red);">~20-30s<small>bottleneck</small></div>
+    </div>
+    <div class="pass-card p4" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 4</div>
+      <div class="p-name" style="font-size:11px;">Poll until done</div>
+      <div class="p-conf" style="font-size:16px;">3s<small>interval</small></div>
+    </div>
+    <div class="pass-card p5" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 5</div>
+      <div class="p-name" style="font-size:11px;">Read from COS</div>
+      <div class="p-conf" style="font-size:16px;">~1-2s</div>
+    </div>
+    <div class="pass-card p1" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 6</div>
+      <div class="p-name" style="font-size:11px; color:var(--amber);">LLM Extract</div>
+      <div class="p-conf" style="font-size:16px; color:var(--amber);">~5-10s<small>Mistral 24B</small></div>
+    </div>
+    <div class="pass-card p2" style="text-align:center;">
+      <div class="p-num" style="font-size:11px;">Step 7</div>
+      <div class="p-name" style="font-size:11px;">Post-process</div>
+      <div class="p-conf" style="font-size:16px;">&lt;1ms<small>pure Python</small></div>
+    </div>
+  </div>
+
+  <div class="flow-grid">
+    <div class="flow-card">
+      <h3>LLM Model Comparison (Step 6)</h3>
+      <ul>
+        <li><strong>mistral-small-3.1-24b</strong> (current) &mdash; 24B, ~5-10s. Good at structured JSON extraction</li>
+        <li><strong>meta-llama/llama-3-3-70b</strong> &mdash; 70B, ~10-20s. Better reasoning, but 2x slower</li>
+        <li><strong>ibm/granite-3-8b</strong> &mdash; 8B, ~2-3s. Faster, but may miss edge cases</li>
+      </ul>
+    </div>
+    <div class="flow-card">
+      <h3>Why Model Size Matters Less</h3>
+      <ul>
+        <li><strong>OCR is the bottleneck</strong> &mdash; if OCR garbles a digit, no LLM can fix it</li>
+        <li><strong>tables_json cross-referencing</strong> catches digit errors better than a bigger model</li>
+        <li><strong>Per-field confidence</strong> flags uncertain values for human review in the UI</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+/* ========== MODULE DATA ========== */
+const MODULES = {
+  api: {
+    title: "Node.js API Gateway",
+    color: "var(--accent)",
+    path: "services/api/src/",
+    summary: "Fastify + TypeScript gateway. Validates env with Zod, lazy-inits DB and COS so the service boots even when those aren't configured. Every endpoint returns a structured error envelope.",
+    stats: { Language: "TypeScript (Node 22)", Framework: "Fastify 4", Validation: "Zod", Endpoints: "6", Database: "postgres.js (optional)", Storage: "@aws-sdk/client-s3 (optional)" },
+    files: [
+      { name: "server.ts", role: "Fastify app with all 6 routes + graceful 503 guards", tags: ["TS","Core"],
+        key: ["GET /health - components status", "GET /api/ai-status - proxies Python health", "POST /api/documents/test - create doc record (requires DB)", "GET /api/documents/:id - fetch by UUID", "POST /api/storage/upload - multipart to COS", "GET /api/storage/:id - download from COS"],
+        code: '// services/api/src/server.ts\nif (!isDbAvailable()) {\n  return reply.code(503).send({\n    error: "service_unavailable",\n    detail: "Database not configured"\n  });\n}' },
+      { name: "config.ts", role: "Zod-validated env loader. DB and COS vars default to empty strings (optional).", tags: ["TS"],
+        key: ["loadConfig() - parses process.env through Zod schema", "isDbConfigured(cfg) - DATABASE_URL non-empty", "isCosConfigured(cfg) - all 4 COS vars present", "Fails fast on invalid required vars; tolerant of optional"],
+        code: 'PORT=3000\nAI_SERVICE_URL=http://localhost:8000\nDATABASE_URL=          // optional\nCOS_ENDPOINT=          // optional\nCOS_ACCESS_KEY_ID=\nCOS_SECRET_ACCESS_KEY=\nCOS_BUCKET=greyquill-gst-dev' },
+      { name: "db/client.ts", role: "postgres.js connection pool. Initialised only when DATABASE_URL is set.", tags: ["TS"],
+        key: ["sql - nullable template-tag function", "isDbAvailable() - boolean guard", "closeDb() - graceful shutdown", "Never throws at import time - tolerates missing DB"] },
+      { name: "db/repositories/document.repo.ts", role: "Repository pattern over documents table with requireDb() guard.", tags: ["TS"],
+        key: ["create(data) - INSERT, return Document", "findById(id) - SELECT by UUID", "findAll() - paginated list", "updateStatus(id, status) - state transition", "Throws DATABASE_NOT_CONFIGURED if DB absent"],
+        code: 'interface Document {\n  id: string;           // UUID\n  filename: string;\n  storage_uri: string | null;\n  doc_type: string;     // invoice | gstr1 | gstr2b | purchase_register\n  status: string;       // pending | processing | completed | error\n  metadata: Record<string, unknown>;  // JSONB\n  uploaded_at: Date;\n  processed_at: Date | null;\n}' },
+      { name: "storage/cos-client.ts", role: "S3Client for IBM Cloud Object Storage. Nullable, matching DB pattern.", tags: ["TS"],
+        key: ["s3 - nullable S3Client instance", "bucket - COS bucket name", "isCosAvailable() - boolean guard", "Configured for IBM COS S3 API (endpoint override)"] },
+      { name: "storage/storage.service.ts", role: "upload / download / delete / exists operations with requireCos() guard.", tags: ["TS"],
+        key: ["upload(key, body, contentType) - PutObjectCommand", "download(key) - GetObjectCommand returning {body, contentType}", "delete(key) - DeleteObjectCommand", "exists(key) - HeadObjectCommand -> boolean"] }
+    ]
+  },
+
+  watsonx: {
+    title: "watsonx.ai Integration",
+    color: "var(--purple)",
+    path: "services/ai/src/watsonx/",
+    summary: "Calls IBM watsonx-hosted Mistral / Granite models to extract structured invoice fields from free-form text (e.g. PDF OCR output).",
+    stats: { Model: "mistral-small-3-1-24b-instruct-2503 (24B)", Region: "us-south", SDK: "ibm-watsonx-ai", "Python": "3.13 (pinned <3.14)", "Temperature": "0.1", "Max tokens": "1024", "LLM latency": "~5-10s", "OCR pipeline": "~35-40s total" },
+    files: [
+      { name: "client.py", role: "Singleton ModelInference client wrapping IBM credentials.", tags: ["PY"],
+        key: ["get_client() - lazy singleton init", "Credentials from WATSONX_API_KEY + URL", "Project scoped by WATSONX_PROJECT_ID", "Raises on first use if creds missing"] },
+      { name: "extraction.py", role: "Invoice field extraction prompt + parser.", tags: ["PY","Core"],
+        key: ["extract_invoice_fields(text) -> ExtractionResponse", "EXTRACTION_PROMPT - structured JSON output instruction", "_parse_fields() - best-effort JSON recovery from model output", "60-second timeout via signal.alarm"],
+        code: '# Call shape\nresp = extract_invoice_fields(invoice_text)\n# resp.fields -> InvoiceFields (Pydantic)\n# resp.model_id, resp.raw_output for audit' },
+      { name: "models.py", role: "Pydantic response models for /extract endpoint.", tags: ["PY"],
+        key: ["ExtractionResponse - fields + model_id + raw_output", "InvoiceFields - invoice_number, date, supplier/buyer GSTIN, line_items[], totals", "Strict types; tolerant of missing fields from model"] }
+    ]
+  },
+
+  gstr: {
+    title: "GSTR Parser",
+    color: "var(--accent2)",
+    path: "services/ai/src/gstr_parser/",
+    summary: "Parses GSTR-1 (outward supplies filed by vendors) and GSTR-2B (auto-drafted ITC statement) JSON from the GSTN portal. Supports both post-Oct-2024 flat-tax and legacy rate-wise formats.",
+    stats: { "Test count": "23", "Output": "ParsedInvoice[]", "Dedup strategy": "deterministic UID hash", "GSTN formats": "current + legacy fallback" },
+    files: [
+      { name: "gstr1_parser.py", role: "Parse GSTR-1 JSON. Iterates ctin supplier blocks, aggregates rate-wise itms.", tags: ["PY","Core"],
+        key: ["parse_gstr1(data: dict) -> GSTR1ParseResult", "Aggregates itms[] rate buckets into totals", "Produces deterministic inv_uid per invoice", "Returns parsed list + error rows + counts"] },
+      { name: "gstr2b_parser.py", role: "Parse GSTR-2B. Post-Oct-2024 format first, legacy itms[] fallback.", tags: ["PY","Core"],
+        key: ["parse_gstr2b(data: dict) -> GSTR2BParseResult", "Extracts IRN (e-invoice reference) for Pass 1 matching", "Detects format by probing field presence", "Attaches filer/supplier GSTIN + period to each record"] },
+      { name: "models.py", role: "Pydantic models for parsed output.", tags: ["PY"],
+        key: ["ParsedInvoice - unified shape across GSTR-1 / 2B / Excel", "GSTR1ParseResult / GSTR2BParseResult", "Fields: supplier_gstin, invoice_number, date, taxable_value, igst/cgst/sgst/cess, irn, inv_uid, record_hash"] },
+      { name: "deduplication.py", role: "Deterministic hashing + duplicate removal.", tags: ["PY"],
+        key: ["compute_record_hash(invoice) - stable hash of normalized fields", "compute_inv_uid(filer, supplier, num, date) - matching UID", "deduplicate(invoices) -> (unique, removed_count)"] },
+      { name: "field_mapper.py", role: "Map GSTN enum codes to booleans.", tags: ["PY"],
+        key: ["map_reverse_charge() - 'Y'/'N' -> bool", "map_itc_available() - eligibility flag", "Isolates all code-to-value mappings in one place"] },
+      { name: "section_extractor.py", role: "Extract B2B section from nested GSTR JSON.", tags: ["PY"],
+        key: ["extract_b2b_section(data) - navigates data.docdata.b2b etc.", "Tolerant of both legacy and current envelope shapes"] },
+      { name: "period_utils.py", role: "Parse / compare GST filing periods (MMYYYY).", tags: ["PY"],
+        key: ["Used by cross_period_match to find adjacent periods", "period_offset(a, b) - month delta", "is_adjacent(a, b, max_months=1)"] }
+    ]
+  },
+
+  excel: {
+    title: "Excel / Purchase Register Parser",
+    color: "var(--cyan)",
+    path: "services/ai/src/excel_parser/",
+    summary: "Ingests purchase registers from Tally, Zoho, or generic CSV/XLSX. Auto-detects format and fuzzy-maps columns to canonical invoice fields.",
+    stats: { "Test count": "19", "Formats": "Tally · Zoho · generic", "Engine": "pandas", "Column match": "rapidfuzz" },
+    files: [
+      { name: "parser.py", role: "Main parse entry point. Reads file -> detects format -> maps columns -> validates rows.", tags: ["PY","Core"],
+        key: ["parse_file(path, template=None) -> ParseReport", "Supports .xlsx, .xls, .csv", "Per-row validation (invoice #, HSN/SAC)", "Returns valid + error counts + row-level detail"] },
+      { name: "column_mapper.py", role: "Fuzzy match raw spreadsheet headers to canonical invoice fields.", tags: ["PY"],
+        key: ["auto_map_columns(headers) -> ColumnMapping[]", "Known synonyms for invoice_number, invoice_date, amount, gstin, hsn/sac", "Confidence threshold for mapping acceptance"] },
+      { name: "format_detectors.py", role: "Heuristic detection of source system.", tags: ["PY"],
+        key: ['detect_format(headers) -> "tally" | "zoho" | "generic"', "Tally signatures: VCH#, VCH.DATE, PARTICULARS", "Zoho signatures: Invoice #, Invoice Date, Vendor"] },
+      { name: "mapping_template.py", role: "Save / reuse a column-mapping template across months.", tags: ["PY"],
+        key: ["MappingTemplate - persisted mapping for a customer", "Bypass auto-detect when user confirms mapping once", "Serializable to JSON for storage"] },
+      { name: "models.py", role: "Pydantic models for parse output.", tags: ["PY"],
+        key: ["ParseReport - summary + rows[]", "RowParseResult - per-row data dict + errors", "ColumnMapping - src_header -> target_field + confidence"] }
+    ]
+  },
+
+  validator: {
+    title: "Invoice Validator",
+    color: "var(--amber)",
+    path: "services/ai/src/invoice_validator/",
+    summary: "Runs GST-specific validation: GSTIN checksum, HSN/SAC patterns, line-item tax arithmetic, tax-type consistency, invoice number format.",
+    stats: { "Test count": "37", "Rules": "GSTIN Mod 36 · HSN pattern · tax math · CGST+SGST vs IGST", "Output": "ValidationReport" },
+    files: [
+      { name: "validator.py", role: "Orchestrator. Calls each sub-validator, aggregates errors into a report.", tags: ["PY","Core"],
+        key: ["validate_invoice(invoice: dict) -> ValidationReport", "Runs all rules; never short-circuits", "Errors keyed by field path"] },
+      { name: "gstin.py", role: "15-char GSTIN validation with Luhn Mod 36 checksum.", tags: ["PY"],
+        key: ["validate_gstin(gstin) -> list[error]", "State code (1-2) must be 01-38 or 97/99", "PAN (3-12) must match ABCDE1234F pattern", "Checksum (15) computed via Mod 36 Luhn"] },
+      { name: "hsn_sac.py", role: "HSN (goods) / SAC (services) code format checks.", tags: ["PY"],
+        key: ["validate_hsn_sac(code) -> list[error]", "Allowed: 4-digit, 6-digit, 8-digit numeric", "Warns on 2-digit only (insufficient for most turnover bands)"] },
+      { name: "tax_math.py", role: "Arithmetic checks on line items and totals.", tags: ["PY","Core"],
+        key: ["validate_line_item_math(item) - qty * rate = taxable", "validate_line_tax(item) - taxable * gst_rate = cgst+sgst (or igst)", "validate_totals(invoice) - sum of line items = invoice totals", "Tolerance: Rs 1 for rounding"] },
+      { name: "tax_type.py", role: "CGST+SGST vs IGST consistency with place of supply.", tags: ["PY"],
+        key: ["validate_tax_type(invoice)", "Intra-state (supplier state == POS) -> CGST + SGST required, IGST must be 0", "Inter-state -> IGST required, CGST/SGST must be 0"] },
+      { name: "invoice_number.py", role: "Format rules per Rule 46 of CGST Rules.", tags: ["PY"],
+        key: ["validate_invoice_number(num) -> list[error]", "Max 16 chars, alphanumeric + hyphen + slash only", "Must not start with 0 (optional warning)"] },
+      { name: "models.py", role: "Pydantic report models.", tags: ["PY"],
+        key: ["ValidationReport - is_valid, errors{field:list[str]}, warnings", "ValidationError - field, code, message, severity"] }
+    ]
+  },
+
+  normalizer: {
+    title: "Invoice Normalizer",
+    color: "var(--pink)",
+    path: "services/ai/src/invoice_normalizer/",
+    summary: "Strips invoice numbers of prefixes, separators, leading zeros, and case so that 'INV-00123/FY24' and 'inv123/fy24' match in Pass 2 of reconciliation.",
+    stats: { "Test count": "12", "Fuzzy engine": "rapidfuzz", "Transforms": "prefix strip · separators · zeros · case fold" },
+    files: [
+      { name: "normalizer.py", role: "normalize_invoice_number() with tracked transformations.", tags: ["PY","Core"],
+        key: ["Strip known prefixes (INV-, INV., TAX-)", "Normalize separators (-, /, .)", "Strip special chars and leading zeros", "Case fold to uppercase", "Returns NormalizedResult with transform audit trail"] },
+      { name: "matcher.py", role: "Similarity scoring for Pass 3 fuzzy matching.", tags: ["PY"],
+        key: ["similarity_score(a, b) -> float 0..1", "Wraps rapidfuzz token_sort_ratio", "Used by reconciliation.passes.fuzzy_match"] },
+      { name: "models.py", role: "Config + result models.", tags: ["PY"],
+        key: ["NormalizerConfig - tunable prefix / separator lists", "NormalizedResult - original, normalized, transformations[]"] }
+    ]
+  },
+
+  reconciliation: {
+    title: "Reconciliation Engine",
+    color: "var(--red)",
+    path: "services/ai/src/reconciliation/",
+    summary: "The heart of the product. A 5-pass matching engine that reconciles a company's purchase register against its vendor-filed GSTR-2B. See the dedicated reconciliation-engine.html page for a deep dive.",
+    stats: { "Test count": "44", "Passes": "5 (IRN -> exact -> fuzzy -> amount+date -> loose)", "Auto-resolve rules": "3", "Helpers": "duplicate detector · confidence adjuster · cross-period matcher" },
+    files: [
+      { name: "engine.py", role: "Main orchestrator. Coordinates duplicate detection, 5 passes, auto-resolve, classification.", tags: ["PY","Core"],
+        key: ["reconcile(books, gstr2b, config) -> ReconciliationReport", "Enforces sequential pass order - matched entries exit the pool", "Emits per-entry match_pass, confidence, mismatch_types[]"],
+        code: 'report = reconcile(\n  books=purchase_register_rows,\n  gstr2b=parsed_2b_invoices,\n  config=ReconciliationConfig(\n    value_tolerance=1.0,\n    date_tolerance_days=7\n  )\n)\n# report.matched / .mismatched / .missing_in_gstr2b / .missing_in_books' },
+      { name: "models.py", role: "Core data classes.", tags: ["PY"],
+        key: ["MatchCategory enum - MATCHED | MISMATCH | MISSING_IN_GSTR2B | MISSING_IN_BOOKS | PROBABLE_MATCH", "MismatchType enum - TAXABLE_VALUE | TAX_AMOUNT | DATE | ...", "ReconciliationEntry - per-pair result with full books/2b records", "ReconciliationReport - summary counts + entries[]"] },
+      { name: "passes/irn_match.py", role: "Pass 1 - IRN (Invoice Reference Number) exact match.", tags: ["PY","Core"],
+        key: ["Used for e-invoiced supplies only", "Cryptographic certainty => confidence 1.0", "Both sides must have non-empty IRN"] },
+      { name: "passes/exact_match.py", role: "Pass 2 - GSTIN + normalized invoice # + value (within tolerance).", tags: ["PY","Core"],
+        key: ["Invoice # passed through normalizer first", "Value tolerance default Rs 1", "Confidence 0.95, may be adjusted per confidence.py"] },
+      { name: "passes/fuzzy_match.py", role: "Pass 3 - GSTIN exact + fuzzy invoice #.", tags: ["PY","Core"],
+        key: ["Similarity threshold default 0.85", "Handles OCR errors and formatting drift", "Confidence 0.80"] },
+      { name: "passes/amount_date_match.py", role: "Pass 4 - GSTIN + amount (+-2%) + date (+-7 days).", tags: ["PY","Core"],
+        key: ["Invoice # considered unrecognisable", "Always flagged requires_review=true", "Confidence 0.65"] },
+      { name: "passes/loose_match.py", role: "Pass 5 - GSTIN + amount (+-1%) only. Last resort.", tags: ["PY","Core"],
+        key: ["Only run on entries that survived passes 1-4", "Always requires_review=true", "Confidence 0.45"] },
+      { name: "duplicate_detector.py", role: "Detects exact and near-duplicate entries before matching.", tags: ["PY"],
+        key: ["Exact dup: same GSTIN + inv# + date + value -> skipped in matching", "Near dup: same GSTIN + normalized inv# but value drift -> flagged for review"] },
+      { name: "auto_resolver.py", role: "Reclassifies trivial mismatches as MATCHED.", tags: ["PY"],
+        key: ["Rounding diff <= Rs 1 + proportional taxes -> MATCHED", "Date-only diff <= 3 days + exact values -> MATCHED", "Invoice # format-only diff -> MATCHED"] },
+      { name: "confidence.py", role: "Post-match confidence adjustment.", tags: ["PY"],
+        key: ["+0.05 for exact value match", "+0.03 for exact date", "Vendor compliance grade +-0.03", "Cross-period penalty -0.05 / month"] },
+      { name: "cross_period.py", role: "Match books entries against adjacent-period 2B.", tags: ["PY"],
+        key: ["Helps catch vendors who file late", "Applies per-month confidence penalty", "Used only on unmatched residue"] },
+      { name: "split_merged.py", role: "Handle many-to-one matches (multiple books entries -> one 2B).", tags: ["PY"],
+        key: ["Books shows GRN-level entries; 2B has consolidated invoice", "Sums books lines by GSTIN + invoice # to compare totals"] }
+    ]
+  },
+
+  itc: {
+    title: "ITC Risk Scorer",
+    color: "var(--orange)",
+    path: "services/ai/src/itc_risk/",
+    summary: "Takes the reconciliation report and scores each unresolved invoice on a 0-100 risk scale. Outputs a prioritized action list with SLAs for the finance team.",
+    stats: { "Test count": "15", "Score range": "0-100", "Priorities": "CRITICAL · HIGH · MEDIUM · LOW", "SLAs": "3 / 7 / 15 / 30 days" },
+    files: [
+      { name: "scorer.py", role: "Score one reconciliation entry based on risk factors.", tags: ["PY","Core"],
+        key: ["score_invoice(entry) -> InvoiceRiskScore", "MISSING_IN_GSTR2B: +80", "TAX_AMOUNT_MISMATCH: +60", "TAXABLE_VALUE_MISMATCH: +50", "CROSS_PERIOD: +20 · VENDOR_LOW_COMPLIANCE: +15", "HIGH_VALUE (>=Rs 1L): +10 · DATE_ONLY: +10"],
+        code: '// Priority bands\n71-100 -> CRITICAL  (3-day SLA)\n51-70  -> HIGH      (7-day SLA)\n31-50  -> MEDIUM    (15-day SLA)\n 0-30  -> LOW       (30-day SLA)' },
+      { name: "aggregator.py", role: "Portfolio-level summary across all invoices.", tags: ["PY"],
+        key: ["aggregate_risk(invoices[]) -> PortfolioRiskSummary", "Total ITC at risk (INR)", "Count per priority band", "Top-N vendors by risk contribution"] },
+      { name: "models.py", role: "Risk score + summary models.", tags: ["PY"],
+        key: ["InvoiceRiskScore - score, factors[], priority, sla_days", "RiskLevel enum - CRITICAL | HIGH | MEDIUM | LOW", "PortfolioRiskSummary - aggregate counts + top vendors"] }
+    ]
+  }
+};
+
+/* ========== RENDERERS ========== */
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+function tagClass(t) {
+  return { PY: "tag-py", TS: "tag-ts", JSON: "tag-json", Core: "tag-core", Tests: "tag-tests" }[t] || "tag-py";
+}
+
+function renderPane(key) {
+  const m = MODULES[key];
+  const pane = document.getElementById("pane-" + key);
+  if (!pane || pane.dataset.rendered) return;
+
+  const statsHtml = Object.entries(m.stats).map(([k, v]) =>
+    `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join("");
+
+  const filesHtml = m.files.map(f => `
+    <div class="mod-card" data-${key}-file="${escapeHtml(f.name)}" onclick="selectFile('${key}', '${escapeHtml(f.name)}')">
+      <div class="m-name">${escapeHtml(f.name)}</div>
+      <div class="m-role">${escapeHtml(f.role)}</div>
+      <div class="m-tags">${(f.tags||[]).map(t => `<span class="mod-tag ${tagClass(t)}">${escapeHtml(t)}</span>`).join("")}</div>
+    </div>
+  `).join("");
+
+  pane.innerHTML = `
+    <div class="mod-intro" style="border-color:${m.color}33; background:linear-gradient(135deg, ${m.color}14, rgba(96,165,250,0.05));">
+      <div class="mod-intro-left">
+        <h3 style="color:${m.color};">${escapeHtml(m.title)}</h3>
+        <p style="font-family:'SF Mono', monospace; color:var(--text);"><code style="color:${m.color};">${escapeHtml(m.path)}</code></p>
+        <p>${escapeHtml(m.summary)}</p>
+      </div>
+      <div class="mod-intro-right">
+        <dl>${statsHtml}</dl>
+      </div>
+    </div>
+    <div class="mod-grid">${filesHtml}</div>
+    <div class="detail-panel empty" id="${key}-detail-panel">
+      Click any file above to see its role, key functions, and an example.
+    </div>
+  `;
+  pane.dataset.rendered = "1";
+}
+
+let selectedFile = {};
+function selectFile(key, name) {
+  const module = MODULES[key];
+  const file = module.files.find(f => f.name === name);
+  const panel = document.getElementById(key + "-detail-panel");
+  const prev = selectedFile[key];
+
+  if (prev === name) {
+    selectedFile[key] = null;
+    document.querySelectorAll(`[data-${key}-file]`).forEach(c => c.classList.remove('selected'));
+    panel.className = 'detail-panel empty';
+    panel.innerHTML = 'Click any file above to see its role, key functions, and an example.';
+    return;
+  }
+
+  selectedFile[key] = name;
+  document.querySelectorAll(`[data-${key}-file]`).forEach(c => {
+    c.classList.toggle('selected', c.dataset[key + 'File'] === name);
+  });
+
+  const tagsHtml = (file.tags || []).map(t =>
+    `<span class="mod-tag ${tagClass(t)}">${escapeHtml(t)}</span>`).join("");
+
+  const keyHtml = (file.key || []).map(k => `<li>${escapeHtml(k)}</li>`).join("");
+
+  const codeHtml = file.code
+    ? `<div class="detail-section"><h4>Example</h4><div class="detail-code">${escapeHtml(file.code)}</div></div>`
+    : "";
+
+  panel.className = 'detail-panel';
+  panel.innerHTML = `
+    <div class="detail-header">
+      <h3>${escapeHtml(file.name)}</h3>
+      <div class="detail-header-tags">${tagsHtml}</div>
+    </div>
+    <div class="detail-body">
+      <p style="font-size:13px; color:var(--text-dim); margin-bottom:18px;">${escapeHtml(file.role)}</p>
+      <div class="detail-grid">
+        <div class="detail-section">
+          <h4>Key functions / responsibilities</h4>
+          <ul>${keyHtml}</ul>
+        </div>
+        <div>${codeHtml}</div>
+      </div>
+    </div>
+  `;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function switchExplorer(which) {
+  Object.keys(MODULES).forEach(key => {
+    const tab = document.getElementById('tab-' + key);
+    const pane = document.getElementById('pane-' + key);
+    if (tab) tab.classList.toggle('active', key === which);
+    if (pane) pane.classList.toggle('active', key === which);
+  });
+  renderPane(which);
+}
+
+/* Render initial + pre-render the default pane */
+Object.keys(MODULES).forEach(renderPane);
+</script>
+
+</body>
+</html>
