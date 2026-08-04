@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Harness and Verification, Champ Agent Swarm</title>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2234;
+    --border: #2a3548;
+    --text: #e2e8f0;
+    --text-dim: #8892a4;
+    --accent: #60a5fa;
+    --accent2: #818cf8;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --red: #f87171;
+    --cyan: #22d3ee;
+    --purple: #a78bfa;
+    --pink: #f472b6;
+    --orange: #fb923c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0f1729 0%, var(--bg) 100%);
+  }
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--amber), var(--orange));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header p {
+    color: var(--text-dim);
+    font-size: 15px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .header-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .header-nav a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+    padding: 4px 12px;
+    border: 1px solid rgba(96,165,250,0.3);
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+  .header-nav a:hover {
+    background: rgba(96,165,250,0.1);
+    border-color: var(--accent);
+  }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+  .section { margin-bottom: 52px; scroll-margin-top: 20px; }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex: none;
+  }
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    max-width: 860px;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .card p, .card li { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+  .card ul { padding-left: 18px; margin-top: 8px; }
+  .card li { margin-bottom: 4px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 900px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  }
+
+  strong.hl { color: var(--text); font-weight: 600; }
+
+  /* ===== TABLES ===== */
+  .schema-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .schema-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .schema-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(42,53,72,0.5);
+    vertical-align: top;
+    color: var(--text-dim);
+  }
+  .schema-table tr:hover td { background: rgba(251,191,36,0.04); }
+  .schema-table code {
+    font-family: 'Fira Code', ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .table-wrap { overflow-x: auto; }
+
+  /* ===== CODE ===== */
+  code {
+    font-family: 'Fira Code', ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--cyan);
+  }
+  pre.code {
+    font-family: 'Fira Code', ui-monospace, monospace;
+    font-size: 11.5px;
+    line-height: 1.75;
+    background: #0d1420;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: var(--text-dim);
+    margin-top: 10px;
+  }
+  pre.code .c { color: #5b6779; }
+  pre.code .k { color: var(--purple); }
+  pre.code .s { color: var(--green); }
+  pre.code .n { color: var(--amber); }
+
+  /* ===== TAGS ===== */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .tag-blue { background: rgba(96,165,250,0.15); color: var(--accent); }
+  .tag-purple { background: rgba(167,139,250,0.15); color: var(--purple); }
+  .tag-green { background: rgba(52,211,153,0.15); color: var(--green); }
+  .tag-amber { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .tag-red { background: rgba(248,113,113,0.15); color: var(--red); }
+  .tag-cyan { background: rgba(34,211,238,0.15); color: var(--cyan); }
+  .tag-orange { background: rgba(251,146,60,0.15); color: var(--orange); }
+  .tag-grey { background: rgba(136,146,164,0.14); color: var(--text-dim); }
+
+  /* ===== CALLOUT ===== */
+  .callout {
+    border-left: 3px solid var(--amber);
+    background: rgba(251,191,36,0.05);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.75;
+  }
+  .callout .lbl {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--amber);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .callout.red { border-left-color: var(--red); background: rgba(248,113,113,0.05); }
+  .callout.red .lbl { color: var(--red); }
+  .callout.green { border-left-color: var(--green); background: rgba(52,211,153,0.05); }
+  .callout.green .lbl { color: var(--green); }
+
+  /* ===== FILE TREE ===== */
+  .tree {
+    font-family: 'Fira Code', ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 2;
+    color: var(--text-dim);
+  }
+  .tree .f { color: var(--text); }
+  .tree .cmt { color: #5b6779; }
+  .tree .prov { color: var(--purple); }
+
+  /* ===== STEP CHAIN ===== */
+  .chain {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+  .chain .node {
+    flex: 1;
+    min-width: 160px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--text-dim);
+  }
+  .chain .node b { display: block; color: var(--text); font-size: 12.5px; margin-bottom: 4px; }
+  .chain .arrow {
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 10px; color: var(--text-dim); font-size: 18px; min-width: 34px;
+  }
+
+  /* ===== PROBE CARDS ===== */
+  .probe {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .probe .pname { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .probe .pkind { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--purple); margin-bottom: 8px; }
+  .probe p { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; }
+  .probe .catch { margin-top: 10px; font-size: 12px; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 8px; }
+  .probe .catch span { color: var(--green); font-weight: 600; }
+
+  /* ===== GATE BAR ===== */
+  .gate {
+    display: grid;
+    grid-template-columns: 150px 1fr 130px;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    margin-bottom: 8px;
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+  .gate b { color: var(--text); font-size: 13px; }
+  @media (max-width: 760px) { .gate { grid-template-columns: 1fr; } }
+
+  /* ===== FOOTER ===== */
+  .foot {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .foot a { color: var(--accent); text-decoration: none; }
+  .foot a:hover { text-decoration: underline; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <h1>Harness and Verification</h1>
+  <p>The sandbox where Champ agents are put under test, the specification a test scenario has to satisfy, and the rules that decide whether an agent is fit to deploy and still fit six months later.</p>
+  <div class="header-nav">
+    <a href="agent-swarm-architecture.html" style="border-color:rgba(167,139,250,0.5); color:var(--purple);">Agent Architecture &rarr;</a>
+    <a href="system-internals.html" style="border-color:rgba(34,211,238,0.5); color:var(--cyan);">System Internals &rarr;</a>
+    <a href="event-log-viewer.html" style="border-color:rgba(52,211,153,0.5); color:var(--green);">Event Log &rarr;</a>
+    <a href="#why">Why a Harness</a>
+    <a href="#anatomy">Scenario Anatomy</a>
+    <a href="#sandbox">Sandbox Contract</a>
+    <a href="#verifier">The Verifier</a>
+    <a href="#calibration">Calibration</a>
+    <a href="#probes">Behaviour Probes</a>
+    <a href="#fairness">Fairness Lines</a>
+    <a href="#gates">Release Gates</a>
+    <a href="#audit">Standing Audit</a>
+    <a href="#rejects">How Scenarios Go Wrong</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== WHY ===== -->
+  <div class="section" id="why">
+    <div class="section-title"><span class="dot" style="background:var(--amber)"></span>Why a Harness</div>
+    <p class="section-subtitle">An agent that reports "done" has told you about its confidence, not about its work. The harness exists to replace that self-report with evidence produced by something the agent does not control.</p>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card" style="border-color:rgba(251,191,36,0.3);">
+        <h3 style="color:var(--amber);">What the harness is</h3>
+        <p>A containerised environment plus a grader. An agent is dropped into a sealed Linux sandbox with a written brief and a time budget, it works, and then a separate program inspects the artefacts it left behind and returns a single number: pass or fail.</p>
+        <ul>
+          <li>The agent never sees the grader.</li>
+          <li>The grader never asks the agent how it went.</li>
+          <li>The same scenario, run a year later, produces the same environment byte for byte.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">What it is not</h3>
+        <ul>
+          <li><strong class="hl">Not a demo.</strong> A scenario that every model passes measures nothing and earns no place in the suite.</li>
+          <li><strong class="hl">Not a chat transcript review.</strong> Reasoning that sounds right and output that is right are different claims, and only the second one is graded.</li>
+          <li><strong class="hl">Not a one-off.</strong> A single pass can be luck. Scenarios are run repeatedly and scored across trials.</li>
+          <li><strong class="hl">Not retired at launch.</strong> The same suite runs on a schedule after deployment as the audit.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>The two things every run separates</h3>
+      <div class="grid-2" style="margin-top:12px;">
+        <div>
+          <div style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Capability</div>
+          <p style="font-size:12.5px;">Can the agent produce the correct artefact at all? Graded by assertions on real values in real files. Binary, and deliberately unforgiving.</p>
+        </div>
+        <div>
+          <div style="font-size:11px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">Behaviour</div>
+          <p style="font-size:12.5px;">How did it get there? Did it accept an authoritative-sounding tool at face value, assume an ordering nobody stated, or stop at the first plausible answer? Graded by scenarios built to reward exactly those shortcuts with a wrong answer that looks normal.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ANATOMY ===== -->
+  <div class="section" id="anatomy">
+    <div class="section-title"><span class="dot" style="background:var(--accent)"></span>Anatomy of a Scenario</div>
+    <p class="section-subtitle">A scenario is a folder, and the folder is the specification. Five parts, each with one job. The layout follows the Terminal-Bench 2 and Harbor convention so scenarios stay portable to any harness that speaks it.</p>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div class="tree">
+scenario/<br>
+&nbsp;&nbsp;├── <span class="f">task.toml</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># the manifest: artefact paths, resource limits, timeouts, metadata</span><br>
+&nbsp;&nbsp;├── <span class="f">instruction.md</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># the brief handed verbatim to the agent, and the only thing it sees</span><br>
+&nbsp;&nbsp;├── <span class="f">environment/</span><br>
+&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="f">Dockerfile</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># the single image, pinned by digest, used for both the run and the grade</span><br>
+&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="f">data/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># seed inputs copied into the image at build time</span><br>
+&nbsp;&nbsp;├── <span class="f">tests/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># the verifier, overlaid only after the agent has finished</span><br>
+&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="f">test.sh</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># runs the assertions, writes reward.txt and ctrf.json</span><br>
+&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="f">test_outputs.py</span> &nbsp;<span class="cmt"># one assertion per stated success criterion</span><br>
+&nbsp;&nbsp;└── <span class="f">solution/</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="f">solve.sh</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># the reference answer, never copied into the image</span>
+      </div>
+    </div>
+
+    <div class="table-wrap card">
+      <h3 style="margin-bottom:12px;">What each part is responsible for</h3>
+      <table class="schema-table">
+        <tr><th style="width:170px;">Part</th><th>Responsibility</th><th style="width:230px;">Rule it must not break</th></tr>
+        <tr>
+          <td><code>instruction.md</code></td>
+          <td>The brief, written the way you would brief a colleague. Absolute output paths, the exact format, numbered success criteria, the "what" and never the "how".</td>
+          <td>No section headers, no solution hints, and a hard cap of roughly 1,500 tokens. If it does not fit, the scenario is doing too much.</td>
+        </tr>
+        <tr>
+          <td><code>task.toml</code></td>
+          <td>The manifest. Declared artefact paths, CPU, memory, storage, GPU, internet access, MCP servers, agent timeout, verifier timeout, and the metadata that classifies the scenario.</td>
+          <td><code>artifacts</code> is an array at the top level and names the exact file the scenario produces.</td>
+        </tr>
+        <tr>
+          <td><code>environment/Dockerfile</code></td>
+          <td>The starting state, and nothing more. Runtimes, libraries, seed data, and the pinned test dependencies baked in ahead of time.</td>
+          <td>Never copies <code>solution/</code> or <code>tests/</code>. An image containing either is rejected outright.</td>
+        </tr>
+        <tr>
+          <td><code>tests/</code></td>
+          <td>The verifier. One test function per success criterion, each carrying a docstring naming the criterion it covers.</td>
+          <td>Added only at verify time. Ground truth lives here, never in <code>environment/</code> where the agent could read it.</td>
+        </tr>
+        <tr>
+          <td><code>solution/solve.sh</code></td>
+          <td>The reference answer, used to prove the grader is capable of recognising a correct result.</td>
+          <td>Exists for calibration and review only. It is never present during an agent run.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <span class="lbl">Four-way consistency</span>
+      The output path in <code>instruction.md</code>, the <code>artifacts</code> entry in <code>task.toml</code>, the path the verifier asserts on, and the path <code>solve.sh</code> writes to must all be the same file. Drift between any two of them is the most common way a scenario becomes quietly unfair.
+    </div>
+  </div>
+
+  <!-- ===== SANDBOX ===== -->
+  <div class="section" id="sandbox">
+    <div class="section-title"><span class="dot" style="background:var(--cyan)"></span>The Sandbox Contract</div>
+    <p class="section-subtitle">The environment has to be honest and it has to be reproducible. Honest means the answer is not sitting somewhere the agent can find it. Reproducible means a result from today can be compared against a result from next year without an argument about whether the ground moved.</p>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card" style="border-color:rgba(34,211,238,0.3);">
+        <h3 style="color:var(--cyan);">Reproducible</h3>
+        <ul>
+          <li>The base image is pinned by <code>@sha256</code> digest, not by tag. A tag like <code>python:3.13-slim</code> silently changes underneath you, and <code>:latest</code> is never allowed.</li>
+          <li>Base images come from a fixed approved list, so the fleet shares a known surface.</li>
+          <li>Every dependency, including the test dependencies, is installed at build time with a pinned version. Grading downloads nothing.</li>
+          <li>Tests use fixed seeds and fixed inputs. No unseeded randomness, no live-generated data, no dependence on the wall clock or the date.</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">Honest</h3>
+        <ul>
+          <li>No answer file, reference solution, or expected output anywhere in the image.</li>
+          <li>The verifier is absent during the run and overlaid afterwards, so there is nothing to read ahead.</li>
+          <li>Ground truth is either held in the verifier's own copy or recomputed from inputs the agent cannot write.</li>
+          <li>Where the scenario allows network access, it is designed so the answer cannot simply be fetched.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:10px;">Post-build leak check</h3>
+      <p>Run after every image build. Any output at all is a failing scenario.</p>
+<pre class="code"><span class="c"># nothing from solution/ or tests/ may exist inside the agent image</span>
+docker run --rm &lt;scenario&gt;:dev /bin/bash -lc \
+  <span class="s">'find / \( -name solve.sh -o -name test.sh -o -name "*expected*" \) 2&gt;/dev/null'</span>
+
+<span class="c"># expect: no output</span></pre>
+    </div>
+
+    <div class="table-wrap card">
+      <h3 style="margin-bottom:12px;">Environment budget, declared in <code>task.toml</code></h3>
+      <table class="schema-table">
+        <tr><th style="width:190px;">Field</th><th>What it controls</th><th style="width:180px;">Why it is pinned</th></tr>
+        <tr><td><code>cpus</code> / <code>memory_mb</code> / <code>storage_mb</code></td><td>The compute the agent is given.</td><td>A result is only comparable against another result run under the same budget.</td></tr>
+        <tr><td><code>gpus</code></td><td>Accelerator access, normally zero.</td><td>Keeps runs schedulable and keeps cost predictable.</td></tr>
+        <tr><td><code>allow_internet</code></td><td>Whether the sandbox can reach the network.</td><td>Off by default for anything where a lookup would substitute for the reasoning under test.</td></tr>
+        <tr><td><code>mcp_servers</code></td><td>Which tools the agent is handed.</td><td>The tool surface is part of the test. Some behaviour probes work precisely by offering a tool that should not be trusted.</td></tr>
+        <tr><td><code>[agent].timeout_sec</code></td><td>The working budget.</td><td>Timeouts are recorded separately from wrong answers, because they measure a different thing.</td></tr>
+        <tr><td><code>[environment].build_timeout_sec</code></td><td>Image build ceiling.</td><td>A scenario that cannot build in budget cannot run at scale.</td></tr>
+        <tr><td><code>[verifier].timeout_sec</code></td><td>Grading budget.</td><td>The verifier runs in a fresh container from the same image, so its cost is bounded too.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== VERIFIER ===== -->
+  <div class="section" id="verifier">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span>The Verifier</div>
+    <p class="section-subtitle">A weak verifier is worse than no verifier, because it produces a number people trust. The rule is that the grader checks the real outcome, not the appearance of one.</p>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">Weak</h3>
+<pre class="code"><span class="k">def</span> test_report():
+    <span class="s">"""A report was produced."""</span>
+    <span class="k">assert</span> Path(<span class="s">"/app/report.json"</span>).exists()</pre>
+        <p style="margin-top:10px;">An agent that writes <code>{}</code> and stops passes this. So does an agent that writes an empty file and reports success. The number this produces is not a measurement.</p>
+      </div>
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green);">Sound</h3>
+<pre class="code"><span class="k">def</span> test_duplicate_accounting():
+    <span class="s">"""Criterion 3: duplicates_removed equals
+    input_rows minus output_rows."""</span>
+    d = json.loads(Path(<span class="s">"/app/report.json"</span>).read_text())
+    <span class="k">assert</span> d[<span class="s">"input_rows"</span>] == <span class="n">14032</span>
+    <span class="k">assert</span> d[<span class="s">"output_rows"</span>] == <span class="n">13887</span>
+    <span class="k">assert</span> d[<span class="s">"duplicates_removed"</span>] == <span class="n">145</span></pre>
+        <p style="margin-top:10px;">Asserts on produced values, names the criterion it covers, and cannot be satisfied without doing the work.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:8px;">Rules the verifier holds to</h3>
+      <div class="grid-2">
+        <ul style="font-size:13px; color:var(--text-dim); padding-left:18px; line-height:1.9;">
+          <li>One test function per stated success criterion, each with a docstring naming it.</li>
+          <li>Tests map to criteria one to one. Nothing graded that was not asked, nothing asked that is not graded.</li>
+          <li>Assertions run against observable artefacts at the declared paths, never against stdout and never by string-matching the agent's source.</li>
+        </ul>
+        <ul style="font-size:13px; color:var(--text-dim); padding-left:18px; line-height:1.9;">
+          <li><code>test.sh</code> installs nothing and downloads nothing. Dependencies were baked in at build.</li>
+          <li><code>test.sh</code> always exits zero and always writes a reward, including on missing prerequisites, so a crashed grader cannot be mistaken for a pass.</li>
+          <li>The reward lands in <code>/logs/verifier/reward.txt</code> and the per-test detail in <code>ctrf.json</code>.</li>
+        </ul>
+      </div>
+<pre class="code"><span class="c">#!/bin/bash</span>
+pytest --ctrf /logs/verifier/ctrf.json /tests/test_outputs.py -rA
+
+<span class="k">if</span> [ $? -eq 0 ]; <span class="k">then</span>
+  echo <span class="n">1</span> &gt; /logs/verifier/reward.txt
+<span class="k">else</span>
+  echo <span class="n">0</span> &gt; /logs/verifier/reward.txt
+<span class="k">fi</span></pre>
+    </div>
+
+    <div class="callout red" style="margin-bottom:16px;">
+      <span class="lbl">The misalignment failure</span>
+      A verifier that checks a format, an ordering, or a tie-break the brief never stated is the single largest source of rejected scenarios. It produces failures that look like agent weakness and are actually author error. Any failure traced to misalignment is treated as blocking: the scenario is fixed before any result from it is quoted.
+    </div>
+
+    <h3 style="font-size:15px; font-weight:600; margin:24px 0 6px;">The second verifier: in-flight checks on live work</h3>
+    <p class="section-subtitle">The scenario verifier grades an agent offline. Inside a running swarm the same discipline applies to every work packet, through a typed verification spec that Champ executes in the <span class="tag tag-amber">VERIFYING</span> phase.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>What a packet declares</h3>
+<pre class="code"><span class="k">interface</span> VerificationSpec {
+  checks: Array&lt;{
+    type: <span class="s">"test"</span> | <span class="s">"typecheck"</span> | <span class="s">"lint"</span>
+        | <span class="s">"build"</span> | <span class="s">"runtime"</span>
+        | <span class="s">"security"</span> | <span class="s">"performance"</span>;
+    command: <span class="k">string</span>;
+    required: <span class="k">boolean</span>;
+  }&gt;;
+}</pre>
+        <p style="margin-top:10px;">Each check is a real command run in the packet's working directory. The agent's own account of its work is not an input.</p>
+      </div>
+      <div class="card">
+        <h3>What comes back</h3>
+<pre class="code"><span class="k">interface</span> VerificationResult {
+  passed: <span class="k">boolean</span>;      <span class="c">// every required check passed</span>
+  evidence: VerificationEvidence[];
+  confidence: <span class="s">"high"</span> | <span class="s">"medium"</span> | <span class="s">"low"</span>;
+  summary: <span class="k">string</span>;
+}</pre>
+        <p style="margin-top:10px;">Evidence carries the command, the captured output, and the duration for every check, so a pass can be re-read later rather than taken on trust.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap card" style="margin-top:16px;">
+      <h3 style="margin-bottom:12px;">Confidence, and why a failed check is not the same as a check that never ran</h3>
+      <table class="schema-table">
+        <tr><th style="width:120px;">Confidence</th><th>Condition</th><th>What it means for the result</th></tr>
+        <tr><td><span class="tag tag-green">high</span></td><td>Every check executed, whether or not it passed.</td><td>The verdict stands on complete evidence. A failure here is a real failure.</td></tr>
+        <tr><td><span class="tag tag-amber">medium</span></td><td>One or more optional checks failed to spawn.</td><td>The verdict holds, with a known gap in the supporting evidence.</td></tr>
+        <tr><td><span class="tag tag-red">low</span></td><td>A required check failed to spawn at all.</td><td>Critical evidence is missing. A pass here is not a pass, it is an absence of information, and the fix loop treats it accordingly.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== CALIBRATION ===== -->
+  <div class="section" id="calibration">
+    <div class="section-title"><span class="dot" style="background:var(--purple)"></span>Calibration: Proving the Harness Before Trusting It</div>
+    <p class="section-subtitle">Before a scenario is allowed to say anything about an agent, it has to say the right thing about two agents whose answers are already known.</p>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green);">Oracle must pass</h3>
+        <p>Run the harness with the oracle agent, which does nothing but execute the reference solution. Reward must be exactly <code>1.0</code>.</p>
+<pre class="code">harbor run -p . --agent oracle
+cat /logs/verifier/reward.txt   <span class="c"># expect 1.0</span></pre>
+        <p style="margin-top:10px;">If the oracle fails, the scenario is unsolvable as written or the verifier is checking something the brief never asked for.</p>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,0.3);">
+        <h3 style="color:var(--amber);">Nop must fail</h3>
+        <p>Run it again with the nop agent, which does absolutely nothing. Reward must be below <code>1.0</code>.</p>
+<pre class="code">harbor run -p . --agent nop
+cat /logs/verifier/reward.txt   <span class="c"># expect &lt; 1.0</span></pre>
+        <p style="margin-top:10px;">If nop passes, the verifier is scoring a result that was never produced. Tighten the assertions until doing nothing fails.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:12px;">The third check: a deliberately wrong solution</h3>
+      <p>Replace the reference solution with a stub, re-run, and confirm the reward drops. This catches the verifier that passes anything with the right file shape.</p>
+<pre class="code">echo <span class="s">'#!/bin/bash'</span> &gt; solution/solve.sh
+harbor run -p . --agent oracle       <span class="c"># expect &lt; 1.0</span>
+
+git checkout solution/solve.sh
+harbor run -p . --agent oracle       <span class="c"># expect 1.0</span></pre>
+    </div>
+
+    <div class="callout green">
+      <span class="lbl">The calibration rule</span>
+      The harness is correct if and only if it fails a wrong solution and passes the golden one. Until both hold, any score it produces about a real agent is noise.
+    </div>
+  </div>
+
+  <!-- ===== PROBES ===== -->
+  <div class="section" id="probes">
+    <div class="section-title"><span class="dot" style="background:var(--pink)"></span>Behaviour Probes</div>
+    <p class="section-subtitle">Correctness scenarios ask whether an agent can do the work. Behaviour probes ask what it does when the obvious route is wrong. Each probe is built around a specific shortcut, and each one is designed so that taking the shortcut produces an answer that looks entirely normal.</p>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="probe">
+        <div class="pkind">Probe</div>
+        <div class="pname">Latent variable</div>
+        <p>Every example the agent has seen varies along the same axes, so it learns to price a part from size, thickness and geometry. Then it is handed a drawing of a part that is not steel. Material was never a column in anything it saw, so it answers confidently and wrongly.</p>
+        <div class="catch"><span>Passes when</span> the agent notices that a determining variable is absent from its evidence and says so, rather than extrapolating past the edge of what it was given.</div>
+      </div>
+      <div class="probe" style="border-left-color:var(--orange);">
+        <div class="pkind" style="color:var(--orange);">Probe</div>
+        <div class="pname">Misdirection by authoritative tool</div>
+        <p>The scenario is a subsystem failure, and the environment helpfully includes a diagnostic tool. The tool reports the downstream component that tripped. Reading the tool and reporting its answer is the shortest path to something that reads like a root cause.</p>
+        <div class="catch"><span>Passes when</span> the agent treats the tool as one downstream signal, keeps tracing upstream, and reaches the cause the tool cannot see. Eagerness to finish is the thing under test.</div>
+      </div>
+      <div class="probe" style="border-left-color:var(--cyan);">
+        <div class="pkind" style="color:var(--cyan);">Probe</div>
+        <div class="pname">Ordering assumption</div>
+        <p>Encoded records carry a position and a timestamp. One record sits far outside the sequence. An agent that assumes the file is ordered will extract in file order and build the whole result on that assumption.</p>
+        <div class="catch"><span>Passes when</span> the agent establishes its own scale from the timestamps and places each point independently, instead of inheriting an order nobody stated.</div>
+      </div>
+      <div class="probe" style="border-left-color:var(--amber);">
+        <div class="pkind" style="color:var(--amber);">Probe</div>
+        <div class="pname">Rollup double-count</div>
+        <p>A cost hierarchy where children roll up into parents, except that parents also carry costs of their own. Summing children into the parent total is the natural move and it double-counts, quietly, in a report that balances at every other level.</p>
+        <div class="catch"><span>Passes when</span> the agent separates own-cost from rolled-up cost before aggregating, and can show the reconciliation.</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px; font-weight:600; margin:24px 0 10px;">Amplifiers</h3>
+    <p class="section-subtitle">Three dials that make a probe bite harder. They are applied deliberately, and only as far as the fairness lines allow.</p>
+    <div class="grid-3">
+      <div class="card">
+        <h3 style="color:var(--red);">Silent failure</h3>
+        <p>The wrong answer looks normal. No crash, no error, no signal to keep going. An agent that hits an exception keeps working on it; an agent that gets a plausible number stops. Every wrong path is engineered to be a believable near-miss.</p>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--amber);">No self-check</h3>
+        <p>The visible sample is friendly and unrepresentative. Grading runs on held-out cases the agent never sees, so matching the sample only feels like success.</p>
+      </div>
+      <div class="card">
+        <h3 style="color:var(--orange);">All or nothing</h3>
+        <p>No partial credit. One wrong component fails the whole result. Used only where the deliverable genuinely is a single correct artefact, not where partial progress should count.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FAIRNESS ===== -->
+  <div class="section" id="fairness">
+    <div class="section-title"><span class="dot" style="background:var(--green)"></span>Fairness Lines</div>
+    <p class="section-subtitle">A probe should be hard because it demands skill, not because it is impossible or because it turns on a coin flip. Four lines keep it honest.</p>
+
+    <div class="grid-4" style="margin-bottom:16px;">
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green);">Figure-out-able</h3>
+        <p>The answer is recoverable from what the agent is given. Nothing decisive is secret.</p>
+      </div>
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green);">Real skill</h3>
+        <p>It punishes a mistake a competent practitioner would avoid, not a random trick.</p>
+      </div>
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green);">Fair margins</h3>
+        <p>Pass and fail do not hinge on a hair-thin tolerance. The idea decides the outcome, not the threshold.</p>
+      </div>
+      <div class="card" style="border-color:rgba(52,211,153,0.3);">
+        <h3 style="color:var(--green);">No uncorrectable lie</h3>
+        <p>Hiding the deciding case is fair. Stating a wrong rule that nothing in the scenario can set straight is not.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="lbl">The gut check</span>
+      Would a competent human expert, seeing only what the agent sees, get it right, and would they call the failure fair? Yes to both means the probe is sound. If the expert would also be stuck, the probe is measuring luck and is cut.
+    </div>
+  </div>
+
+  <!-- ===== GATES ===== -->
+  <div class="section" id="gates">
+    <div class="section-title"><span class="dot" style="background:var(--accent2)"></span>Release Gates: Before an Agent Is Deployed</div>
+    <p class="section-subtitle">Scenarios are graded in two passes, for two different purposes. The first asks whether the scenario is worth keeping. The second asks whether the agent is fit to ship.</p>
+
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card" style="border-color:rgba(167,139,250,0.3);">
+        <h3 style="color:var(--purple);">Pass 1, calibrating the scenario</h3>
+        <p>A scenario earns a place in the suite only if it discriminates. Run it against a current frontier model at high reasoning effort:</p>
+        <ul>
+          <li><strong class="hl">Stage one, two trials.</strong> At least one genuine failure, or the scenario is not measuring anything and is retired to the regression set.</li>
+          <li><strong class="hl">Stage two, eight fresh trials.</strong> Triggered only if stage one clears. At least four genuine failures out of eight.</li>
+        </ul>
+        <p style="margin-top:10px;">Only genuine failures count. Timeouts, infrastructure faults and misalignment between the brief and the verifier are excluded, and misalignment is blocking: it is fixed before the scenario runs again.</p>
+      </div>
+      <div class="card" style="border-color:rgba(96,165,250,0.3);">
+        <h3 style="color:var(--accent);">Pass 2, grading the agent</h3>
+        <p>The calibrated suite is then run against the candidate agent, multiple trials per scenario, and reported as a distribution rather than a single verdict:</p>
+        <ul>
+          <li><strong class="hl">Pass rate per scenario</strong> across trials, because one pass can be luck and one failure can be a bad draw.</li>
+          <li><strong class="hl">Consistency</strong>, how often the same scenario produces the same outcome. An agent that alternates is not ready even if its average looks acceptable.</li>
+          <li><strong class="hl">Cost and wall clock</strong> per scenario, tracked as first-class results.</li>
+          <li><strong class="hl">Failure class</strong>, separating wrong answers from timeouts, tool errors and refusals.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="font-size:15px; font-weight:600; margin-bottom:12px;">What has to be true before the agent goes live</h3>
+    <div class="gate">
+      <b>Capability floor</b>
+      <span>The agent clears the correctness suite for the role it is being deployed into, at the declared pass rate, across repeated trials rather than one lucky run.</span>
+      <span class="tag tag-blue">blocking</span>
+    </div>
+    <div class="gate">
+      <b>Behaviour floor</b>
+      <span>No unhandled failure on the probe set for the shortcuts that matter in its domain. A capable agent that takes the authoritative tool at face value is not deployable into an operations role.</span>
+      <span class="tag tag-purple">blocking</span>
+    </div>
+    <div class="gate">
+      <b>No regression</b>
+      <span>Compared against the previous deployed baseline on the frozen suite. A scenario that used to pass and now fails blocks the release regardless of the overall average.</span>
+      <span class="tag tag-red">blocking</span>
+    </div>
+    <div class="gate">
+      <b>Evidence confidence</b>
+      <span>Every result carries <span class="tag tag-green">high</span> confidence. A required check that failed to spawn means the run is repeated, not interpreted.</span>
+      <span class="tag tag-amber">blocking</span>
+    </div>
+    <div class="gate">
+      <b>Budget</b>
+      <span>Cost and latency per scenario are within the envelope the deployment was sized for. A rising cost curve on unchanged scenarios is treated as a defect.</span>
+      <span class="tag tag-orange">advisory</span>
+    </div>
+    <div class="gate">
+      <b>Recorded baseline</b>
+      <span>The suite version, image digests, model identifier, and full result set are stored together as the reference the next audit compares against.</span>
+      <span class="tag tag-cyan">required</span>
+    </div>
+  </div>
+
+  <!-- ===== AUDIT ===== -->
+  <div class="section" id="audit">
+    <div class="section-title"><span class="dot" style="background:var(--orange)"></span>Standing Audit: After an Agent Is Deployed</div>
+    <p class="section-subtitle">Nothing about a deployed agent is static. The model behind it gets updated, the tools it calls change shape, and the work it is asked to do drifts away from what it was tested on. The audit exists because a release gate is a photograph and production is a film.</p>
+
+    <div class="card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:14px;">The audit loop</h3>
+      <div class="chain">
+        <div class="node" style="border-color:rgba(251,146,60,0.4);">
+          <b style="color:var(--orange);">Re-run frozen suite</b>
+          Same scenarios, same pinned images, same seeds, compared line by line against the recorded baseline.
+        </div>
+        <div class="arrow">&rarr;</div>
+        <div class="node" style="border-color:rgba(96,165,250,0.4);">
+          <b style="color:var(--accent);">Replay production traces</b>
+          Real work the agent handled, replayed in the sandbox where the outcome can be graded without touching anything live.
+        </div>
+        <div class="arrow">&rarr;</div>
+        <div class="node" style="border-color:rgba(248,113,113,0.4);">
+          <b style="color:var(--red);">Diff against baseline</b>
+          Pass rate, consistency, cost, latency, and failure class. Any scenario that flipped is investigated individually.
+        </div>
+        <div class="arrow">&rarr;</div>
+        <div class="node" style="border-color:rgba(52,211,153,0.4);">
+          <b style="color:var(--green);">Promote new failures</b>
+          Every production failure worth the name becomes a new scenario, so the same fault can never regress unnoticed twice.
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap card" style="margin-bottom:16px;">
+      <h3 style="margin-bottom:12px;">What triggers an audit</h3>
+      <table class="schema-table">
+        <tr><th style="width:210px;">Trigger</th><th>Scope</th><th style="width:150px;">Typical cadence</th></tr>
+        <tr><td><strong class="hl">Scheduled</strong></td><td>Full frozen suite plus the probe set.</td><td><span class="tag tag-grey">monthly</span></td></tr>
+        <tr><td><strong class="hl">Model change</strong></td><td>Full suite. A provider-side model update is treated as a new agent, not as maintenance.</td><td><span class="tag tag-red">before cutover</span></td></tr>
+        <tr><td><strong class="hl">Prompt or skill change</strong></td><td>The affected role's suite plus the regression set.</td><td><span class="tag tag-amber">per change</span></td></tr>
+        <tr><td><strong class="hl">Tool or MCP surface change</strong></td><td>Every scenario whose manifest lists the affected server.</td><td><span class="tag tag-amber">per change</span></td></tr>
+        <tr><td><strong class="hl">Production signal</strong></td><td>Targeted replay. Rising retries, overrides, abandonment, cost per task, or tool error rate are all quality signals.</td><td><span class="tag tag-orange">on alert</span></td></tr>
+        <tr><td><strong class="hl">Incident</strong></td><td>Trace replay, then a new scenario built from the failure before the fix is accepted.</td><td><span class="tag tag-red">immediate</span></td></tr>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Signals watched between audits</h3>
+        <ul>
+          <li>Success rate per task type, with a threshold that raises an alert rather than waiting for the next scheduled run.</li>
+          <li>Cost per task over time. A climbing curve on unchanged work usually means prompt or context drift.</li>
+          <li>Tool error rates, which catch breaking changes on the other side of an integration.</li>
+          <li>Human override and retry rates, which catch the failures the verifier was never written to see.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>What the audit record holds</h3>
+        <ul>
+          <li>Suite version and the image digest for every scenario, so the run can be reproduced exactly.</li>
+          <li>Model and agent identifiers, and the resource budget each scenario ran under.</li>
+          <li>Per-scenario reward, per-check evidence, confidence, and duration.</li>
+          <li>The diff against the previous baseline, and the disposition of every changed line.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:16px;">
+      <span class="lbl">Why the frozen suite matters</span>
+      An audit is only meaningful if the thing being re-run has not changed. Scenarios are versioned and their images are pinned by digest, so a difference between this month and last month is a difference in the agent. If the suite needs to change, it is versioned forward and the baseline is re-established rather than quietly edited.
+    </div>
+  </div>
+
+  <!-- ===== REJECTS ===== -->
+  <div class="section" id="rejects">
+    <div class="section-title"><span class="dot" style="background:var(--red)"></span>How Scenarios Go Wrong</div>
+    <p class="section-subtitle">Nearly every scenario that gets thrown out fails for one of five reasons. In each case it looked hard, and the agent failed because something was unfair rather than because the problem was genuinely difficult.</p>
+
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">1. Grading on a rule nobody stated</h3>
+        <p>The verifier checks a format, an ordering, or a tie-break the brief never mentioned. This is roughly half of all rejections on its own, and it is the reason the one-to-one mapping between criteria and tests is enforced rather than encouraged.</p>
+      </div>
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">2. Files that contradict the brief</h3>
+        <p>A data file or the reference solution follows a different rule from the instruction. The agent reads the environment correctly and is marked wrong for it.</p>
+      </div>
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">3. A brief that reads two ways</h3>
+        <p>Both readings are defensible and the grader silently accepts one. This measures the author's phrasing, not the agent.</p>
+      </div>
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">4. The only hard part is a mistake</h3>
+        <p>The difficulty comes entirely from an error in the scenario. Disclose it or fix it honestly and the task becomes trivial, which tells you it was never a test of anything.</p>
+      </div>
+      <div class="card" style="border-color:rgba(248,113,113,0.3);">
+        <h3 style="color:var(--red);">5. A decoy with no way out</h3>
+        <p>The scenario points at the wrong answer and gives the agent nothing it could use to correct course. That is not a probe, it is a trap with no skill in it.</p>
+      </div>
+      <div class="card" style="border-color:rgba(52,211,153,0.35); background:linear-gradient(135deg, rgba(52,211,153,0.05), rgba(34,211,238,0.03));">
+        <h3 style="color:var(--green);">The test to apply before shipping a scenario</h3>
+        <p>Write the deciding rule down plainly and add it to the brief. If the scenario becomes easy, the difficulty was fake and the scenario goes back for rework. A sound scenario stays hard even when every rule is stated clearly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GLOSSARY ===== -->
+  <div class="section" id="glossary">
+    <div class="section-title"><span class="dot" style="background:var(--text-dim)"></span>Plain-Language Key</div>
+    <div class="table-wrap card">
+      <table class="schema-table">
+        <tr><th style="width:200px;">Term</th><th>What it means</th></tr>
+        <tr><td><strong class="hl">Harness</strong></td><td>The machinery that builds the sandbox, runs the agent inside it, runs the grader afterwards, and records the result.</td></tr>
+        <tr><td><strong class="hl">Scenario</strong></td><td>One self-contained test: a brief, an environment, a grader, and a reference answer.</td></tr>
+        <tr><td><strong class="hl">Trial or run</strong></td><td>One independent attempt at a scenario. Scenarios are attempted several times because a single result is not a measurement.</td></tr>
+        <tr><td><strong class="hl">Verifier</strong></td><td>The program that decides pass or fail by inspecting what the agent produced.</td></tr>
+        <tr><td><strong class="hl">Reward</strong></td><td>The verifier's output. <code>1</code> for pass, <code>0</code> for fail, written to <code>/logs/verifier/reward.txt</code>.</td></tr>
+        <tr><td><strong class="hl">Oracle</strong></td><td>A stand-in agent that just runs the reference solution. Used to prove the scenario is solvable.</td></tr>
+        <tr><td><strong class="hl">Nop</strong></td><td>A stand-in agent that does nothing. Used to prove the grader cannot be passed by inaction.</td></tr>
+        <tr><td><strong class="hl">Held-out</strong></td><td>Test inputs used only for grading, never shown to the agent while it works.</td></tr>
+        <tr><td><strong class="hl">Pass@k</strong></td><td>Shorthand for how many times a scenario was attempted and how it went. "4 of 8 fail" means it was wrong on four of eight independent attempts.</td></tr>
+        <tr><td><strong class="hl">Probe</strong></td><td>A scenario built around a specific shortcut, where taking the shortcut yields a wrong answer that looks normal.</td></tr>
+        <tr><td><strong class="hl">Baseline</strong></td><td>The recorded result set from the last accepted release, and the thing every audit is compared against.</td></tr>
+        <tr><td><strong class="hl">Frozen suite</strong></td><td>A versioned set of scenarios with pinned images, held constant so that a change in results means a change in the agent.</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">
+  <span>Champ Agent Swarm, Harness and Verification.</span>
+  <span><a href="/dc/champ/">&larr; Champ Agent Swarm index</a></span>
+</div>
+
+</body>
+</html>
