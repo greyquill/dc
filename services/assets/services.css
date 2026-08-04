@@ -1,0 +1,483 @@
+/* Greyquill services docs, shared style system.
+   Scope: dc/services/ only.
+
+   These pages are written to be shared outward, with people at other companies,
+   so they use the light brand palette rather than the dark maintainer theme in
+   dc/champ/. Fonts are the self-hosted ones already in dc/blogs/assets/fonts,
+   reused rather than duplicated. Nothing external is loaded.
+
+   Every page carries a one-page takeaway in <section class="sheet">. On screen it
+   reads as a summary card at the end of the document. In print it becomes the
+   whole output, so what a reader sees in the card is exactly what the PDF holds.
+   Everything else is hidden at print time. */
+
+@font-face {
+  font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("../../blogs/assets/fonts/inter-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Sora"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url("../../blogs/assets/fonts/sora-latin.woff2") format("woff2");
+}
+
+:root {
+  --bg:        #ffffff;
+  --surface:   #f5f9fd;
+  --mist:      #eaf4fc;
+  --ink:       #0a1628;
+  --ink-soft:  #4a5a70;
+  --ink-faint: #7b8798;
+  --brand:     #0b4f88;
+  --brand-lit: #1a6bb5;
+  --border:    #e2e8ef;
+  --good:      #1a7f5a;
+  --warn:      #9a6b00;
+  --bad:       #a63232;
+  --maxw:      50rem;
+  --maxw-wide: 68rem;
+  --display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Fira Code", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- top bar ---- */
+.topbar {
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+.topbar__in {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.topbar img { height: 26px; width: auto; display: block; }
+.crumbs { font-size: 0.82rem; color: var(--ink-soft); }
+.crumbs a { color: var(--brand); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+.crumbs span { color: var(--ink-faint); padding: 0 0.4rem; }
+
+/* ---- hero ---- */
+.hero {
+  background: linear-gradient(180deg, #ffffff 0%, var(--surface) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero__in {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 3rem 1.5rem 2.5rem;
+}
+.eyebrow {
+  font-family: var(--display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin: 0 0 0.75rem;
+}
+h1 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0 0 1rem;
+  max-width: 22ch;
+}
+.deck {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 46rem;
+  margin: 0;
+}
+.hero__meta {
+  margin-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+}
+
+/* ---- pdf button ---- */
+.pdfbtn {
+  font-family: var(--body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  padding: 0.55rem 1.15rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.15s, transform 0.15s;
+}
+.pdfbtn:hover { background: var(--brand-lit); transform: translateY(-1px); }
+.pdfbtn svg { width: 0.95rem; height: 0.95rem; }
+.pdfbtn__hint { font-size: 0.76rem; color: var(--ink-faint); }
+
+/* ---- document body ---- */
+.doc {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 1rem;
+}
+.doc--wide { max-width: var(--maxw-wide); }
+
+h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin: 3rem 0 0.9rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+.doc > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  margin: 2rem 0 0.6rem;
+}
+p { margin: 0 0 1.1rem; }
+ul, ol { margin: 0 0 1.1rem; padding-left: 1.35rem; }
+li { margin-bottom: 0.45rem; }
+strong { font-weight: 600; color: var(--ink); }
+a { color: var(--brand); }
+code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--mist);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  color: #124a75;
+}
+
+/* ---- tables ---- */
+.tablewrap { overflow-x: auto; margin: 0 0 1.4rem; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+th {
+  text-align: left;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--border);
+  padding: 0.6rem 0.75rem;
+  vertical-align: bottom;
+}
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 0.75rem;
+  vertical-align: top;
+  line-height: 1.5;
+}
+tbody tr:hover td { background: var(--surface); }
+
+/* ---- callouts ---- */
+.note {
+  border-left: 3px solid var(--brand);
+  background: var(--mist);
+  padding: 1rem 1.25rem;
+  margin: 0 0 1.4rem;
+  border-radius: 0 6px 6px 0;
+}
+.note > :last-child { margin-bottom: 0; }
+.note__label {
+  display: block;
+  font-family: var(--display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: 0.35rem;
+}
+.note--warn { border-left-color: var(--warn); background: #fdf7e8; }
+.note--warn .note__label { color: var(--warn); }
+.note--bad { border-left-color: var(--bad); background: #fdf0f0; }
+.note--bad .note__label { color: var(--bad); }
+
+/* ---- figures ---- */
+figure {
+  margin: 1.75rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+figure svg { display: block; width: 100%; height: auto; }
+figcaption {
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* ---- stage chain ---- */
+.stages { display: grid; gap: 0.75rem; margin: 0 0 1.5rem; }
+.stage {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.9rem;
+  align-items: start;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+}
+.stage__n {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--brand);
+  padding-top: 0.05rem;
+}
+.stage__t {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0 0 0.2rem;
+}
+.stage__b { margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; }
+
+/* ---- verdict pills ---- */
+.pill {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.pill--good { background: #e4f4ec; color: var(--good); }
+.pill--warn { background: #fbf1dc; color: var(--warn); }
+.pill--bad  { background: #fbe6e6; color: var(--bad); }
+.pill--info { background: var(--mist); color: var(--brand); }
+
+/* ---- the printable takeaway ---- */
+.sheet {
+  max-width: var(--maxw-wide);
+  margin: 3rem auto 0;
+  padding: 0 1.5rem 3rem;
+}
+.sheet__card {
+  border: 2px solid var(--brand);
+  border-radius: 12px;
+  padding: 1.75rem;
+  background: #fff;
+}
+.sheet__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.9rem;
+  margin-bottom: 1.4rem;
+}
+.sheet__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0;
+}
+.sheet__sub { font-size: 0.82rem; color: var(--ink-faint); margin: 0.2rem 0 0; }
+.sheet h3 { margin-top: 1.5rem; font-size: 0.95rem; }
+.sheet h3:first-of-type { margin-top: 0; }
+.sheet table { font-size: 0.82rem; }
+.sheet ul { font-size: 0.9rem; }
+.sheet__foot {
+  margin-top: 1.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.sheet__page { break-inside: auto; }
+.sheet__break { break-before: page; }
+
+.cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media (max-width: 720px) { .cols2 { grid-template-columns: 1fr; } }
+
+/* ---- footer ---- */
+.foot {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.foot__in {
+  max-width: var(--maxw-wide);
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.foot a { color: var(--brand); text-decoration: none; }
+.foot a:hover { text-decoration: underline; }
+.cta { margin: 0; }
+.cta strong { color: var(--ink); }
+
+/* ---- index cards ---- */
+.cards { display: grid; gap: 0.85rem; max-width: var(--maxw); margin: 0 auto; padding: 2.5rem 1.5rem 1rem; }
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.15rem 1.35rem;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.card:hover {
+  border-color: var(--brand);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(11, 79, 136, 0.09);
+}
+.card b { font-family: var(--display); font-weight: 600; font-size: 1.05rem; display: block; }
+.card span { display: block; color: var(--ink-soft); font-size: 0.9rem; margin-top: 0.3rem; line-height: 1.55; }
+.card em {
+  display: inline-block;
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin-top: 0.6rem;
+}
+
+.print-only { display: none; }
+
+/* ================= PRINT =================
+   The takeaway sheet is the document. Everything else goes away, so the PDF is
+   the one or two pages a reader actually wanted rather than a paper dump of a
+   web page. */
+@media print {
+  @page { size: A4; margin: 14mm 13mm 12mm; }
+
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 9.2pt;
+    line-height: 1.4;
+  }
+
+  .topbar, .hero, .doc, .foot, .no-print { display: none !important; }
+  .print-only { display: block; }
+
+  .sheet { max-width: none; margin: 0; padding: 0; }
+  .sheet__card { border: 0; border-radius: 0; padding: 0; }
+
+  .sheet__printhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    border-bottom: 1.5pt solid #0b4f88;
+    padding-bottom: 5pt;
+    margin-bottom: 10pt;
+  }
+  .sheet__printhead img { height: 20px; width: auto; }
+  .sheet__printhead .u { font-size: 7.5pt; color: #555; text-align: right; }
+
+  .sheet__title { font-size: 15pt; margin: 0 0 2pt; }
+  .sheet__sub { font-size: 8.5pt; color: #444; }
+  .sheet__head { border-bottom: 0.5pt solid #bbb; padding-bottom: 5pt; margin-bottom: 9pt; }
+
+  .sheet h3 {
+    font-size: 9.3pt;
+    margin: 8pt 0 2.5pt;
+    color: #0b4f88;
+    break-after: avoid;
+  }
+  .sheet h3:first-of-type { margin-top: 0; }
+  .sheet p, .sheet li { font-size: 8.8pt; margin-bottom: 2.5pt; }
+  .sheet ul, .sheet ol { padding-left: 12pt; margin-bottom: 5pt; font-size: 8.8pt; }
+
+  .sheet table { font-size: 8.2pt; width: 100%; break-inside: auto; }
+  .sheet th {
+    font-size: 6.8pt;
+    padding: 3pt 4pt;
+    border-bottom: 1pt solid #0b4f88;
+    color: #333;
+  }
+  .sheet td { padding: 2.8pt 4pt; border-bottom: 0.4pt solid #ddd; }
+  .sheet tr { break-inside: avoid; }
+  .sheet thead { display: table-header-group; }
+  .tablewrap { overflow: visible; margin-bottom: 6pt; }
+
+  .stage { border: 0.5pt solid #ccc; padding: 3pt 6pt; break-inside: avoid; }
+  .stages { gap: 2.5pt; margin-bottom: 6pt; }
+  .stage__t { font-size: 8.8pt; margin-bottom: 0; }
+  .stage__b { font-size: 8pt; color: #333; }
+
+  .note {
+    border-left: 2pt solid #0b4f88;
+    background: #f4f8fc !important;
+    padding: 5pt 8pt;
+    margin-bottom: 7pt;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .note p, .note li { font-size: 8.4pt; }
+  .note__label { font-size: 6.6pt; }
+
+  .pill {
+    font-size: 7pt;
+    padding: 0.5pt 3pt;
+    border: 0.4pt solid #999;
+    background: none !important;
+    color: #000 !important;
+  }
+
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+
+  .sheet__foot {
+    margin-top: 8pt;
+    padding-top: 4pt;
+    border-top: 1pt solid #0b4f88;
+    font-size: 8pt;
+    color: #333;
+    break-inside: avoid;
+  }
+  .sheet__foot strong { color: #0b4f88; }
+
+  a { color: #000 !important; text-decoration: none; }
+}

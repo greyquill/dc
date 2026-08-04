@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The discovery week · Greyquill</title>
+<meta name="description" content="What one to two weeks of discovery should produce before anyone writes production code: a scoped specification, a prioritised backlog, and an estimate with its uncertainty stated.">
+<link rel="icon" href="/dc/assets/greyquill-logo.png">
+<link rel="stylesheet" href="assets/services.css">
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="topbar__in">
+    <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+    <nav class="crumbs">
+      <a href="/dc/">Document Center</a><span>/</span><a href="/dc/services/">Services</a><span>/</span>The discovery week
+    </nav>
+  </div>
+</header>
+
+<section class="hero no-print">
+  <div class="hero__in">
+    <p class="eyebrow">Product engineering</p>
+    <h1>The discovery week</h1>
+    <p class="deck">
+      What one to two weeks of proper discovery should produce before anyone writes production
+      code, what happens in each day of it, and how to tell whether the output is good enough
+      to build from.
+    </p>
+    <div class="hero__meta">
+      <button class="pdfbtn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>
+        </svg>
+        Save as PDF
+      </button>
+      <span class="pdfbtn__hint">Prints the one-page agenda and checklist at the end.</span>
+    </div>
+  </div>
+</section>
+
+<main class="doc">
+
+<h2>What discovery is for</h2>
+
+<p>
+  Discovery is not a requirements-gathering ritual and it is not a sales exercise. Its purpose
+  is to convert an idea into three artifacts that a team can build from and a sponsor can fund,
+  and to surface the disagreements that would otherwise appear in month three.
+</p>
+
+<p>
+  The most valuable thing it produces is usually not the specification. It is the list of
+  questions nobody had asked yet, and the discovery that two stakeholders meant different things
+  by the same word.
+</p>
+
+<h2>The three outputs</h2>
+
+<div class="stages">
+  <div class="stage">
+    <div class="stage__n">01</div>
+    <div>
+      <p class="stage__t">A scoped specification</p>
+      <p class="stage__b">What is being built, in enough detail to estimate, with what is explicitly out of scope written down beside it. The out-of-scope list is the half people skip and the half that prevents the argument later.</p>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="stage__n">02</div>
+    <div>
+      <p class="stage__t">A prioritised backlog</p>
+      <p class="stage__b">Ordered by value and by what unblocks what, not by what is easiest. Each item has an acceptance criterion someone other than the author could check.</p>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="stage__n">03</div>
+    <div>
+      <p class="stage__t">An estimate with its uncertainty stated</p>
+      <p class="stage__b">A range, with the assumptions it depends on and the things that would move it. A single number with no assumptions attached is a guess wearing a suit.</p>
+    </div>
+  </div>
+</div>
+
+<h2>How the time is spent</h2>
+
+<p>
+  A one-week shape for a contained scope. Two weeks where there are several stakeholder groups
+  or an existing system to understand.
+</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:16%">Day</th><th>Focus</th><th style="width:36%">What comes out of it</th></tr></thead>
+  <tbody>
+    <tr><td><strong>1</strong></td><td>The outcome, and who it is for. Not features. What has to be different in the business once this exists, and how anyone would know.</td><td>A stated outcome, the users named by role, and the measure of success.</td></tr>
+    <tr><td><strong>2</strong></td><td>The workflow as it is performed today, walked end to end with the people who perform it. Including the parts done in spreadsheets and email.</td><td>A current-state map, and the list of places where it breaks.</td></tr>
+    <tr><td><strong>3</strong></td><td>Constraints. Systems it must integrate with, data it must not move, regulation it operates under, the deadline that is real and the one that is aspirational.</td><td>A constraints list, each with a named source.</td></tr>
+    <tr><td><strong>4</strong></td><td>Options and trade-offs. At least two ways to reach the outcome, with what each costs and gives up. Prototype only where a picture settles an argument faster than a paragraph.</td><td>A recommendation with the rejected options recorded and why.</td></tr>
+    <tr><td><strong>5</strong></td><td>Scope, order, estimate. What is in, what is explicitly out, in what order, and how long with what uncertainty.</td><td>The three outputs above, and the open questions that remain open.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>The questions that earn their place</h2>
+
+<p>
+  Most of discovery's value comes from a small number of questions that people find slightly
+  uncomfortable. These are the ones worth asking every time.
+</p>
+
+<ul>
+  <li><strong>What happens if we do nothing?</strong> If the honest answer is "not much", that
+    is worth knowing in week one rather than after the build.</li>
+  <li><strong>Who has to change how they work for this to succeed?</strong> Software that
+    requires a behaviour change from people who were not consulted fails regardless of its
+    quality.</li>
+  <li><strong>What has been tried before, and what happened?</strong> There is almost always a
+    previous attempt. Understanding why it stalled is the cheapest research available.</li>
+  <li><strong>Which of these requirements would you drop to ship two months earlier?</strong>
+    Asked directly, it produces a real priority order in ten minutes.</li>
+  <li><strong>Who signs it off, and what will they check?</strong> Knowing the acceptance test
+    from day one changes what gets built.</li>
+  <li><strong>Where does the data come from, and who owns it?</strong> Data availability is the
+    most common cause of a plan that has to be rewritten in month two.</li>
+</ul>
+
+<div class="note">
+  <span class="note__label">A scoring pass on the brief</span>
+  <p>
+    Before we hand a specification to a build team, we run it through ClarityAI, our own tool
+    for scoring the clarity and risk of an initiative. It reads the brief and points at the
+    ambiguities, the untestable statements and the missing decisions, line by line. It is not a
+    substitute for judgement, and it reliably catches the vague sentence everyone had read past.
+    See <a href="https://www.greyquill.io/products/clarity-ai">ClarityAI</a>.
+  </p>
+</div>
+
+<h2>How to tell the output is good enough</h2>
+
+<p>
+  Four tests. If a specification fails any of them, another day of discovery costs less than
+  the rework it prevents.
+</p>
+
+<ul>
+  <li><strong>The estimate test.</strong> Two engineers who were not in the room read it
+    separately and produce estimates within the same range. Wildly different numbers mean it is
+    being read differently, which means it is ambiguous.</li>
+  <li><strong>The acceptance test.</strong> Every item has a criterion somebody other than its
+    author could check without asking what was meant.</li>
+  <li><strong>The out-of-scope test.</strong> There is a written list of what is not being
+    built. An empty list means the boundary has not been drawn, not that everything is
+    included.</li>
+  <li><strong>The disagreement test.</strong> At least one real disagreement was found and
+    resolved during the week. Discovery that surfaced no disagreement usually did not go deep
+    enough to find one.</li>
+</ul>
+
+<h2>What discovery does not do</h2>
+
+<ul>
+  <li>It does not remove uncertainty. It states it, so it can be priced and planned around.</li>
+  <li>It does not produce a fixed price for a vague problem. If the scope is genuinely unclear,
+    the honest output is a smaller first phase rather than a bigger number.</li>
+  <li>It does not replace the first sprint. Some things are only learned by building, and a
+    specification that claims otherwise is overreaching.</li>
+</ul>
+
+<div class="note note--warn">
+  <span class="note__label">The failure mode</span>
+  <p>
+    Discovery that runs long. Past two weeks it stops producing decisions and starts producing
+    documents. If the questions cannot be closed in the time, the answer is a narrower first
+    phase, not a longer discovery.
+  </p>
+</div>
+
+</main>
+
+<!-- ============ PRINTABLE TAKEAWAY ============ -->
+<section class="sheet">
+  <div class="sheet__card">
+
+    <div class="sheet__printhead print-only">
+      <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+      <div class="u">
+        greyquill.io/dc/services/discovery-week.html<br>
+        Greyquill Software
+      </div>
+    </div>
+
+    <div class="sheet__head">
+      <div>
+        <h2 class="sheet__title">The discovery week</h2>
+        <p class="sheet__sub">Agenda, questions, and how to tell the output is good enough.</p>
+      </div>
+    </div>
+
+    <h3>Three outputs, and nothing else counts as done</h3>
+    <ul>
+      <li><strong>A scoped specification</strong>, with what is explicitly out of scope written beside it.</li>
+      <li><strong>A prioritised backlog</strong>, ordered by value and by what unblocks what, each item with a checkable acceptance criterion.</li>
+      <li><strong>An estimate with its uncertainty stated</strong>, as a range with its assumptions.</li>
+    </ul>
+
+    <h3>Five days</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th style="width:10%">Day</th><th style="width:46%">Focus</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>The outcome and who it is for. Not features.</td><td>Stated outcome, users by role, measure of success.</td></tr>
+        <tr><td>2</td><td>The workflow as performed today, including the spreadsheets and email.</td><td>Current-state map and where it breaks.</td></tr>
+        <tr><td>3</td><td>Constraints: systems, data, regulation, real versus aspirational deadlines.</td><td>Constraints list, each with a named source.</td></tr>
+        <tr><td>4</td><td>At least two options, with what each costs and gives up.</td><td>A recommendation, with rejected options recorded.</td></tr>
+        <tr><td>5</td><td>Scope, order, estimate.</td><td>The three outputs, and the questions still open.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="cols2">
+      <div>
+        <h3>Ask these every time</h3>
+        <ul>
+          <li>What happens if we do nothing?</li>
+          <li>Who has to change how they work for this to succeed?</li>
+          <li>What was tried before, and what happened?</li>
+          <li>Which requirement would you drop to ship two months earlier?</li>
+          <li>Who signs it off, and what will they check?</li>
+          <li>Where does the data come from, and who owns it?</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Four tests on the output</h3>
+        <ul>
+          <li><strong>Estimate.</strong> Two engineers who were not in the room estimate within the same range.</li>
+          <li><strong>Acceptance.</strong> Every item checkable by someone other than its author.</li>
+          <li><strong>Out of scope.</strong> A written list exists. Empty means the boundary was never drawn.</li>
+          <li><strong>Disagreement.</strong> At least one real one was found and resolved.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note note--warn">
+      <span class="note__label">Failure mode</span>
+      <p>
+        Discovery that runs past two weeks stops producing decisions and starts producing
+        documents. If the questions cannot be closed in the time, narrow the first phase rather
+        than extending the discovery.
+      </p>
+    </div>
+
+    <div class="sheet__foot">
+      <p class="cta">
+        <strong>Greyquill Software</strong> runs discovery like this before every build, including
+        our own products. If you have an idea that needs scoping properly, <strong>greyquill.io</strong>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="foot no-print">
+  <div class="foot__in">
+    <span>&copy; Greyquill Software</span>
+    <span><a href="/dc/services/">More service documentation</a> &middot; <a href="https://www.greyquill.io">greyquill.io</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
