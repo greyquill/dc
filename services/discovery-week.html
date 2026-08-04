@@ -41,55 +41,134 @@
 
 <main class="doc doc--wide">
 
-<h2>Three outputs, and nothing else counts as done</h2>
+<h2>What actually happens</h2>
+
+<p class="key">
+  An idea goes in. Five days of structured questioning turn it into three things a team can
+  build from and a sponsor can fund.
+</p>
 
 <div class="viz">
-<svg viewBox="0 0 760 210" role="img" aria-labelledby="oT oD">
-  <title id="oT">The three outputs of discovery</title>
-  <desc id="oD">Discovery produces a scoped specification with an explicit out-of-scope list, a prioritised backlog where each item has a checkable acceptance criterion, and an estimate expressed as a range with its assumptions. Alongside them it produces the questions that remain open.</desc>
+<svg viewBox="0 0 760 316" role="img" aria-labelledby="oT oD">
+  <title id="oT">What a discovery week converts</title>
+  <desc id="oD">On the left, an idea, carrying six unanswered questions that live in people's heads and that different stakeholders answer differently. In the middle, five days of work: the outcome, the workflow today, constraints, options, then scope and estimate. On the right, three artifacts: a scoped specification with an explicit out-of-scope list, a prioritised backlog where every item is checkable, and an estimate drawn as a range from earliest to the point where the known risks land. Underneath, the questions still open are written down as open.</desc>
 
-  <rect x="14" y="22" width="228" height="132" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.6"/>
-  <text x="128" y="52" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Scoped specification</text>
-  <line x1="44" y1="68" x2="212" y2="68" stroke="#e2e8ef" stroke-width="1"/>
-  <text x="128" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">what is being built, in enough</text>
-  <text x="128" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">detail to estimate</text>
-  <rect x="44" y="118" width="168" height="24" rx="4" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1"/>
-  <text x="128" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#7d5700">plus what is explicitly out</text>
+  <defs>
+    <marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0b4f88"/>
+    </marker>
+  </defs>
 
-  <rect x="266" y="22" width="228" height="132" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.6"/>
-  <text x="380" y="52" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Prioritised backlog</text>
-  <line x1="296" y1="68" x2="464" y2="68" stroke="#e2e8ef" stroke-width="1"/>
-  <text x="380" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">ordered by value and by what</text>
-  <text x="380" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">unblocks what, not by ease</text>
-  <rect x="296" y="118" width="168" height="24" rx="4" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1"/>
-  <text x="380" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#136647">each with an acceptance test</text>
+  <g font-family="Sora,sans-serif" font-size="10" font-weight="600" fill="#8b98a8" letter-spacing="1">
+    <text x="12" y="16">YOU START WITH</text>
+    <text x="264" y="16">FIVE DAYS</text>
+    <text x="490" y="16">YOU LEAVE WITH</text>
+  </g>
+  <line x1="10" y1="24" x2="750" y2="24" stroke="#e2e8ef" stroke-width="1"/>
 
-  <rect x="518" y="22" width="228" height="132" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.6"/>
-  <text x="632" y="52" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Estimate</text>
-  <line x1="548" y1="68" x2="716" y2="68" stroke="#e2e8ef" stroke-width="1"/>
-  <line x1="566" y1="94" x2="698" y2="94" stroke="#0b4f88" stroke-width="2.5"/>
-  <line x1="566" y1="86" x2="566" y2="102" stroke="#0b4f88" stroke-width="2.5"/>
-  <line x1="698" y1="86" x2="698" y2="102" stroke="#0b4f88" stroke-width="2.5"/>
-  <text x="632" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">a range, not a number</text>
-  <rect x="548" y="118" width="168" height="24" rx="4" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1"/>
-  <text x="632" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#0b4f88">with the assumptions it rests on</text>
+  <!-- LEFT: the idea -->
+  <rect x="10" y="36" width="222" height="238" rx="9" fill="#fafbfc" stroke="#c9d2dd" stroke-width="1.4" stroke-dasharray="6 4"/>
+  <text x="26" y="64" font-family="Sora,sans-serif" font-size="15" font-weight="700" fill="#0a1628">An idea</text>
+  <line x1="26" y1="76" x2="216" y2="76" stroke="#e2e8ef" stroke-width="1"/>
+  <g font-family="Inter,sans-serif" font-size="11" fill="#7b8798">
+    <text x="26" y="100">Who is it actually for?</text>
+    <text x="26" y="122">What is in, and what is out?</text>
+    <text x="26" y="144">Which systems does it touch?</text>
+    <text x="26" y="166">How long will it take?</text>
+    <text x="26" y="188">What happens if we do nothing?</text>
+    <text x="26" y="210">Has anyone tried this before?</text>
+  </g>
+  <text x="26" y="244" font-family="Inter,sans-serif" font-size="10.5" fill="#a63232">The answers live in people's heads,</text>
+  <text x="26" y="258" font-family="Inter,sans-serif" font-size="10.5" fill="#a63232">and they disagree with each other.</text>
 
-  <text x="380" y="186" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">And the questions that are still open, written down as open rather than quietly resolved.</text>
+  <path d="M234 155 L 256 155" stroke="#0b4f88" stroke-width="1.6" fill="none" marker-end="url(#d1)"/>
+
+  <!-- MIDDLE: the five days -->
+  <g font-family="Inter,sans-serif" font-size="11">
+    <rect x="262" y="36" width="196" height="42" rx="6" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.2"/>
+    <text x="276" y="54" font-family="Sora,sans-serif" font-size="10" font-weight="700" fill="#0b4f88">DAY 1</text>
+    <text x="276" y="70" fill="#0a1628">The outcome</text>
+
+    <rect x="262" y="84" width="196" height="42" rx="6" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.2"/>
+    <text x="276" y="102" font-family="Sora,sans-serif" font-size="10" font-weight="700" fill="#0b4f88">DAY 2</text>
+    <text x="276" y="118" fill="#0a1628">The workflow today</text>
+
+    <rect x="262" y="132" width="196" height="42" rx="6" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.2"/>
+    <text x="276" y="150" font-family="Sora,sans-serif" font-size="10" font-weight="700" fill="#0b4f88">DAY 3</text>
+    <text x="276" y="166" fill="#0a1628">Constraints</text>
+
+    <rect x="262" y="180" width="196" height="42" rx="6" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.2"/>
+    <text x="276" y="198" font-family="Sora,sans-serif" font-size="10" font-weight="700" fill="#0b4f88">DAY 4</text>
+    <text x="276" y="214" fill="#0a1628">Options and trade-offs</text>
+
+    <rect x="262" y="228" width="196" height="42" rx="6" fill="#0b4f88"/>
+    <text x="276" y="246" font-family="Sora,sans-serif" font-size="10" font-weight="700" fill="#a9cdea">DAY 5</text>
+    <text x="276" y="262" fill="#ffffff">Scope and estimate</text>
+  </g>
+
+  <path d="M460 155 L 482 155" stroke="#0b4f88" stroke-width="1.6" fill="none" marker-end="url(#d1)"/>
+
+  <!-- RIGHT: the artifacts -->
+  <rect x="488" y="36" width="262" height="66" rx="8" fill="#ffffff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="504" y="60" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0b4f88">Scoped specification</text>
+  <rect x="504" y="70" width="230" height="22" rx="4" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1"/>
+  <text x="516" y="85" font-family="Inter,sans-serif" font-size="10.5" fill="#7d5700">with a written out-of-scope list</text>
+
+  <rect x="488" y="110" width="262" height="66" rx="8" fill="#ffffff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="504" y="134" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0b4f88">Prioritised backlog</text>
+  <rect x="504" y="144" width="230" height="22" rx="4" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1"/>
+  <text x="516" y="159" font-family="Inter,sans-serif" font-size="10.5" fill="#136647">every item checkable by someone else</text>
+
+  <rect x="488" y="184" width="262" height="86" rx="8" fill="#ffffff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="504" y="208" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0b4f88">Estimate</text>
+  <line x1="520" y1="234" x2="716" y2="234" stroke="#0b4f88" stroke-width="3"/>
+  <line x1="520" y1="226" x2="520" y2="242" stroke="#0b4f88" stroke-width="3"/>
+  <line x1="716" y1="226" x2="716" y2="242" stroke="#0b4f88" stroke-width="3"/>
+  <text x="520" y="258" font-family="Inter,sans-serif" font-size="10" fill="#4a5a70">earliest</text>
+  <text x="716" y="258" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="#4a5a70">if the known risks land</text>
+
+  <line x1="10" y1="288" x2="750" y2="288" stroke="#e2e8ef" stroke-width="1"/>
+  <text x="12" y="308" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">Anything still unanswered on Friday is written down as an open question, so it is planned around and priced.</text>
 </svg>
 <p class="viz__cap">
-  The most valuable output is usually not the specification. It is the list of questions nobody
-  had asked, and the discovery that two stakeholders meant different things by the same word.
+  The most valuable output is usually the list of questions nobody had asked, and the discovery
+  that two stakeholders meant different things by the same word.
 </p>
 </div>
 
-<h2>Five days</h2>
+<h2>What each day leaves behind</h2>
 
-<div class="flow">
-  <div class="flow__step"><div class="flow__n">Day 1</div><p class="flow__t">The outcome</p><p class="flow__b">What has to be different in the business, and how anyone would know. Not features.</p></div>
-  <div class="flow__step"><div class="flow__n">Day 2</div><p class="flow__t">The workflow today</p><p class="flow__b">Walked end to end with the people who perform it, including the spreadsheets and the email.</p></div>
-  <div class="flow__step"><div class="flow__n">Day 3</div><p class="flow__t">Constraints</p><p class="flow__b">Systems, data, regulation. The deadline that is real and the one that is aspirational.</p></div>
-  <div class="flow__step"><div class="flow__n">Day 4</div><p class="flow__t">Options</p><p class="flow__b">At least two routes, with what each costs and gives up. Prototype only to settle an argument.</p></div>
-  <div class="flow__step"><div class="flow__n">Day 5</div><p class="flow__t">Scope and estimate</p><p class="flow__b">What is in, what is out, in what order, how long, with what uncertainty.</p></div>
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:9%">Day</th><th style="width:46%">What happens in the room</th><th>What exists that evening</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong></td>
+      <td>The outcome, and who it is for. What has to be different in the business once this exists, and how anyone would know. Features come later.</td>
+      <td>A stated outcome, the users named by role, and the measure of success.</td>
+    </tr>
+    <tr>
+      <td><strong>2</strong></td>
+      <td>The workflow walked end to end with the people who perform it, including the parts done in spreadsheets and email.</td>
+      <td>A current-state map, and the list of places it breaks.</td>
+    </tr>
+    <tr>
+      <td><strong>3</strong></td>
+      <td>Constraints. Systems it must integrate with, data it must not move, regulation it operates under, the deadline that is real and the one that is aspirational.</td>
+      <td>A constraints list, each with a named source.</td>
+    </tr>
+    <tr>
+      <td><strong>4</strong></td>
+      <td>At least two ways to reach the outcome, with what each costs and gives up. Prototype only where a picture settles an argument faster than a paragraph.</td>
+      <td>A recommendation, with the rejected options recorded and why.</td>
+    </tr>
+    <tr>
+      <td><strong>5</strong></td>
+      <td>Scope, order, estimate. What is in, what is explicitly out, in what order, and how long with what uncertainty.</td>
+      <td>The three artifacts, and the questions that remain open.</td>
+    </tr>
+  </tbody>
+</table>
 </div>
 
 <p>
@@ -174,7 +253,7 @@
 
 <div class="dont">
   <div><strong>Remove uncertainty</strong>It states it, so it can be priced and planned around.</div>
-  <div><strong>Fix a price on a vague problem</strong>If the scope is genuinely unclear, the honest output is a smaller first phase, not a bigger number.</div>
+  <div><strong>Fix a price on a vague problem</strong>If the scope is genuinely unclear, the honest output is a smaller first phase.</div>
   <div><strong>Replace the first sprint</strong>Some things are only learned by building.</div>
 </div>
 
@@ -182,8 +261,7 @@
   <span class="note__label">The failure mode</span>
   <p>
     Discovery that runs past two weeks stops producing decisions and starts producing documents.
-    If the questions cannot be closed in the time, narrow the first phase rather than extending
-    the discovery.
+    If the questions cannot be closed in the time, narrow the first phase and say so.
   </p>
 </div>
 
@@ -212,7 +290,7 @@
     <div class="facts">
       <div class="fact"><b>Scoped specification</b><span>In enough detail to estimate, with what is explicitly out of scope written beside it.</span></div>
       <div class="fact"><b>Prioritised backlog</b><span>Ordered by value and by what unblocks what. Each item with a checkable acceptance criterion.</span></div>
-      <div class="fact"><b>Estimate</b><span>A range with its assumptions, not a single number.</span></div>
+      <div class="fact"><b>Estimate</b><span>A range, with the assumptions it rests on.</span></div>
     </div>
 
     <h3>Five days</h3>
@@ -251,8 +329,7 @@
       <span class="note__label">Failure mode</span>
       <p>
         Past two weeks, discovery stops producing decisions and starts producing documents. If the
-        questions cannot be closed in the time, narrow the first phase rather than extending the
-        discovery.
+        questions cannot be closed in the time, narrow the first phase and say so.
       </p>
     </div>
 
