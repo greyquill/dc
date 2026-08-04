@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Definition of done for an AI feature · Greyquill</title>
-<meta name="description" content="What it actually means to say an AI feature ships with evaluation, guardrails and an audit trail. The gates a feature clears before it reaches a customer, and the ones that block.">
+<meta name="description" content="What evaluation, guardrails and an audit trail have to mean before an AI feature reaches a customer, written as gates somebody can check.">
 <link rel="icon" href="/dc/assets/greyquill-logo.png">
 <link rel="stylesheet" href="assets/services.css">
 </head>
@@ -24,9 +24,8 @@
     <p class="eyebrow">Product engineering</p>
     <h1>Definition of done for an AI feature</h1>
     <p class="deck">
-      Everyone says AI features ship with evaluation, guardrails and an audit trail. This is
-      what those three words have to mean before a feature reaches a customer, written as gates
-      somebody can actually check.
+      Everyone says AI features ship with evaluation, guardrails and an audit trail. Here is
+      what those three words have to mean before a customer sees it.
     </p>
     <div class="hero__meta">
       <button class="pdfbtn" onclick="window.print()">
@@ -35,162 +34,174 @@
         </svg>
         Save as PDF
       </button>
-      <span class="pdfbtn__hint">Prints the one-page gate list at the end of this document.</span>
+      <span class="pdfbtn__hint">One page, the whole gate list.</span>
     </div>
   </div>
 </section>
 
-<main class="doc">
+<main class="doc doc--wide">
 
-<h2>Why the usual definition of done does not survive contact with a model</h2>
+<h2>Why the usual definition breaks</h2>
 
-<p>
-  A conventional definition of done assumes that a feature which passes its tests today will
-  pass them tomorrow. That assumption holds for deterministic code and it does not hold for a
-  feature whose behaviour depends on a model.
+<p class="key">
+  A normal definition of done assumes a feature that passes today will pass tomorrow. Three
+  things break that assumption once a model is involved.
 </p>
 
-<p>
-  Three things break. The same input can produce different output on two runs, so a single
-  passing test proves less than it used to. The behaviour can change without your code
-  changing, because the model behind it was updated. And the failure mode is usually a
-  plausible wrong answer rather than an error, so nothing alerts.
-</p>
+<div class="viz">
+<svg viewBox="0 0 760 200" role="img" aria-labelledby="wT wD">
+  <title id="wT">Three ways a model breaks the usual definition of done</title>
+  <desc id="wD">First, the same input can produce different output across runs. Second, behaviour can change without any code change when the model is updated. Third, failure looks like a plausible answer rather than an error, so nothing alerts.</desc>
 
-<p>
-  So the definition of done has to add gates that address those three specifically, and it has
-  to be explicit about which of them block a release.
-</p>
+  <rect x="10" y="20" width="234" height="160" rx="9" fill="#fff" stroke="#c9d2dd" stroke-width="1.3"/>
+  <text x="127" y="50" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0a1628">Same input, different output</text>
+  <rect x="46" y="70" width="60" height="26" rx="4" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.1"/>
+  <text x="76" y="87" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#0b4f88">input</text>
+  <path d="M110 83 L 134 83" stroke="#4a5a70" stroke-width="1.2"/>
+  <rect x="138" y="60" width="62" height="18" rx="3" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1"/>
+  <text x="169" y="73" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#136647">right</text>
+  <rect x="138" y="82" width="62" height="18" rx="3" fill="#fbe6e6" stroke="#a63232" stroke-width="1"/>
+  <text x="169" y="95" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#8c2929">wrong</text>
+  <rect x="138" y="104" width="62" height="18" rx="3" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1"/>
+  <text x="169" y="117" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" fill="#136647">right</text>
+  <text x="127" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">one green run proves</text>
+  <text x="127" y="167" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">less than it used to</text>
+
+  <rect x="262" y="20" width="234" height="160" rx="9" fill="#fff" stroke="#c9d2dd" stroke-width="1.3"/>
+  <text x="379" y="50" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0a1628">Changes without your code</text>
+  <rect x="292" y="72" width="82" height="34" rx="5" fill="#f5f9fd" stroke="#4a5a70" stroke-width="1.1"/>
+  <text x="333" y="93" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">your code</text>
+  <text x="333" y="120" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">unchanged</text>
+  <rect x="386" y="72" width="82" height="34" rx="5" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1.3"/>
+  <text x="427" y="93" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#7d5700">the model</text>
+  <text x="427" y="120" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#9a6b00">updated</text>
+  <text x="379" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">a provider-side update is a</text>
+  <text x="379" y="167" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">new feature, not maintenance</text>
+
+  <rect x="514" y="20" width="236" height="160" rx="9" fill="#fff" stroke="#c9d2dd" stroke-width="1.3"/>
+  <text x="632" y="50" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0a1628">Failure looks fine</text>
+  <rect x="546" y="70" width="88" height="30" rx="4" fill="#fbe6e6" stroke="#a63232" stroke-width="1.1"/>
+  <text x="590" y="89" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#8c2929">wrong answer</text>
+  <path d="M638 85 L 660 85" stroke="#4a5a70" stroke-width="1.2"/>
+  <text x="700" y="82" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">no error</text>
+  <text x="700" y="96" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">no alert</text>
+  <text x="632" y="130" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">an exception gets fixed</text>
+  <text x="632" y="152" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">a plausible number gets</text>
+  <text x="632" y="167" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">shipped</text>
+</svg>
+</div>
 
 <h2>The gates</h2>
 
-<h3>1. There is an evaluation set, and it existed before the feature</h3>
-
-<p>
-  A set of real inputs with known-correct outputs, written down before the implementation was
-  finished, so it describes the requirement rather than the behaviour of what got built. Thirty
-  well-chosen cases beat three hundred generated ones.
-</p>
-
-<p>The set has to include, deliberately:</p>
-<ul>
-  <li>The ordinary cases, at the proportion they actually occur.</li>
-  <li>The awkward cases the domain expert can name in an afternoon. Ask them, they always can.</li>
-  <li>Cases where the correct answer is to refuse, or to escalate, or to say it does not know.
-    A feature that has never been tested on an input it should decline will not decline one.</li>
-</ul>
-
-<h3>2. It is graded on outputs, and the grader is calibrated</h3>
-
-<p>
-  The evaluation asserts on what the feature produced, not on whether it produced something.
-  And the grader itself has been proven to fail a wrong answer, because a grader nobody has
-  tested is a number nobody should trust. The mechanics of this are in
-  <a href="/dc/champ/harness-verification.html">Harness and verification</a>.
-</p>
-
-<h3>3. It is run more than once, and the spread is recorded</h3>
-
-<p>
-  Non-determinism is a property of the feature, not a nuisance to be argued away. Run each
-  evaluation case several times and record the pass rate and the consistency. A feature that
-  alternates between right and wrong on the same input is not ready even when its average looks
-  acceptable, and the average is exactly what hides it.
-</p>
-
-<h3>4. The guardrails are tested, not just present</h3>
-
-<p>
-  Guardrail is a word that gets used for anything from a system prompt line to a hard limit in
-  code. What makes one real is that there is a test proving it holds. For each guardrail:
-</p>
-<ul>
-  <li>What it prevents, in one sentence.</li>
-  <li>Where it is enforced. A rule stated only in a prompt is a request. A rule enforced in code
-    around the model is a control.</li>
-  <li>A test that attempts the thing and shows it is refused.</li>
-</ul>
-
-<div class="note note--warn">
-  <span class="note__label">The distinction that matters most</span>
-  <p>
-    Anything you can express only as an instruction to the model is a preference. Anything you
-    can enforce outside the model, in code, is a control. Know which of your guardrails are
-    which, and never describe a preference to a customer as a control.
-  </p>
+<div class="gate">
+  <div><b>An evaluation set exists</b><small>Real inputs with known-correct outputs, written before the build finished, so it describes the requirement rather than the behaviour of what got built. Include the awkward cases your domain expert can name, and the cases where the right answer is to refuse.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate">
+  <div><b>Graded on outputs, and the grader is calibrated</b><small>It asserts on what the feature produced, not that it produced something. And the grader has been proven to fail a wrong answer.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate">
+  <div><b>Run more than once, spread recorded</b><small>Pass rate and consistency. A feature that alternates on the same input is not ready even when the average looks fine, and the average is what hides it.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate">
+  <div><b>Every guardrail has a test that attempts the thing</b><small>See the distinction below. An untested guardrail is a hope.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate">
+  <div><b>The failure path is built and exercised</b><small>What the user sees, whether work falls back to a person, whether partial output is worse than none. Test it by making the dependency fail.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate">
+  <div><b>It leaves a record</b><small>Input by reference, model and version, the decision, any confidence, whether a person was involved. This cannot be added retrospectively for work already done.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate">
+  <div><b>The ordinary bar still applies</b><small>Tests on every commit, release gates that block regressions, accessibility, observability. Our own GST Co-Pilot ships with 162 tests and 88 percent coverage, and the AI parts did not get an exemption.</small></div>
+  <span class="pill pill--bad">Blocks</span>
+</div>
+<div class="gate gate--adv">
+  <div><b>Cost and latency measured at peak</b><small>At the volume it will see, not the volume it saw in development. Rarely stops a launch, often changes a plan.</small></div>
+  <span class="pill pill--warn">Advisory</span>
+</div>
+<div class="gate gate--adv">
+  <div><b>Refusal and escalation cases covered</b><small>Blocking wherever a wrong answer has consequences.</small></div>
+  <span class="pill pill--warn">Advisory</span>
 </div>
 
-<h3>5. Failure is designed, not incidental</h3>
+<h2>Control or preference</h2>
 
-<p>
-  Decide what the feature does when it cannot do its job, and build that path deliberately.
-  What the user sees, whether the work falls back to a person, whether partial output is worse
-  than none. Then test it by making the dependency fail, because the fallback path that has
-  never been exercised is the one that breaks during the incident.
-</p>
-
-<h3>6. Cost and latency are known at peak</h3>
-
-<p>
-  Measured per operation, at the volume the feature will actually see rather than the volume it
-  saw in development. Cost per call turns into a monthly number that someone has to approve, and
-  it is much easier to have that conversation before launch.
-</p>
-
-<h3>7. It leaves a record</h3>
-
-<p>
-  Enough that somebody who was not there can reconstruct a given output later: the input by
-  reference, the model and version, the decision, any confidence, and whether a person was
-  involved. This is what makes the feature answerable months afterwards, which is when it is
-  always asked about.
-</p>
-
-<h3>8. The conventional bar still applies</h3>
-
-<p>
-  Everything an ordinary feature has to clear, it still has to clear. Automated tests on every
-  commit, release gates that block regressions, accessibility, observability. For reference,
-  our own GST Co-Pilot ships with 162 tests and 88 percent coverage, and the AI parts of it did
-  not get an exemption from that.
-</p>
-
-<h2>Which gates block</h2>
-
-<div class="tablewrap">
-<table>
-  <thead><tr><th style="width:44%">Gate</th><th style="width:18%">Status</th><th>Why</th></tr></thead>
-  <tbody>
-    <tr><td>Evaluation set exists, written before the build finished</td><td><span class="pill pill--bad">Blocks</span></td><td>Without it there is no claim to check.</td></tr>
-    <tr><td>Graded on outputs, grader proven to fail a wrong answer</td><td><span class="pill pill--bad">Blocks</span></td><td>An untested grader produces a number people trust.</td></tr>
-    <tr><td>Multiple runs, spread recorded</td><td><span class="pill pill--bad">Blocks</span></td><td>One green run is not evidence for a non-deterministic feature.</td></tr>
-    <tr><td>Every guardrail has a test that attempts the thing</td><td><span class="pill pill--bad">Blocks</span></td><td>An untested guardrail is a hope.</td></tr>
-    <tr><td>Failure path built and exercised</td><td><span class="pill pill--bad">Blocks</span></td><td>It will be used, and usually first during an incident.</td></tr>
-    <tr><td>Record sufficient to reconstruct an output</td><td><span class="pill pill--bad">Blocks</span></td><td>You cannot add it retrospectively for work already done.</td></tr>
-    <tr><td>Cost and latency measured at peak</td><td><span class="pill pill--warn">Advisory</span></td><td>Rarely a reason to stop a launch, frequently a reason to change a plan.</td></tr>
-    <tr><td>Refusal and escalation cases covered</td><td><span class="pill pill--warn">Advisory</span></td><td>Depends on what the feature does. Blocking wherever a wrong answer has consequences.</td></tr>
-  </tbody>
-</table>
+<div class="vs">
+  <div class="vs__side vs__side--good">
+    <p class="vs__label">A control</p>
+    <p>Enforced outside the model, in code around it. There is a test that attempts the thing and shows it refused.</p>
+  </div>
+  <div class="vs__side vs__side--bad">
+    <p class="vs__label">A preference</p>
+    <p>Expressed only as an instruction to the model. It is a request, and it holds until it does not.</p>
+  </div>
 </div>
+
+<p class="key">
+  Know which of your guardrails are which, and never describe a preference to a customer as a
+  control.
+</p>
 
 <h2>After launch</h2>
 
-<p>
-  The gates above are a photograph. A feature built on a model is a film, because the model can
-  change underneath it without any deployment on your side.
-</p>
+<div class="viz">
+<svg viewBox="0 0 760 200" role="img" aria-labelledby="lT lD">
+  <title id="lT">The loop after launch</title>
+  <desc id="lD">The evaluation set feeds the gates, the gates lead to release, the release is monitored in production, production failures are promoted back into the evaluation set, and the cycle repeats. A separate trigger, a model version change, re-enters the gates directly.</desc>
 
-<ul>
-  <li><strong>Re-run the evaluation set on a schedule</strong>, and always before a model
-    version changes. A provider-side update is a new feature, not maintenance.</li>
-  <li><strong>Keep the baseline.</strong> The result set from the last accepted release is what
-    every later run is compared against. A case that used to pass and now fails is a regression
-    whatever the average says.</li>
-  <li><strong>Watch the signals the evaluation cannot see.</strong> Users retrying, overriding,
-    or abandoning the feature are quality data, and they usually move before the metrics do.</li>
-  <li><strong>Promote real failures into the evaluation set.</strong> Anything that went wrong
-    in production becomes a case, so the same fault cannot regress unnoticed twice.</li>
-</ul>
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5a70"/>
+    </marker>
+  </defs>
+
+  <rect x="24" y="76" width="140" height="50" rx="7" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.5"/>
+  <text x="94" y="98" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0b4f88">Evaluation set</text>
+  <text x="94" y="114" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">the baseline</text>
+
+  <path d="M164 101 L 208 101" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#a3)"/>
+
+  <rect x="210" y="76" width="130" height="50" rx="7" fill="#fff" stroke="#0a1628" stroke-width="1.5"/>
+  <text x="275" y="106" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">The gates</text>
+
+  <path d="M340 101 L 384 101" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#a3)"/>
+
+  <rect x="386" y="76" width="130" height="50" rx="7" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1.5"/>
+  <text x="451" y="106" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#136647">Release</text>
+
+  <path d="M516 101 L 560 101" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#a3)"/>
+
+  <rect x="562" y="70" width="176" height="62" rx="7" fill="#fff" stroke="#4a5a70" stroke-width="1.3"/>
+  <text x="650" y="92" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">In production</text>
+  <text x="650" y="109" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">retries, overrides, abandonment</text>
+  <text x="650" y="124" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">move before the metrics do</text>
+
+  <path d="M650 132 L 650 172 L 94 172 L 94 126" stroke="#0b4f88" stroke-width="1.4" fill="none" stroke-dasharray="5 3" marker-end="url(#a3)"/>
+  <text x="372" y="188" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#0b4f88">every production failure becomes a case, so the same fault cannot regress twice</text>
+
+  <rect x="210" y="14" width="130" height="34" rx="7" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1.3"/>
+  <text x="275" y="36" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7d5700">model version change</text>
+  <path d="M275 48 L 275 74" stroke="#9a6b00" stroke-width="1.4" fill="none" marker-end="url(#a3)"/>
+</svg>
+<p class="viz__cap">
+  Re-run the set on a schedule, and always before a model version changes. Keep the baseline: a
+  case that used to pass and now fails is a regression whatever the average says.
+</p>
+</div>
+
+<div class="note">
+  <span class="note__label">Related</span>
+  <p>
+    The verification machinery behind this, including calibrating a grader and reading a
+    distribution, is in <a href="/dc/champ/harness-verification.html">Harness and verification</a>.
+  </p>
+</div>
 
 </main>
 
@@ -209,44 +220,36 @@
     <div class="sheet__head">
       <div>
         <h2 class="sheet__title">Definition of done, AI feature</h2>
-        <p class="sheet__sub">What has to be true before it reaches a customer.</p>
+        <p class="sheet__sub">What has to be true before a customer sees it.</p>
       </div>
     </div>
 
-    <h3>The gates</h3>
-    <div class="tablewrap">
-    <table>
-      <thead><tr><th style="width:42%">Gate</th><th style="width:16%">Status</th><th>Why</th></tr></thead>
-      <tbody>
-        <tr><td>Evaluation set exists, written before the build finished</td><td><span class="pill pill--bad">Blocks</span></td><td>No set, no claim to check. Include the awkward cases and the ones it should decline.</td></tr>
-        <tr><td>Graded on outputs, grader proven to fail a wrong answer</td><td><span class="pill pill--bad">Blocks</span></td><td>An untested grader produces a number people trust.</td></tr>
-        <tr><td>Run several times, pass rate and consistency recorded</td><td><span class="pill pill--bad">Blocks</span></td><td>One green run is not evidence when the feature is non-deterministic.</td></tr>
-        <tr><td>Every guardrail has a test that attempts the thing</td><td><span class="pill pill--bad">Blocks</span></td><td>Enforced in code is a control. Stated in a prompt is a preference.</td></tr>
-        <tr><td>Failure path designed and exercised</td><td><span class="pill pill--bad">Blocks</span></td><td>It gets used first during an incident.</td></tr>
-        <tr><td>Record sufficient to reconstruct any output</td><td><span class="pill pill--bad">Blocks</span></td><td>Cannot be added retrospectively for work already done.</td></tr>
-        <tr><td>Cost and latency measured at peak</td><td><span class="pill pill--warn">Advisory</span></td><td>Rarely stops a launch, often changes a plan.</td></tr>
-        <tr><td>Refusal and escalation cases covered</td><td><span class="pill pill--warn">Advisory</span></td><td>Blocking wherever a wrong answer has consequences.</td></tr>
-        <tr><td>The ordinary bar: tests on every commit, release gates, accessibility, observability</td><td><span class="pill pill--bad">Blocks</span></td><td>The AI parts do not get an exemption.</td></tr>
-      </tbody>
-    </table>
-    </div>
+    <div class="gate"><div><b>An evaluation set exists</b><small>Written before the build finished. Includes the awkward cases and the ones it should decline.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate"><div><b>Graded on outputs, grader calibrated</b><small>Proven to fail a wrong answer. An untested grader produces a number people trust.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate"><div><b>Run more than once, spread recorded</b><small>Pass rate and consistency. The average hides a feature that alternates.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate"><div><b>Every guardrail has a test that attempts the thing</b><small>Enforced in code is a control. Stated in a prompt is a preference.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate"><div><b>Failure path built and exercised</b><small>It gets used first during an incident.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate"><div><b>It leaves a record</b><small>Input by reference, model and version, decision, confidence, human involvement. Cannot be added later.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate"><div><b>The ordinary bar still applies</b><small>Tests on every commit, release gates, accessibility, observability. No exemption for the AI parts.</small></div><span class="pill pill--bad">Blocks</span></div>
+    <div class="gate gate--adv"><div><b>Cost and latency at peak</b><small>Rarely stops a launch, often changes a plan.</small></div><span class="pill pill--warn">Advisory</span></div>
+    <div class="gate gate--adv"><div><b>Refusal and escalation covered</b><small>Blocking wherever a wrong answer has consequences.</small></div><span class="pill pill--warn">Advisory</span></div>
 
     <div class="cols2">
       <div>
         <h3>Why the usual definition breaks</h3>
         <ul>
-          <li>The same input can give different output on two runs.</li>
-          <li>Behaviour changes without your code changing, when the model updates.</li>
+          <li>Same input, different output across runs.</li>
+          <li>Behaviour changes without your code changing.</li>
           <li>Failure looks like a plausible answer, so nothing alerts.</li>
         </ul>
       </div>
       <div>
         <h3>After launch</h3>
         <ul>
-          <li>Re-run the set on a schedule, and always before a model version changes.</li>
+          <li>Re-run the set on a schedule, always before a model version changes.</li>
           <li>Keep the baseline. A case that used to pass and now fails is a regression.</li>
-          <li>Watch retries, overrides and abandonment. They move before the metrics do.</li>
-          <li>Promote every production failure into the evaluation set.</li>
+          <li>Watch retries, overrides and abandonment. They move first.</li>
+          <li>Promote every production failure into the set.</li>
         </ul>
       </div>
     </div>
@@ -254,8 +257,7 @@
     <div class="sheet__foot">
       <p class="cta">
         <strong>Greyquill Software</strong> builds products with AI in them and the discipline
-        around it, including our own. If you want a second pair of eyes on a feature before it
-        ships, <strong>greyquill.io</strong>
+        around it, including our own. <strong>greyquill.io</strong>
       </p>
     </div>
 

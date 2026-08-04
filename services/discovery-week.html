@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The discovery week · Greyquill</title>
-<meta name="description" content="What one to two weeks of discovery should produce before anyone writes production code: a scoped specification, a prioritised backlog, and an estimate with its uncertainty stated.">
+<meta name="description" content="What one to two weeks of discovery produces before anyone writes production code, day by day, and the four tests that say whether the output is good enough to build from.">
 <link rel="icon" href="/dc/assets/greyquill-logo.png">
 <link rel="stylesheet" href="assets/services.css">
 </head>
@@ -24,9 +24,8 @@
     <p class="eyebrow">Product engineering</p>
     <h1>The discovery week</h1>
     <p class="deck">
-      What one to two weeks of proper discovery should produce before anyone writes production
-      code, what happens in each day of it, and how to tell whether the output is good enough
-      to build from.
+      What a week of proper discovery produces before anyone writes production code, and how to
+      tell whether it is good enough to build from.
     </p>
     <div class="hero__meta">
       <button class="pdfbtn" onclick="window.print()">
@@ -35,144 +34,156 @@
         </svg>
         Save as PDF
       </button>
-      <span class="pdfbtn__hint">Prints the one-page agenda and checklist at the end.</span>
+      <span class="pdfbtn__hint">One page, the agenda and the checks.</span>
     </div>
   </div>
 </section>
 
-<main class="doc">
+<main class="doc doc--wide">
 
-<h2>What discovery is for</h2>
+<h2>Three outputs, and nothing else counts as done</h2>
 
-<p>
-  Discovery is not a requirements-gathering ritual and it is not a sales exercise. Its purpose
-  is to convert an idea into three artifacts that a team can build from and a sponsor can fund,
-  and to surface the disagreements that would otherwise appear in month three.
+<div class="viz">
+<svg viewBox="0 0 760 210" role="img" aria-labelledby="oT oD">
+  <title id="oT">The three outputs of discovery</title>
+  <desc id="oD">Discovery produces a scoped specification with an explicit out-of-scope list, a prioritised backlog where each item has a checkable acceptance criterion, and an estimate expressed as a range with its assumptions. Alongside them it produces the questions that remain open.</desc>
+
+  <rect x="14" y="22" width="228" height="132" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="128" y="52" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Scoped specification</text>
+  <line x1="44" y1="68" x2="212" y2="68" stroke="#e2e8ef" stroke-width="1"/>
+  <text x="128" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">what is being built, in enough</text>
+  <text x="128" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">detail to estimate</text>
+  <rect x="44" y="118" width="168" height="24" rx="4" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1"/>
+  <text x="128" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#7d5700">plus what is explicitly out</text>
+
+  <rect x="266" y="22" width="228" height="132" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="380" y="52" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Prioritised backlog</text>
+  <line x1="296" y1="68" x2="464" y2="68" stroke="#e2e8ef" stroke-width="1"/>
+  <text x="380" y="90" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">ordered by value and by what</text>
+  <text x="380" y="106" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">unblocks what, not by ease</text>
+  <rect x="296" y="118" width="168" height="24" rx="4" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1"/>
+  <text x="380" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#136647">each with an acceptance test</text>
+
+  <rect x="518" y="22" width="228" height="132" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="632" y="52" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Estimate</text>
+  <line x1="548" y1="68" x2="716" y2="68" stroke="#e2e8ef" stroke-width="1"/>
+  <line x1="566" y1="94" x2="698" y2="94" stroke="#0b4f88" stroke-width="2.5"/>
+  <line x1="566" y1="86" x2="566" y2="102" stroke="#0b4f88" stroke-width="2.5"/>
+  <line x1="698" y1="86" x2="698" y2="102" stroke="#0b4f88" stroke-width="2.5"/>
+  <text x="632" y="118" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">a range, not a number</text>
+  <rect x="548" y="118" width="168" height="24" rx="4" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1"/>
+  <text x="632" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#0b4f88">with the assumptions it rests on</text>
+
+  <text x="380" y="186" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">And the questions that are still open, written down as open rather than quietly resolved.</text>
+</svg>
+<p class="viz__cap">
+  The most valuable output is usually not the specification. It is the list of questions nobody
+  had asked, and the discovery that two stakeholders meant different things by the same word.
 </p>
-
-<p>
-  The most valuable thing it produces is usually not the specification. It is the list of
-  questions nobody had asked yet, and the discovery that two stakeholders meant different things
-  by the same word.
-</p>
-
-<h2>The three outputs</h2>
-
-<div class="stages">
-  <div class="stage">
-    <div class="stage__n">01</div>
-    <div>
-      <p class="stage__t">A scoped specification</p>
-      <p class="stage__b">What is being built, in enough detail to estimate, with what is explicitly out of scope written down beside it. The out-of-scope list is the half people skip and the half that prevents the argument later.</p>
-    </div>
-  </div>
-  <div class="stage">
-    <div class="stage__n">02</div>
-    <div>
-      <p class="stage__t">A prioritised backlog</p>
-      <p class="stage__b">Ordered by value and by what unblocks what, not by what is easiest. Each item has an acceptance criterion someone other than the author could check.</p>
-    </div>
-  </div>
-  <div class="stage">
-    <div class="stage__n">03</div>
-    <div>
-      <p class="stage__t">An estimate with its uncertainty stated</p>
-      <p class="stage__b">A range, with the assumptions it depends on and the things that would move it. A single number with no assumptions attached is a guess wearing a suit.</p>
-    </div>
-  </div>
 </div>
 
-<h2>How the time is spent</h2>
+<h2>Five days</h2>
 
-<p>
-  A one-week shape for a contained scope. Two weeks where there are several stakeholder groups
-  or an existing system to understand.
-</p>
-
-<div class="tablewrap">
-<table>
-  <thead><tr><th style="width:16%">Day</th><th>Focus</th><th style="width:36%">What comes out of it</th></tr></thead>
-  <tbody>
-    <tr><td><strong>1</strong></td><td>The outcome, and who it is for. Not features. What has to be different in the business once this exists, and how anyone would know.</td><td>A stated outcome, the users named by role, and the measure of success.</td></tr>
-    <tr><td><strong>2</strong></td><td>The workflow as it is performed today, walked end to end with the people who perform it. Including the parts done in spreadsheets and email.</td><td>A current-state map, and the list of places where it breaks.</td></tr>
-    <tr><td><strong>3</strong></td><td>Constraints. Systems it must integrate with, data it must not move, regulation it operates under, the deadline that is real and the one that is aspirational.</td><td>A constraints list, each with a named source.</td></tr>
-    <tr><td><strong>4</strong></td><td>Options and trade-offs. At least two ways to reach the outcome, with what each costs and gives up. Prototype only where a picture settles an argument faster than a paragraph.</td><td>A recommendation with the rejected options recorded and why.</td></tr>
-    <tr><td><strong>5</strong></td><td>Scope, order, estimate. What is in, what is explicitly out, in what order, and how long with what uncertainty.</td><td>The three outputs above, and the open questions that remain open.</td></tr>
-  </tbody>
-</table>
+<div class="flow">
+  <div class="flow__step"><div class="flow__n">Day 1</div><p class="flow__t">The outcome</p><p class="flow__b">What has to be different in the business, and how anyone would know. Not features.</p></div>
+  <div class="flow__step"><div class="flow__n">Day 2</div><p class="flow__t">The workflow today</p><p class="flow__b">Walked end to end with the people who perform it, including the spreadsheets and the email.</p></div>
+  <div class="flow__step"><div class="flow__n">Day 3</div><p class="flow__t">Constraints</p><p class="flow__b">Systems, data, regulation. The deadline that is real and the one that is aspirational.</p></div>
+  <div class="flow__step"><div class="flow__n">Day 4</div><p class="flow__t">Options</p><p class="flow__b">At least two routes, with what each costs and gives up. Prototype only to settle an argument.</p></div>
+  <div class="flow__step"><div class="flow__n">Day 5</div><p class="flow__t">Scope and estimate</p><p class="flow__b">What is in, what is out, in what order, how long, with what uncertainty.</p></div>
 </div>
 
-<h2>The questions that earn their place</h2>
-
 <p>
-  Most of discovery's value comes from a small number of questions that people find slightly
-  uncomfortable. These are the ones worth asking every time.
+  One week for a contained scope. Two where there are several stakeholder groups or an existing
+  system to understand.
 </p>
 
-<ul>
-  <li><strong>What happens if we do nothing?</strong> If the honest answer is "not much", that
-    is worth knowing in week one rather than after the build.</li>
-  <li><strong>Who has to change how they work for this to succeed?</strong> Software that
-    requires a behaviour change from people who were not consulted fails regardless of its
-    quality.</li>
-  <li><strong>What has been tried before, and what happened?</strong> There is almost always a
-    previous attempt. Understanding why it stalled is the cheapest research available.</li>
-  <li><strong>Which of these requirements would you drop to ship two months earlier?</strong>
-    Asked directly, it produces a real priority order in ten minutes.</li>
-  <li><strong>Who signs it off, and what will they check?</strong> Knowing the acceptance test
-    from day one changes what gets built.</li>
-  <li><strong>Where does the data come from, and who owns it?</strong> Data availability is the
-    most common cause of a plan that has to be rewritten in month two.</li>
-</ul>
+<h2>Six questions that earn their place</h2>
+
+<p class="key">
+  Most of the value comes from a small number of questions people find slightly uncomfortable.
+</p>
+
+<div class="facts">
+  <div class="fact"><b>What happens if we do nothing?</b><span>If the honest answer is "not much", better to know in week one.</span></div>
+  <div class="fact"><b>Who has to change how they work?</b><span>Software needing a behaviour change from people nobody consulted fails regardless of quality.</span></div>
+  <div class="fact"><b>What was tried before?</b><span>There is almost always a previous attempt. Why it stalled is the cheapest research available.</span></div>
+  <div class="fact"><b>What would you drop to ship two months earlier?</b><span>Produces a real priority order in ten minutes.</span></div>
+  <div class="fact"><b>Who signs it off, and what will they check?</b><span>Knowing the acceptance test on day one changes what gets built.</span></div>
+  <div class="fact"><b>Where does the data come from?</b><span>Data availability is the commonest reason a plan is rewritten in month two.</span></div>
+</div>
 
 <div class="note">
   <span class="note__label">A scoring pass on the brief</span>
   <p>
-    Before we hand a specification to a build team, we run it through ClarityAI, our own tool
-    for scoring the clarity and risk of an initiative. It reads the brief and points at the
-    ambiguities, the untestable statements and the missing decisions, line by line. It is not a
-    substitute for judgement, and it reliably catches the vague sentence everyone had read past.
-    See <a href="https://www.greyquill.io/products/clarity-ai">ClarityAI</a>.
+    Before a specification goes to a build team we run it through ClarityAI, our own tool for
+    scoring the clarity and risk of an initiative. It points at the ambiguities, the untestable
+    statements and the missing decisions, line by line. It reliably catches the vague sentence
+    everyone had read past. See <a href="https://www.greyquill.io/products/clarity-ai">ClarityAI</a>.
   </p>
 </div>
 
-<h2>How to tell the output is good enough</h2>
+<h2>Four tests on the output</h2>
 
-<p>
-  Four tests. If a specification fails any of them, another day of discovery costs less than
-  the rework it prevents.
+<div class="viz">
+<svg viewBox="0 0 760 174" role="img" aria-labelledby="qT qD">
+  <title id="qT">Four tests on a discovery output</title>
+  <desc id="qD">The estimate test: two engineers who were not in the room estimate within the same range. The acceptance test: every item is checkable by someone other than its author. The out-of-scope test: a written list of what is not being built exists. The disagreement test: at least one real disagreement was found and resolved.</desc>
+
+  <g>
+    <rect x="10" y="20" width="176" height="124" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.4"/>
+    <text x="98" y="48" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0b4f88">Estimate</text>
+    <text x="98" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">Two engineers who were</text>
+    <text x="98" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">not in the room estimate</text>
+    <text x="98" y="108" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">within the same range.</text>
+    <text x="98" y="130" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">wildly different means ambiguous</text>
+  </g>
+
+  <g>
+    <rect x="196" y="20" width="176" height="124" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.4"/>
+    <text x="284" y="48" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0b4f88">Acceptance</text>
+    <text x="284" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">Every item is checkable</text>
+    <text x="284" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">by someone other than</text>
+    <text x="284" y="108" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">its author.</text>
+    <text x="284" y="130" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">without asking what was meant</text>
+  </g>
+
+  <g>
+    <rect x="382" y="20" width="176" height="124" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.4"/>
+    <text x="470" y="48" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0b4f88">Out of scope</text>
+    <text x="470" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">A written list of what</text>
+    <text x="470" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">is not being built.</text>
+    <text x="470" y="122" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">empty means the boundary was</text>
+    <text x="470" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">never drawn</text>
+  </g>
+
+  <g>
+    <rect x="568" y="20" width="182" height="124" rx="9" fill="#fff" stroke="#0b4f88" stroke-width="1.4"/>
+    <text x="659" y="48" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0b4f88">Disagreement</text>
+    <text x="659" y="76" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">At least one real one was</text>
+    <text x="659" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">found and resolved.</text>
+    <text x="659" y="122" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">none found usually means it did</text>
+    <text x="659" y="134" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">not go deep enough</text>
+  </g>
+</svg>
+<p class="viz__cap">
+  Fail any of these and another day of discovery costs less than the rework it prevents.
 </p>
+</div>
 
-<ul>
-  <li><strong>The estimate test.</strong> Two engineers who were not in the room read it
-    separately and produce estimates within the same range. Wildly different numbers mean it is
-    being read differently, which means it is ambiguous.</li>
-  <li><strong>The acceptance test.</strong> Every item has a criterion somebody other than its
-    author could check without asking what was meant.</li>
-  <li><strong>The out-of-scope test.</strong> There is a written list of what is not being
-    built. An empty list means the boundary has not been drawn, not that everything is
-    included.</li>
-  <li><strong>The disagreement test.</strong> At least one real disagreement was found and
-    resolved during the week. Discovery that surfaced no disagreement usually did not go deep
-    enough to find one.</li>
-</ul>
+<h2>What it does not do</h2>
 
-<h2>What discovery does not do</h2>
-
-<ul>
-  <li>It does not remove uncertainty. It states it, so it can be priced and planned around.</li>
-  <li>It does not produce a fixed price for a vague problem. If the scope is genuinely unclear,
-    the honest output is a smaller first phase rather than a bigger number.</li>
-  <li>It does not replace the first sprint. Some things are only learned by building, and a
-    specification that claims otherwise is overreaching.</li>
-</ul>
+<div class="dont">
+  <div><strong>Remove uncertainty</strong>It states it, so it can be priced and planned around.</div>
+  <div><strong>Fix a price on a vague problem</strong>If the scope is genuinely unclear, the honest output is a smaller first phase, not a bigger number.</div>
+  <div><strong>Replace the first sprint</strong>Some things are only learned by building.</div>
+</div>
 
 <div class="note note--warn">
   <span class="note__label">The failure mode</span>
   <p>
-    Discovery that runs long. Past two weeks it stops producing decisions and starts producing
-    documents. If the questions cannot be closed in the time, the answer is a narrower first
-    phase, not a longer discovery.
+    Discovery that runs past two weeks stops producing decisions and starts producing documents.
+    If the questions cannot be closed in the time, narrow the first phase rather than extending
+    the discovery.
   </p>
 </div>
 
@@ -193,29 +204,24 @@
     <div class="sheet__head">
       <div>
         <h2 class="sheet__title">The discovery week</h2>
-        <p class="sheet__sub">Agenda, questions, and how to tell the output is good enough.</p>
+        <p class="sheet__sub">Agenda, questions, and the checks on the output.</p>
       </div>
     </div>
 
-    <h3>Three outputs, and nothing else counts as done</h3>
-    <ul>
-      <li><strong>A scoped specification</strong>, with what is explicitly out of scope written beside it.</li>
-      <li><strong>A prioritised backlog</strong>, ordered by value and by what unblocks what, each item with a checkable acceptance criterion.</li>
-      <li><strong>An estimate with its uncertainty stated</strong>, as a range with its assumptions.</li>
-    </ul>
+    <h3>Three outputs</h3>
+    <div class="facts">
+      <div class="fact"><b>Scoped specification</b><span>In enough detail to estimate, with what is explicitly out of scope written beside it.</span></div>
+      <div class="fact"><b>Prioritised backlog</b><span>Ordered by value and by what unblocks what. Each item with a checkable acceptance criterion.</span></div>
+      <div class="fact"><b>Estimate</b><span>A range with its assumptions, not a single number.</span></div>
+    </div>
 
     <h3>Five days</h3>
-    <div class="tablewrap">
-    <table>
-      <thead><tr><th style="width:10%">Day</th><th style="width:46%">Focus</th><th>Output</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>The outcome and who it is for. Not features.</td><td>Stated outcome, users by role, measure of success.</td></tr>
-        <tr><td>2</td><td>The workflow as performed today, including the spreadsheets and email.</td><td>Current-state map and where it breaks.</td></tr>
-        <tr><td>3</td><td>Constraints: systems, data, regulation, real versus aspirational deadlines.</td><td>Constraints list, each with a named source.</td></tr>
-        <tr><td>4</td><td>At least two options, with what each costs and gives up.</td><td>A recommendation, with rejected options recorded.</td></tr>
-        <tr><td>5</td><td>Scope, order, estimate.</td><td>The three outputs, and the questions still open.</td></tr>
-      </tbody>
-    </table>
+    <div class="flow">
+      <div class="flow__step"><div class="flow__n">Day 1</div><p class="flow__t">The outcome</p><p class="flow__b">What changes in the business, and how you would know.</p></div>
+      <div class="flow__step"><div class="flow__n">Day 2</div><p class="flow__t">The workflow today</p><p class="flow__b">Walked with the people who perform it.</p></div>
+      <div class="flow__step"><div class="flow__n">Day 3</div><p class="flow__t">Constraints</p><p class="flow__b">Systems, data, regulation, the real deadline.</p></div>
+      <div class="flow__step"><div class="flow__n">Day 4</div><p class="flow__t">Options</p><p class="flow__b">Two routes, what each costs and gives up.</p></div>
+      <div class="flow__step"><div class="flow__n">Day 5</div><p class="flow__t">Scope and estimate</p><p class="flow__b">In, out, order, duration, uncertainty.</p></div>
     </div>
 
     <div class="cols2">
@@ -223,9 +229,9 @@
         <h3>Ask these every time</h3>
         <ul>
           <li>What happens if we do nothing?</li>
-          <li>Who has to change how they work for this to succeed?</li>
+          <li>Who has to change how they work?</li>
           <li>What was tried before, and what happened?</li>
-          <li>Which requirement would you drop to ship two months earlier?</li>
+          <li>What would you drop to ship two months earlier?</li>
           <li>Who signs it off, and what will they check?</li>
           <li>Where does the data come from, and who owns it?</li>
         </ul>
@@ -233,9 +239,9 @@
       <div>
         <h3>Four tests on the output</h3>
         <ul>
-          <li><strong>Estimate.</strong> Two engineers who were not in the room estimate within the same range.</li>
+          <li><strong>Estimate.</strong> Two engineers who were not in the room land in the same range.</li>
           <li><strong>Acceptance.</strong> Every item checkable by someone other than its author.</li>
-          <li><strong>Out of scope.</strong> A written list exists. Empty means the boundary was never drawn.</li>
+          <li><strong>Out of scope.</strong> A written list exists. Empty means no boundary was drawn.</li>
           <li><strong>Disagreement.</strong> At least one real one was found and resolved.</li>
         </ul>
       </div>
@@ -244,16 +250,16 @@
     <div class="note note--warn">
       <span class="note__label">Failure mode</span>
       <p>
-        Discovery that runs past two weeks stops producing decisions and starts producing
-        documents. If the questions cannot be closed in the time, narrow the first phase rather
-        than extending the discovery.
+        Past two weeks, discovery stops producing decisions and starts producing documents. If the
+        questions cannot be closed in the time, narrow the first phase rather than extending the
+        discovery.
       </p>
     </div>
 
     <div class="sheet__foot">
       <p class="cta">
         <strong>Greyquill Software</strong> runs discovery like this before every build, including
-        our own products. If you have an idea that needs scoping properly, <strong>greyquill.io</strong>
+        our own products. <strong>greyquill.io</strong>
       </p>
     </div>
 

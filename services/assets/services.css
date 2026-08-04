@@ -384,6 +384,120 @@ figcaption {
 
 .print-only { display: none; }
 
+/* ================= VISUAL COMPONENTS =================
+   These pages are meant to be understood at a glance. Prose carries the
+   qualifications; the components below carry the idea. */
+
+/* diagram block */
+.viz {
+  margin: 1.75rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+.viz svg { display: block; width: 100%; height: auto; }
+.viz__cap {
+  margin: 0.9rem 0 0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* one-line statement that replaces a paragraph */
+.key {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: var(--ink);
+  border-left: 3px solid var(--brand);
+  padding: 0.15rem 0 0.15rem 1.1rem;
+  margin: 0 0 1.6rem;
+}
+
+/* horizontal step flow */
+.flow { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0 0 1.5rem; }
+.flow__step {
+  flex: 1 1 8.5rem;
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--brand);
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  min-width: 8.5rem;
+}
+.flow__n {
+  font-family: var(--display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--brand);
+}
+.flow__t {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin: 0.2rem 0 0.25rem;
+  line-height: 1.3;
+}
+.flow__b { margin: 0; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.45; }
+
+/* side-by-side comparison */
+.vs { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0 0 1.5rem; }
+.vs__side { border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.vs__side--bad { border-color: #e9c4c4; background: #fdf7f7; }
+.vs__side--good { border-color: #bcdcc9; background: #f6fbf8; }
+.vs__label {
+  font-family: var(--display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+.vs__side--bad .vs__label { color: var(--bad); }
+.vs__side--good .vs__label { color: var(--good); }
+.vs__side p { font-size: 0.88rem; margin: 0 0 0.5rem; }
+.vs__side ul { font-size: 0.85rem; margin: 0; padding-left: 1.1rem; }
+.vs__side li { margin-bottom: 0.25rem; }
+@media (max-width: 700px) { .vs { grid-template-columns: 1fr; } }
+
+/* labelled fact cards */
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.7rem; margin: 0 0 1.5rem; }
+.fact { border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem 0.9rem; }
+.fact b { display: block; font-family: var(--display); font-size: 0.88rem; margin-bottom: 0.2rem; }
+.fact span { display: block; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.45; }
+
+/* gate ladder */
+.gate {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.9rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--bad);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.88rem;
+}
+.gate--adv { border-left-color: var(--warn); }
+.gate b { font-family: var(--display); font-weight: 600; }
+.gate small { display: block; color: var(--ink-soft); font-size: 0.78rem; line-height: 1.4; margin-top: 0.1rem; }
+
+/* compact do-not list */
+.dont { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.6rem; margin: 0 0 1.4rem; }
+.dont div {
+  border: 1px solid #e9c4c4;
+  background: #fdf7f7;
+  border-radius: 8px;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+.dont strong { display: block; color: var(--bad); font-family: var(--display); font-size: 0.85rem; margin-bottom: 0.15rem; }
+
 /* ================= PRINT =================
    The takeaway sheet is the document. Everything else goes away, so the PDF is
    the one or two pages a reader actually wanted rather than a paper dump of a
@@ -468,6 +582,34 @@ figcaption {
   }
 
   .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+
+  .flow { gap: 3pt; margin-bottom: 6pt; }
+  .flow__step { border: 0.5pt solid #ccc; border-top: 1.5pt solid #0b4f88; padding: 3pt 5pt; break-inside: avoid; }
+  .flow__n { font-size: 6pt; }
+  .flow__t { font-size: 8.4pt; margin: 1pt 0; }
+  .flow__b { font-size: 7.6pt; color: #333; }
+
+  .key { font-size: 9.6pt; border-left: 2pt solid #0b4f88; padding-left: 6pt; margin-bottom: 8pt; }
+
+  .facts { gap: 4pt; margin-bottom: 6pt; }
+  .fact { border: 0.5pt solid #ccc; padding: 3pt 5pt; break-inside: avoid; }
+  .fact b { font-size: 8.2pt; }
+  .fact span { font-size: 7.6pt; color: #333; }
+
+  .gate { border: 0.5pt solid #ccc; border-left: 1.5pt solid #666; padding: 3pt 5pt; margin-bottom: 2.5pt; font-size: 8.2pt; break-inside: avoid; }
+  .gate small { font-size: 7.4pt; }
+
+  .vs { gap: 6pt; }
+  .vs__side { border: 0.5pt solid #999; padding: 5pt 7pt; background: none !important; break-inside: avoid; }
+  .vs__side p, .vs__side li { font-size: 8pt; }
+  .vs__label { font-size: 6.6pt; }
+
+  .dont { gap: 4pt; }
+  .dont div { border: 0.5pt solid #999; background: none !important; padding: 3pt 5pt; font-size: 7.8pt; }
+
+  .viz { margin: 6pt 0; break-inside: avoid; }
+  .viz svg { max-height: 62mm; }
+  .viz__cap { font-size: 7.4pt; color: #444; margin-top: 3pt; }
 
   .sheet__foot {
     margin-top: 8pt;

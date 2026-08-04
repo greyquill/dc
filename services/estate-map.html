@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mapping an estate before you touch it · Greyquill</title>
-<meta name="description" content="What to write down about a legacy estate before any modernisation starts: systems, flows, owners and risk, recorded as what actually exists rather than what the architecture diagram claims.">
+<meta name="description" content="What to record about a legacy estate before modernisation starts, how to find the dependencies nobody documented, and when to stop mapping and start work.">
 <link rel="icon" href="/dc/assets/greyquill-logo.png">
 <link rel="stylesheet" href="assets/services.css">
 </head>
@@ -24,9 +24,8 @@
     <p class="eyebrow">Modernisation</p>
     <h1>Mapping an estate before you touch it</h1>
     <p class="deck">
-      Every modernisation starts with a map, and most maps are wrong because they record the
-      design rather than the system. This is what to write down, how to find the parts nobody
-      documented, and when to stop mapping and start work.
+      Most architecture diagrams record what somebody intended to build. A map records what is
+      running, and it is finished when it can predict what breaks.
     </p>
     <div class="hero__meta">
       <button class="pdfbtn" onclick="window.print()">
@@ -35,147 +34,159 @@
         </svg>
         Save as PDF
       </button>
-      <span class="pdfbtn__hint">Prints the one-page field guide at the end of this document.</span>
+      <span class="pdfbtn__hint">One page, the whole method.</span>
     </div>
   </div>
 </section>
 
-<main class="doc">
+<main class="doc doc--wide">
 
-<h2>Why the existing diagram is not a map</h2>
+<h2>Six things per system</h2>
 
-<p>
-  Most organisations have an architecture diagram. It was drawn during a programme, it was
-  accurate for about a quarter, and it describes the system somebody intended to build. The
-  integrations added under deadline pressure are missing from it. So is the spreadsheet that
-  three people depend on, the scheduled job on a machine under a desk, and the vendor feed that
-  arrives by email.
+<p class="key">
+  Fewer and the map cannot answer the questions you need it for. More and it never gets
+  finished, which is the more common failure.
 </p>
 
-<p>
-  Those omissions are not oversights. They are exactly the things that break a modernisation,
-  because they are the dependencies nobody thinks to mention until they stop working.
+<div class="viz">
+<svg viewBox="0 0 760 262" role="img" aria-labelledby="eT eD">
+  <title id="eT">The six fields recorded per system</title>
+  <desc id="eD">A system record card with six fields: what it does in one business sentence, a named business owner and technical owner, every inbound path including manual ones, every outbound path, what it runs on and whether that is supported, and what happens if it stops.</desc>
+
+  <rect x="150" y="86" width="192" height="92" rx="9" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.8"/>
+  <text x="246" y="120" text-anchor="middle" font-family="Sora,sans-serif" font-size="15" font-weight="700" fill="#0a1628">One system</text>
+  <text x="246" y="142" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">one row in the map</text>
+
+  <g font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">
+    <rect x="10" y="18" width="126" height="46" rx="6" fill="#fff" stroke="#c9d2dd" stroke-width="1.2"/>
+    <text x="22" y="36" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#0b4f88">What it does</text>
+    <text x="22" y="52">one business sentence</text>
+
+    <rect x="10" y="200" width="126" height="46" rx="6" fill="#fff" stroke="#c9d2dd" stroke-width="1.2"/>
+    <text x="22" y="218" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#0b4f88">Who owns it</text>
+    <text x="22" y="234">two named people</text>
+
+    <rect x="10" y="109" width="126" height="46" rx="6" fill="#fff" stroke="#c9d2dd" stroke-width="1.2"/>
+    <text x="22" y="127" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#0b4f88">What goes in</text>
+    <text x="22" y="143">including by hand</text>
+
+    <rect x="356" y="109" width="126" height="46" rx="6" fill="#fff" stroke="#c9d2dd" stroke-width="1.2"/>
+    <text x="368" y="127" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#0b4f88">What comes out</text>
+    <text x="368" y="143">including by hand</text>
+
+    <rect x="356" y="18" width="126" height="46" rx="6" fill="#fff" stroke="#c9d2dd" stroke-width="1.2"/>
+    <text x="368" y="36" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#0b4f88">What it runs on</text>
+    <text x="368" y="52">and is it supported</text>
+
+    <rect x="356" y="200" width="126" height="46" rx="6" fill="#fff" stroke="#c9d2dd" stroke-width="1.2"/>
+    <text x="368" y="218" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#0b4f88">If it stops</text>
+    <text x="368" y="234" font-size="10">blast radius, downtime</text>
+  </g>
+
+  <g stroke="#c9d2dd" stroke-width="1.2" fill="none">
+    <path d="M136 41 L 168 41 L 168 86"/>
+    <path d="M136 132 L 150 132"/>
+    <path d="M136 223 L 168 223 L 168 178"/>
+    <path d="M356 41 L 324 41 L 324 86"/>
+    <path d="M342 132 L 356 132"/>
+    <path d="M356 223 L 324 223 L 324 178"/>
+  </g>
+
+  <line x1="512" y1="24" x2="512" y2="240" stroke="#e2e8ef" stroke-width="1.2"/>
+
+  <text x="536" y="42" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">The tell that it is finished</text>
+  <text x="536" y="66" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">You can pick any system and say,</text>
+  <text x="536" y="83" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">without checking, what breaks if</text>
+  <text x="536" y="100" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">it stops.</text>
+
+  <text x="536" y="136" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">How long</text>
+  <text x="536" y="160" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">One to three weeks for a</text>
+  <text x="536" y="177" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">mid-sized estate. Past a month,</text>
+  <text x="536" y="194" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">the map has become the project.</text>
+
+  <text x="536" y="228" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">Stop when you can name the</text>
+  <text x="536" y="244" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">first seam and defend it.</text>
+</svg>
+<p class="viz__cap">
+  Inbound and outbound mean every path, including manual uploads, email attachments, a shared
+  folder, and somebody rekeying from a screen.
 </p>
-
-<p>
-  A map is a record of what is running. It is built from evidence rather than from interviews
-  alone, and it is finished when it can predict what breaks if you switch something off.
-</p>
-
-<h2>What to record</h2>
-
-<p>
-  Six things per system. Fewer and the map cannot answer the questions you need it for. More
-  and it will not get finished, which is the more common failure.
-</p>
-
-<div class="tablewrap">
-<table>
-  <thead><tr><th style="width:22%">Field</th><th>What good looks like</th></tr></thead>
-  <tbody>
-    <tr><td><strong>What it does</strong></td><td>One sentence in business terms. If nobody can produce one, that is a finding in itself and it goes in the map.</td></tr>
-    <tr><td><strong>Who owns it</strong></td><td>A named person for the business outcome, and a named person for the technology. Not a team, not a department. The parallel run will generate questions that only a person can settle.</td></tr>
-    <tr><td><strong>What goes in</strong></td><td>Every inbound interface, including the ones that are not interfaces: manual uploads, email attachments, a shared folder, someone rekeying from a screen.</td></tr>
-    <tr><td><strong>What comes out</strong></td><td>Same rule. Files, API responses, reports, database writes another system reads directly, and anything a human copies out by hand.</td></tr>
-    <tr><td><strong>What it runs on</strong></td><td>Language, framework, runtime version, host, and whether any of those are out of support. The out-of-support column is usually the one that unlocks the budget.</td></tr>
-    <tr><td><strong>What happens if it stops</strong></td><td>Blast radius in plain words, and how long the business can tolerate it being down. This is what turns a map into a priority order.</td></tr>
-  </tbody>
-</table>
 </div>
 
 <h2>Finding what nobody will tell you</h2>
 
-<p>
-  Interviews give you the systems people think about. The dependencies that break
-  modernisations are the ones nobody thinks about, so they have to be found from evidence.
+<p class="key">
+  Interviews give you the systems people think about. The ones that break modernisations are
+  the ones nobody thinks about, so they have to be found from evidence.
 </p>
 
-<ul>
-  <li><strong>Read the network, not the diagram.</strong> Firewall rules, load balancer
-    configuration and DNS records list things that are actually talking to each other. Entries
-    nobody can explain are the most valuable rows in your map.</li>
-  <li><strong>List the scheduled jobs.</strong> Cron tables, scheduler entries, and anything on
-    a server that is not in the deployment pipeline. Batch is where undocumented behaviour
-    lives.</li>
-  <li><strong>Look at database accounts.</strong> Which accounts connect to a database, from
-    where, tells you about direct reads that no interface document mentions. Cross-system
-    direct database access is the single most common surprise.</li>
-  <li><strong>Ask about the spreadsheets.</strong> Ask in the operations team, not in the
-    architecture team, and ask it as "what do you have to do by hand every month". The answers
-    are usually load-bearing.</li>
-  <li><strong>Check the certificate and licence renewals.</strong> Anything with a renewal has
-    an owner who pays for it, and that owner knows something.</li>
-</ul>
-
-<div class="note">
-  <span class="note__label">The tell that a map is finished</span>
-  <p>
-    You can pick any system and say, without checking, what breaks if it stops. If you cannot
-    do that for a system, its inbound and outbound lists are still incomplete, whatever the
-    diagram says.
-  </p>
+<div class="facts">
+  <div class="fact"><b>Firewall, load balancer, DNS</b><span>Lists what is actually talking to what. Entries nobody can explain are the best rows in your map.</span></div>
+  <div class="fact"><b>Scheduled jobs and cron</b><span>Batch is where undocumented behaviour lives.</span></div>
+  <div class="fact"><b>Database accounts</b><span>Which account connects from where. Direct cross-system reads are the commonest surprise.</span></div>
+  <div class="fact"><b>Ask operations</b><span>"What do you do by hand every month?" Those spreadsheets are load-bearing.</span></div>
+  <div class="fact"><b>Certificate and licence renewals</b><span>Whoever pays for it knows something.</span></div>
 </div>
 
-<h2>Scoring risk without a ceremony</h2>
+<h2>Ordering the work</h2>
 
-<p>
-  Risk scoring turns into a workshop industry very quickly. Two axes are enough to order the
-  work, and both can be answered by the owner in a minute.
+<div class="viz">
+<svg viewBox="0 0 760 330" role="img" aria-labelledby="mT mD">
+  <title id="mT">Consequence against fragility</title>
+  <desc id="mD">A two by two grid. The horizontal axis is fragility, the vertical axis is consequence. Systems high on both are where money is spent eventually but are the wrong first seam. The right first seam sits in high consequence and low fragility, or high fragility and moderate consequence, where there is real pain and a small blast radius.</desc>
+
+  <line x1="120" y1="286" x2="700" y2="286" stroke="#4a5a70" stroke-width="1.3"/>
+  <line x1="120" y1="286" x2="120" y2="30" stroke="#4a5a70" stroke-width="1.3"/>
+
+  <text x="410" y="316" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="600" fill="#0a1628">Fragility</text>
+  <text x="150" y="306" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">supported, understood</text>
+  <text x="690" y="306" text-anchor="end" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">unsupported, nobody left who knows it</text>
+
+  <text x="36" y="160" font-family="Sora,sans-serif" font-size="12" font-weight="600" fill="#0a1628" transform="rotate(-90 36 160)">Consequence</text>
+  <text x="112" y="46" text-anchor="end" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">regulatory</text>
+  <text x="112" y="282" text-anchor="end" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">inconvenience</text>
+
+  <line x1="410" y1="30" x2="410" y2="286" stroke="#e2e8ef" stroke-width="1"/>
+  <line x1="120" y1="158" x2="700" y2="158" stroke="#e2e8ef" stroke-width="1"/>
+
+  <rect x="414" y="34" width="284" height="120" fill="#fbe6e6" opacity="0.65"/>
+  <text x="556" y="80" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#8c2929">Where the money goes</text>
+  <text x="556" y="100" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#8c2929">eventually, and almost never first</text>
+  <text x="556" y="122" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#a63232">most coupled, most political heat</text>
+
+  <rect x="414" y="162" width="284" height="120" fill="#e4f4ec" opacity="0.7"/>
+  <text x="556" y="206" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#136647">Start here</text>
+  <text x="556" y="226" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#136647">real pain, small blast radius</text>
+  <text x="556" y="246" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#136647">prove the method, then go up</text>
+
+  <text x="266" y="96" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">watch, but not urgent</text>
+  <text x="266" y="226" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">leave it alone</text>
+</svg>
+<p class="viz__cap">
+  Two questions the owner can answer in a minute. Anything high on both is where the budget will
+  land eventually, and a first attempt that stalls there ends the programme.
 </p>
-
-<ul>
-  <li><strong>Consequence.</strong> If this stopped for a day, is it an inconvenience, a
-    revenue event, or a regulatory event?</li>
-  <li><strong>Fragility.</strong> Is it under support, does anyone still understand it, and
-    when was it last changed successfully?</li>
-</ul>
-
-<p>
-  Something high on both is where the money is going to be spent eventually, and it is almost
-  never the right first seam. Start somewhere with real pain and a small blast radius, prove
-  the method, and come back to the frightening thing with a team that has already done it once.
-</p>
-
-<h2>How long this should take</h2>
-
-<p>
-  For a mid-sized estate, one to three weeks. The map is a means to a decision, and the
-  decision is which seam to take first. If mapping runs past a month it has become the project.
-</p>
-
-<p>
-  Stop when you can name the first seam and defend the choice. Everything else can be filled in
-  during the work, and it will be more accurate then anyway, because you will be reading the
-  system rather than asking about it.
-</p>
+</div>
 
 <div class="note note--warn">
   <span class="note__label">What to resist</span>
   <p>
     A tooling decision. Estate maps get delayed for months while a discovery platform is
-    evaluated. A spreadsheet with the six columns above, filled in honestly, beats an empty
-    tool every time, and it takes an afternoon to set up.
+    evaluated. Six honest columns in a spreadsheet beat an empty tool, and take an afternoon.
   </p>
 </div>
 
-<h2>What the map is used for afterwards</h2>
+<h2>Keep it, do not file it</h2>
+
+<div class="facts">
+  <div class="fact"><b>Choosing the next seam</b><span>The map is the only place blast radius is written down.</span></div>
+  <div class="fact"><b>Audit and due diligence</b><span>Arrives without notice, always asks which systems process a given category of data.</span></div>
+  <div class="fact"><b>Decommissioning</b><span>Tells you whether anything still depends on what you want to switch off.</span></div>
+</div>
 
 <p>
-  It should not be a one-off artifact. Three ongoing uses justify keeping it current:
-</p>
-
-<ul>
-  <li>Choosing each next seam, since the map is the only place the blast radius is written
-    down.</li>
-  <li>Answering audit and due-diligence questions, which arrive without notice and always ask
-    what systems process a given category of data.</li>
-  <li>Decommissioning. The map is what tells you whether anything still depends on the thing
-    you want to switch off.</li>
-</ul>
-
-<p>
-  Keeping it current is a small standing job, and it is worth attaching it to an existing
-  ritual, such as a change advisory step, rather than creating a review nobody attends.
+  Attach the upkeep to a ritual that already happens, such as a change approval step, rather than
+  creating a review nobody attends.
 </p>
 
 </main>
@@ -200,55 +211,50 @@
     </div>
 
     <h3>Six columns per system</h3>
-    <div class="tablewrap">
-    <table>
-      <thead><tr><th style="width:26%">Field</th><th>What good looks like</th></tr></thead>
-      <tbody>
-        <tr><td>What it does</td><td>One sentence in business terms. If nobody can write one, record that.</td></tr>
-        <tr><td>Who owns it</td><td>A named business owner and a named technical owner. Not a team.</td></tr>
-        <tr><td>What goes in</td><td>Every inbound path, including manual uploads, email, shared folders, rekeying.</td></tr>
-        <tr><td>What comes out</td><td>Files, APIs, reports, direct database writes, anything copied out by hand.</td></tr>
-        <tr><td>What it runs on</td><td>Language, framework, runtime version, host, and whether any is out of support.</td></tr>
-        <tr><td>If it stops</td><td>Blast radius in plain words, and tolerable downtime.</td></tr>
-      </tbody>
-    </table>
+    <div class="facts">
+      <div class="fact"><b>What it does</b><span>One business sentence. If nobody can write one, record that.</span></div>
+      <div class="fact"><b>Who owns it</b><span>A named business owner and a named technical owner. Not a team.</span></div>
+      <div class="fact"><b>What goes in</b><span>Every inbound path, including uploads, email, shared folders, rekeying.</span></div>
+      <div class="fact"><b>What comes out</b><span>Files, APIs, reports, direct database writes, anything copied by hand.</span></div>
+      <div class="fact"><b>What it runs on</b><span>Language, framework, version, host, and whether any is out of support.</span></div>
+      <div class="fact"><b>If it stops</b><span>Blast radius in plain words, and tolerable downtime.</span></div>
     </div>
 
     <div class="cols2">
       <div>
         <h3>Find what nobody mentions</h3>
         <ul>
-          <li>Firewall rules, load balancer config, DNS. Entries nobody can explain are the best rows in the map.</li>
-          <li>Scheduled jobs and cron tables. Batch is where undocumented behaviour lives.</li>
-          <li>Database accounts and where they connect from. Direct cross-system reads are the commonest surprise.</li>
-          <li>Ask operations what they do by hand every month. Those spreadsheets are load-bearing.</li>
-          <li>Certificate and licence renewals. Whoever pays knows something.</li>
+          <li>Firewall rules, load balancer config, DNS</li>
+          <li>Scheduled jobs and cron tables</li>
+          <li>Database accounts and where they connect from</li>
+          <li>Ask operations what they do by hand each month</li>
+          <li>Certificate and licence renewals</li>
         </ul>
       </div>
       <div>
-        <h3>Order the work on two axes</h3>
+        <h3>Order on two axes</h3>
         <ul>
-          <li><strong>Consequence.</strong> Down for a day: inconvenience, revenue event, or regulatory event?</li>
-          <li><strong>Fragility.</strong> Supported? Understood by anyone? Last successful change?</li>
+          <li><strong>Consequence.</strong> Down for a day: inconvenience, revenue, or regulatory?</li>
+          <li><strong>Fragility.</strong> Supported? Understood? Last successful change?</li>
         </ul>
-        <p>High on both is where the money goes eventually, and it is almost never the right first seam.</p>
+        <p>High on both is where the money goes eventually, and it is almost never the right first seam. Start where there is real pain and a small blast radius.</p>
       </div>
     </div>
 
     <div class="note">
       <span class="note__label">Finished when</span>
       <p>
-        You can pick any system and say, without checking, what breaks if it stops. And you can
-        name the first seam and defend the choice. One to three weeks for a mid-sized estate. Past
-        a month, the map has become the project.
+        You can pick any system and say, without checking, what breaks if it stops, and you can
+        name the first seam and defend the choice. One to three weeks for a mid-sized estate.
+        Past a month, the map has become the project.
       </p>
     </div>
 
-    <h3>Two things to resist</h3>
-    <ul>
-      <li>Evaluating a discovery tool first. Six honest columns in a spreadsheet beat an empty platform.</li>
-      <li>Starting at the frightening system. Prove the method somewhere with real pain and a small blast radius, then come back to it.</li>
-    </ul>
+    <h3>Resist</h3>
+    <div class="dont">
+      <div><strong>Evaluating a tool first</strong>Six honest columns in a spreadsheet beat an empty platform.</div>
+      <div><strong>Starting at the frightening system</strong>Prove the method elsewhere, then come back to it.</div>
+    </div>
 
     <div class="sheet__foot">
       <p class="cta">
