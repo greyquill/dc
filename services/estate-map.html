@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapping an estate before you touch it · Greyquill</title>
+<meta name="description" content="What to write down about a legacy estate before any modernisation starts: systems, flows, owners and risk, recorded as what actually exists rather than what the architecture diagram claims.">
+<link rel="icon" href="/dc/assets/greyquill-logo.png">
+<link rel="stylesheet" href="assets/services.css">
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="topbar__in">
+    <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+    <nav class="crumbs">
+      <a href="/dc/">Document Center</a><span>/</span><a href="/dc/services/">Services</a><span>/</span>Mapping an estate
+    </nav>
+  </div>
+</header>
+
+<section class="hero no-print">
+  <div class="hero__in">
+    <p class="eyebrow">Modernisation</p>
+    <h1>Mapping an estate before you touch it</h1>
+    <p class="deck">
+      Every modernisation starts with a map, and most maps are wrong because they record the
+      design rather than the system. This is what to write down, how to find the parts nobody
+      documented, and when to stop mapping and start work.
+    </p>
+    <div class="hero__meta">
+      <button class="pdfbtn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>
+        </svg>
+        Save as PDF
+      </button>
+      <span class="pdfbtn__hint">Prints the one-page field guide at the end of this document.</span>
+    </div>
+  </div>
+</section>
+
+<main class="doc">
+
+<h2>Why the existing diagram is not a map</h2>
+
+<p>
+  Most organisations have an architecture diagram. It was drawn during a programme, it was
+  accurate for about a quarter, and it describes the system somebody intended to build. The
+  integrations added under deadline pressure are missing from it. So is the spreadsheet that
+  three people depend on, the scheduled job on a machine under a desk, and the vendor feed that
+  arrives by email.
+</p>
+
+<p>
+  Those omissions are not oversights. They are exactly the things that break a modernisation,
+  because they are the dependencies nobody thinks to mention until they stop working.
+</p>
+
+<p>
+  A map is a record of what is running. It is built from evidence rather than from interviews
+  alone, and it is finished when it can predict what breaks if you switch something off.
+</p>
+
+<h2>What to record</h2>
+
+<p>
+  Six things per system. Fewer and the map cannot answer the questions you need it for. More
+  and it will not get finished, which is the more common failure.
+</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:22%">Field</th><th>What good looks like</th></tr></thead>
+  <tbody>
+    <tr><td><strong>What it does</strong></td><td>One sentence in business terms. If nobody can produce one, that is a finding in itself and it goes in the map.</td></tr>
+    <tr><td><strong>Who owns it</strong></td><td>A named person for the business outcome, and a named person for the technology. Not a team, not a department. The parallel run will generate questions that only a person can settle.</td></tr>
+    <tr><td><strong>What goes in</strong></td><td>Every inbound interface, including the ones that are not interfaces: manual uploads, email attachments, a shared folder, someone rekeying from a screen.</td></tr>
+    <tr><td><strong>What comes out</strong></td><td>Same rule. Files, API responses, reports, database writes another system reads directly, and anything a human copies out by hand.</td></tr>
+    <tr><td><strong>What it runs on</strong></td><td>Language, framework, runtime version, host, and whether any of those are out of support. The out-of-support column is usually the one that unlocks the budget.</td></tr>
+    <tr><td><strong>What happens if it stops</strong></td><td>Blast radius in plain words, and how long the business can tolerate it being down. This is what turns a map into a priority order.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Finding what nobody will tell you</h2>
+
+<p>
+  Interviews give you the systems people think about. The dependencies that break
+  modernisations are the ones nobody thinks about, so they have to be found from evidence.
+</p>
+
+<ul>
+  <li><strong>Read the network, not the diagram.</strong> Firewall rules, load balancer
+    configuration and DNS records list things that are actually talking to each other. Entries
+    nobody can explain are the most valuable rows in your map.</li>
+  <li><strong>List the scheduled jobs.</strong> Cron tables, scheduler entries, and anything on
+    a server that is not in the deployment pipeline. Batch is where undocumented behaviour
+    lives.</li>
+  <li><strong>Look at database accounts.</strong> Which accounts connect to a database, from
+    where, tells you about direct reads that no interface document mentions. Cross-system
+    direct database access is the single most common surprise.</li>
+  <li><strong>Ask about the spreadsheets.</strong> Ask in the operations team, not in the
+    architecture team, and ask it as "what do you have to do by hand every month". The answers
+    are usually load-bearing.</li>
+  <li><strong>Check the certificate and licence renewals.</strong> Anything with a renewal has
+    an owner who pays for it, and that owner knows something.</li>
+</ul>
+
+<div class="note">
+  <span class="note__label">The tell that a map is finished</span>
+  <p>
+    You can pick any system and say, without checking, what breaks if it stops. If you cannot
+    do that for a system, its inbound and outbound lists are still incomplete, whatever the
+    diagram says.
+  </p>
+</div>
+
+<h2>Scoring risk without a ceremony</h2>
+
+<p>
+  Risk scoring turns into a workshop industry very quickly. Two axes are enough to order the
+  work, and both can be answered by the owner in a minute.
+</p>
+
+<ul>
+  <li><strong>Consequence.</strong> If this stopped for a day, is it an inconvenience, a
+    revenue event, or a regulatory event?</li>
+  <li><strong>Fragility.</strong> Is it under support, does anyone still understand it, and
+    when was it last changed successfully?</li>
+</ul>
+
+<p>
+  Something high on both is where the money is going to be spent eventually, and it is almost
+  never the right first seam. Start somewhere with real pain and a small blast radius, prove
+  the method, and come back to the frightening thing with a team that has already done it once.
+</p>
+
+<h2>How long this should take</h2>
+
+<p>
+  For a mid-sized estate, one to three weeks. The map is a means to a decision, and the
+  decision is which seam to take first. If mapping runs past a month it has become the project.
+</p>
+
+<p>
+  Stop when you can name the first seam and defend the choice. Everything else can be filled in
+  during the work, and it will be more accurate then anyway, because you will be reading the
+  system rather than asking about it.
+</p>
+
+<div class="note note--warn">
+  <span class="note__label">What to resist</span>
+  <p>
+    A tooling decision. Estate maps get delayed for months while a discovery platform is
+    evaluated. A spreadsheet with the six columns above, filled in honestly, beats an empty
+    tool every time, and it takes an afternoon to set up.
+  </p>
+</div>
+
+<h2>What the map is used for afterwards</h2>
+
+<p>
+  It should not be a one-off artifact. Three ongoing uses justify keeping it current:
+</p>
+
+<ul>
+  <li>Choosing each next seam, since the map is the only place the blast radius is written
+    down.</li>
+  <li>Answering audit and due-diligence questions, which arrive without notice and always ask
+    what systems process a given category of data.</li>
+  <li>Decommissioning. The map is what tells you whether anything still depends on the thing
+    you want to switch off.</li>
+</ul>
+
+<p>
+  Keeping it current is a small standing job, and it is worth attaching it to an existing
+  ritual, such as a change advisory step, rather than creating a review nobody attends.
+</p>
+
+</main>
+
+<!-- ============ PRINTABLE TAKEAWAY ============ -->
+<section class="sheet">
+  <div class="sheet__card">
+
+    <div class="sheet__printhead print-only">
+      <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+      <div class="u">
+        greyquill.io/dc/services/estate-map.html<br>
+        Greyquill Software
+      </div>
+    </div>
+
+    <div class="sheet__head">
+      <div>
+        <h2 class="sheet__title">Estate map, field guide</h2>
+        <p class="sheet__sub">What to write down before a modernisation starts.</p>
+      </div>
+    </div>
+
+    <h3>Six columns per system</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th style="width:26%">Field</th><th>What good looks like</th></tr></thead>
+      <tbody>
+        <tr><td>What it does</td><td>One sentence in business terms. If nobody can write one, record that.</td></tr>
+        <tr><td>Who owns it</td><td>A named business owner and a named technical owner. Not a team.</td></tr>
+        <tr><td>What goes in</td><td>Every inbound path, including manual uploads, email, shared folders, rekeying.</td></tr>
+        <tr><td>What comes out</td><td>Files, APIs, reports, direct database writes, anything copied out by hand.</td></tr>
+        <tr><td>What it runs on</td><td>Language, framework, runtime version, host, and whether any is out of support.</td></tr>
+        <tr><td>If it stops</td><td>Blast radius in plain words, and tolerable downtime.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="cols2">
+      <div>
+        <h3>Find what nobody mentions</h3>
+        <ul>
+          <li>Firewall rules, load balancer config, DNS. Entries nobody can explain are the best rows in the map.</li>
+          <li>Scheduled jobs and cron tables. Batch is where undocumented behaviour lives.</li>
+          <li>Database accounts and where they connect from. Direct cross-system reads are the commonest surprise.</li>
+          <li>Ask operations what they do by hand every month. Those spreadsheets are load-bearing.</li>
+          <li>Certificate and licence renewals. Whoever pays knows something.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Order the work on two axes</h3>
+        <ul>
+          <li><strong>Consequence.</strong> Down for a day: inconvenience, revenue event, or regulatory event?</li>
+          <li><strong>Fragility.</strong> Supported? Understood by anyone? Last successful change?</li>
+        </ul>
+        <p>High on both is where the money goes eventually, and it is almost never the right first seam.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <span class="note__label">Finished when</span>
+      <p>
+        You can pick any system and say, without checking, what breaks if it stops. And you can
+        name the first seam and defend the choice. One to three weeks for a mid-sized estate. Past
+        a month, the map has become the project.
+      </p>
+    </div>
+
+    <h3>Two things to resist</h3>
+    <ul>
+      <li>Evaluating a discovery tool first. Six honest columns in a spreadsheet beat an empty platform.</li>
+      <li>Starting at the frightening system. Prove the method somewhere with real pain and a small blast radius, then come back to it.</li>
+    </ul>
+
+    <div class="sheet__foot">
+      <p class="cta">
+        <strong>Greyquill Software</strong> modernises systems that cannot be switched off, one
+        seam at a time, with the evidence to show it worked. <strong>greyquill.io</strong>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="foot no-print">
+  <div class="foot__in">
+    <span>&copy; Greyquill Software</span>
+    <span><a href="/dc/services/parallel-run.html">Next: the parallel run</a> &middot; <a href="https://www.greyquill.io">greyquill.io</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

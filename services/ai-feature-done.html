@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Definition of done for an AI feature · Greyquill</title>
+<meta name="description" content="What it actually means to say an AI feature ships with evaluation, guardrails and an audit trail. The gates a feature clears before it reaches a customer, and the ones that block.">
+<link rel="icon" href="/dc/assets/greyquill-logo.png">
+<link rel="stylesheet" href="assets/services.css">
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="topbar__in">
+    <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+    <nav class="crumbs">
+      <a href="/dc/">Document Center</a><span>/</span><a href="/dc/services/">Services</a><span>/</span>Definition of done
+    </nav>
+  </div>
+</header>
+
+<section class="hero no-print">
+  <div class="hero__in">
+    <p class="eyebrow">Product engineering</p>
+    <h1>Definition of done for an AI feature</h1>
+    <p class="deck">
+      Everyone says AI features ship with evaluation, guardrails and an audit trail. This is
+      what those three words have to mean before a feature reaches a customer, written as gates
+      somebody can actually check.
+    </p>
+    <div class="hero__meta">
+      <button class="pdfbtn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>
+        </svg>
+        Save as PDF
+      </button>
+      <span class="pdfbtn__hint">Prints the one-page gate list at the end of this document.</span>
+    </div>
+  </div>
+</section>
+
+<main class="doc">
+
+<h2>Why the usual definition of done does not survive contact with a model</h2>
+
+<p>
+  A conventional definition of done assumes that a feature which passes its tests today will
+  pass them tomorrow. That assumption holds for deterministic code and it does not hold for a
+  feature whose behaviour depends on a model.
+</p>
+
+<p>
+  Three things break. The same input can produce different output on two runs, so a single
+  passing test proves less than it used to. The behaviour can change without your code
+  changing, because the model behind it was updated. And the failure mode is usually a
+  plausible wrong answer rather than an error, so nothing alerts.
+</p>
+
+<p>
+  So the definition of done has to add gates that address those three specifically, and it has
+  to be explicit about which of them block a release.
+</p>
+
+<h2>The gates</h2>
+
+<h3>1. There is an evaluation set, and it existed before the feature</h3>
+
+<p>
+  A set of real inputs with known-correct outputs, written down before the implementation was
+  finished, so it describes the requirement rather than the behaviour of what got built. Thirty
+  well-chosen cases beat three hundred generated ones.
+</p>
+
+<p>The set has to include, deliberately:</p>
+<ul>
+  <li>The ordinary cases, at the proportion they actually occur.</li>
+  <li>The awkward cases the domain expert can name in an afternoon. Ask them, they always can.</li>
+  <li>Cases where the correct answer is to refuse, or to escalate, or to say it does not know.
+    A feature that has never been tested on an input it should decline will not decline one.</li>
+</ul>
+
+<h3>2. It is graded on outputs, and the grader is calibrated</h3>
+
+<p>
+  The evaluation asserts on what the feature produced, not on whether it produced something.
+  And the grader itself has been proven to fail a wrong answer, because a grader nobody has
+  tested is a number nobody should trust. The mechanics of this are in
+  <a href="/dc/champ/harness-verification.html">Harness and verification</a>.
+</p>
+
+<h3>3. It is run more than once, and the spread is recorded</h3>
+
+<p>
+  Non-determinism is a property of the feature, not a nuisance to be argued away. Run each
+  evaluation case several times and record the pass rate and the consistency. A feature that
+  alternates between right and wrong on the same input is not ready even when its average looks
+  acceptable, and the average is exactly what hides it.
+</p>
+
+<h3>4. The guardrails are tested, not just present</h3>
+
+<p>
+  Guardrail is a word that gets used for anything from a system prompt line to a hard limit in
+  code. What makes one real is that there is a test proving it holds. For each guardrail:
+</p>
+<ul>
+  <li>What it prevents, in one sentence.</li>
+  <li>Where it is enforced. A rule stated only in a prompt is a request. A rule enforced in code
+    around the model is a control.</li>
+  <li>A test that attempts the thing and shows it is refused.</li>
+</ul>
+
+<div class="note note--warn">
+  <span class="note__label">The distinction that matters most</span>
+  <p>
+    Anything you can express only as an instruction to the model is a preference. Anything you
+    can enforce outside the model, in code, is a control. Know which of your guardrails are
+    which, and never describe a preference to a customer as a control.
+  </p>
+</div>
+
+<h3>5. Failure is designed, not incidental</h3>
+
+<p>
+  Decide what the feature does when it cannot do its job, and build that path deliberately.
+  What the user sees, whether the work falls back to a person, whether partial output is worse
+  than none. Then test it by making the dependency fail, because the fallback path that has
+  never been exercised is the one that breaks during the incident.
+</p>
+
+<h3>6. Cost and latency are known at peak</h3>
+
+<p>
+  Measured per operation, at the volume the feature will actually see rather than the volume it
+  saw in development. Cost per call turns into a monthly number that someone has to approve, and
+  it is much easier to have that conversation before launch.
+</p>
+
+<h3>7. It leaves a record</h3>
+
+<p>
+  Enough that somebody who was not there can reconstruct a given output later: the input by
+  reference, the model and version, the decision, any confidence, and whether a person was
+  involved. This is what makes the feature answerable months afterwards, which is when it is
+  always asked about.
+</p>
+
+<h3>8. The conventional bar still applies</h3>
+
+<p>
+  Everything an ordinary feature has to clear, it still has to clear. Automated tests on every
+  commit, release gates that block regressions, accessibility, observability. For reference,
+  our own GST Co-Pilot ships with 162 tests and 88 percent coverage, and the AI parts of it did
+  not get an exemption from that.
+</p>
+
+<h2>Which gates block</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:44%">Gate</th><th style="width:18%">Status</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>Evaluation set exists, written before the build finished</td><td><span class="pill pill--bad">Blocks</span></td><td>Without it there is no claim to check.</td></tr>
+    <tr><td>Graded on outputs, grader proven to fail a wrong answer</td><td><span class="pill pill--bad">Blocks</span></td><td>An untested grader produces a number people trust.</td></tr>
+    <tr><td>Multiple runs, spread recorded</td><td><span class="pill pill--bad">Blocks</span></td><td>One green run is not evidence for a non-deterministic feature.</td></tr>
+    <tr><td>Every guardrail has a test that attempts the thing</td><td><span class="pill pill--bad">Blocks</span></td><td>An untested guardrail is a hope.</td></tr>
+    <tr><td>Failure path built and exercised</td><td><span class="pill pill--bad">Blocks</span></td><td>It will be used, and usually first during an incident.</td></tr>
+    <tr><td>Record sufficient to reconstruct an output</td><td><span class="pill pill--bad">Blocks</span></td><td>You cannot add it retrospectively for work already done.</td></tr>
+    <tr><td>Cost and latency measured at peak</td><td><span class="pill pill--warn">Advisory</span></td><td>Rarely a reason to stop a launch, frequently a reason to change a plan.</td></tr>
+    <tr><td>Refusal and escalation cases covered</td><td><span class="pill pill--warn">Advisory</span></td><td>Depends on what the feature does. Blocking wherever a wrong answer has consequences.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>After launch</h2>
+
+<p>
+  The gates above are a photograph. A feature built on a model is a film, because the model can
+  change underneath it without any deployment on your side.
+</p>
+
+<ul>
+  <li><strong>Re-run the evaluation set on a schedule</strong>, and always before a model
+    version changes. A provider-side update is a new feature, not maintenance.</li>
+  <li><strong>Keep the baseline.</strong> The result set from the last accepted release is what
+    every later run is compared against. A case that used to pass and now fails is a regression
+    whatever the average says.</li>
+  <li><strong>Watch the signals the evaluation cannot see.</strong> Users retrying, overriding,
+    or abandoning the feature are quality data, and they usually move before the metrics do.</li>
+  <li><strong>Promote real failures into the evaluation set.</strong> Anything that went wrong
+    in production becomes a case, so the same fault cannot regress unnoticed twice.</li>
+</ul>
+
+</main>
+
+<!-- ============ PRINTABLE TAKEAWAY ============ -->
+<section class="sheet">
+  <div class="sheet__card">
+
+    <div class="sheet__printhead print-only">
+      <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+      <div class="u">
+        greyquill.io/dc/services/ai-feature-done.html<br>
+        Greyquill Software
+      </div>
+    </div>
+
+    <div class="sheet__head">
+      <div>
+        <h2 class="sheet__title">Definition of done, AI feature</h2>
+        <p class="sheet__sub">What has to be true before it reaches a customer.</p>
+      </div>
+    </div>
+
+    <h3>The gates</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th style="width:42%">Gate</th><th style="width:16%">Status</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Evaluation set exists, written before the build finished</td><td><span class="pill pill--bad">Blocks</span></td><td>No set, no claim to check. Include the awkward cases and the ones it should decline.</td></tr>
+        <tr><td>Graded on outputs, grader proven to fail a wrong answer</td><td><span class="pill pill--bad">Blocks</span></td><td>An untested grader produces a number people trust.</td></tr>
+        <tr><td>Run several times, pass rate and consistency recorded</td><td><span class="pill pill--bad">Blocks</span></td><td>One green run is not evidence when the feature is non-deterministic.</td></tr>
+        <tr><td>Every guardrail has a test that attempts the thing</td><td><span class="pill pill--bad">Blocks</span></td><td>Enforced in code is a control. Stated in a prompt is a preference.</td></tr>
+        <tr><td>Failure path designed and exercised</td><td><span class="pill pill--bad">Blocks</span></td><td>It gets used first during an incident.</td></tr>
+        <tr><td>Record sufficient to reconstruct any output</td><td><span class="pill pill--bad">Blocks</span></td><td>Cannot be added retrospectively for work already done.</td></tr>
+        <tr><td>Cost and latency measured at peak</td><td><span class="pill pill--warn">Advisory</span></td><td>Rarely stops a launch, often changes a plan.</td></tr>
+        <tr><td>Refusal and escalation cases covered</td><td><span class="pill pill--warn">Advisory</span></td><td>Blocking wherever a wrong answer has consequences.</td></tr>
+        <tr><td>The ordinary bar: tests on every commit, release gates, accessibility, observability</td><td><span class="pill pill--bad">Blocks</span></td><td>The AI parts do not get an exemption.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="cols2">
+      <div>
+        <h3>Why the usual definition breaks</h3>
+        <ul>
+          <li>The same input can give different output on two runs.</li>
+          <li>Behaviour changes without your code changing, when the model updates.</li>
+          <li>Failure looks like a plausible answer, so nothing alerts.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>After launch</h3>
+        <ul>
+          <li>Re-run the set on a schedule, and always before a model version changes.</li>
+          <li>Keep the baseline. A case that used to pass and now fails is a regression.</li>
+          <li>Watch retries, overrides and abandonment. They move before the metrics do.</li>
+          <li>Promote every production failure into the evaluation set.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sheet__foot">
+      <p class="cta">
+        <strong>Greyquill Software</strong> builds products with AI in them and the discipline
+        around it, including our own. If you want a second pair of eyes on a feature before it
+        ships, <strong>greyquill.io</strong>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="foot no-print">
+  <div class="foot__in">
+    <span>&copy; Greyquill Software</span>
+    <span><a href="/dc/champ/harness-verification.html">Deeper: harness and verification</a> &middot; <a href="https://www.greyquill.io">greyquill.io</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

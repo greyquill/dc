@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where automation stops and a person starts · Greyquill</title>
+<meta name="description" content="Deciding which steps of a process become plain software, which become agents, and which need a person. A threshold you can set, defend, and move on evidence.">
+<link rel="icon" href="/dc/assets/greyquill-logo.png">
+<link rel="stylesheet" href="assets/services.css">
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="topbar__in">
+    <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+    <nav class="crumbs">
+      <a href="/dc/">Document Center</a><span>/</span><a href="/dc/services/">Services</a><span>/</span>Automation threshold
+    </nav>
+  </div>
+</header>
+
+<section class="hero no-print">
+  <div class="hero__in">
+    <p class="eyebrow">Modernisation</p>
+    <h1>Where automation stops and a person starts</h1>
+    <p class="deck">
+      Not every step of a process should be automated, and not every automated step should be
+      done by a model. This is how to sort the steps, where to put the human review threshold,
+      and how to move it later without anyone having to take it on faith.
+    </p>
+    <div class="hero__meta">
+      <button class="pdfbtn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 21h16"/>
+        </svg>
+        Save as PDF
+      </button>
+      <span class="pdfbtn__hint">Prints the one-page decision guide at the end of this document.</span>
+    </div>
+  </div>
+</section>
+
+<main class="doc">
+
+<h2>Start from the process, not the tool</h2>
+
+<p>
+  Most automation programmes begin with a platform and then look for work to put on it. That
+  ordering produces automation of the steps that were easiest to automate rather than the steps
+  that were worth automating, and it is why so many of these programmes stall after the first
+  three processes.
+</p>
+
+<p>
+  Map the process first, step by step, as it is actually performed. Then sort each step. Only
+  then does the question of tooling arise, and by that point it mostly answers itself.
+</p>
+
+<h2>Three kinds of step</h2>
+
+<p>
+  Every step in a business process falls into one of three categories, and the category
+  determines what should implement it.
+</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:20%">Kind</th><th>How to recognise it</th><th style="width:28%">What implements it</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Deterministic</strong></td>
+      <td>Given the same input, the correct output is always the same, and the rule can be written down. Validation, arithmetic, routing on a documented condition, format conversion.</td>
+      <td>Plain software. No model. A model here adds cost, latency and variance in exchange for nothing.</td>
+    </tr>
+    <tr>
+      <td><strong>Judgement under a rule</strong></td>
+      <td>There is a right answer but reaching it needs reading, matching, or interpreting something unstructured. Matching an invoice to a purchase order, extracting fields from a document, classifying an exception.</td>
+      <td>An agent or model, with a verifier around it and a confidence output.</td>
+    </tr>
+    <tr>
+      <td><strong>Accountability</strong></td>
+      <td>Someone has to be answerable for the outcome. Approving a payment above a limit, accepting a risk, overriding a control, anything where a regulator would ask who decided.</td>
+      <td>A person. Automation prepares the decision and never makes it.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note note--warn">
+  <span class="note__label">The most expensive misclassification</span>
+  <p>
+    Putting a model on a deterministic step because the platform makes it easy. It is slower,
+    it costs per call, and it introduces variance into the one part of the process that had
+    none. If you can write the rule down, write it down.
+  </p>
+</div>
+
+<h2>The threshold</h2>
+
+<p>
+  For judgement steps the useful design is not automated or manual. It is a confidence
+  threshold, with everything below it going to a person and everything above it proceeding on
+  its own.
+</p>
+
+<p>
+  This only works if two things are true, and both are easy to get wrong.
+</p>
+
+<ul>
+  <li><strong>The confidence figure has to mean something.</strong> A number a model emits about
+    its own certainty is not a measurement. It has to be calibrated against known outcomes: of
+    the items scored above the threshold, what proportion were actually right? Until you have
+    that, you have a dial with no scale on it.</li>
+  <li><strong>The review has to be real.</strong> A queue nobody has time for becomes a rubber
+    stamp within a month, and a rubber stamp is worse than full automation because it creates
+    the appearance of oversight without the substance.</li>
+</ul>
+
+<h3>Setting the first threshold</h3>
+
+<p>
+  Start with everything going to review, and log the reviewer's decision next to the system's.
+  That is a shadow period and it serves the same purpose as the
+  <a href="/dc/services/parallel-run.html">parallel run</a>: it produces the evidence before
+  the risk is taken.
+</p>
+
+<p>
+  After enough volume you can read the agreement rate by confidence band, and set the threshold
+  where the disagreement rate falls below what the process can tolerate. That tolerance is a
+  business decision, and it differs enormously between a marketing classification and a payment
+  release.
+</p>
+
+<h3>Moving it later</h3>
+
+<p>
+  Thresholds should move as the system improves, and that movement is a controlled change with
+  evidence behind it, not a configuration edit somebody makes on a Friday. What justifies a
+  move:
+</p>
+
+<ul>
+  <li>Sustained agreement above the new threshold across a period covering the process cycle.</li>
+  <li>No change in the shape of the incoming work that would invalidate the history.</li>
+  <li>A named person who agreed to the new level, and the date they agreed.</li>
+</ul>
+
+<p>
+  Keep the ability to move it back, and make moving it back cheap. A threshold that can only go
+  one direction will be defended past the point where it should have been lowered.
+</p>
+
+<h2>What every automated step leaves behind</h2>
+
+<p>
+  The point of automating a governed process is not only that it runs without a person. It is
+  that afterwards you can show what happened. Each automated step should record enough that
+  somebody who was not there can reconstruct it:
+</p>
+
+<ul>
+  <li>What the input was, by reference.</li>
+  <li>What the step decided, and which implementation decided it.</li>
+  <li>The confidence, where the step was a judgement step.</li>
+  <li>Whether it crossed the threshold, and therefore whether a person saw it.</li>
+  <li>If a person saw it, who, when, and what they did.</li>
+  <li>Enough of the working to explain the outcome, without keeping so much that the record
+    itself becomes a data protection problem.</li>
+</ul>
+
+<p>
+  That last balance is a real design decision and it is worth making deliberately. Keeping the
+  full input of every step forever is the easy answer and it is frequently the wrong one.
+</p>
+
+<div class="note">
+  <span class="note__label">Related</span>
+  <p>
+    The verification and evidence model these records fit into is described in
+    <a href="/dc/champ/harness-verification.html">Harness and verification</a>, and the runtime
+    that produces them in
+    <a href="/dc/champ/agent-swarm-architecture.html">Agent swarm architecture</a>.
+  </p>
+</div>
+
+<h2>Signs the threshold is in the wrong place</h2>
+
+<ul>
+  <li><strong>Reviewers agree with the system almost every time.</strong> The threshold is too
+    low. You are paying people to confirm work that did not need confirming, and their
+    attention is being spent where it earns nothing.</li>
+  <li><strong>Reviewers overturn a meaningful share.</strong> Too high, or the model is not
+    good enough for this step yet. Either way, lower it and find out which.</li>
+  <li><strong>The queue is never empty.</strong> The threshold is set for a review capacity you
+    do not have. This resolves as a rubber stamp unless someone changes it deliberately.</li>
+  <li><strong>Nobody can say what the current threshold is.</strong> More common than it sounds,
+    and it means the control is not being managed at all.</li>
+</ul>
+
+<h2>What not to automate, at any confidence</h2>
+
+<ul>
+  <li>Anything where a regulation names a person as accountable. The automation prepares, the
+    person decides, and the record shows both.</li>
+  <li>The final approval on an exception the system itself raised. A system that both flags and
+    clears its own exceptions has no control in it.</li>
+  <li>Changes to the threshold itself. That is a control change and it belongs to a person.</li>
+</ul>
+
+</main>
+
+<!-- ============ PRINTABLE TAKEAWAY ============ -->
+<section class="sheet">
+  <div class="sheet__card">
+
+    <div class="sheet__printhead print-only">
+      <img src="/dc/assets/greyquill-logo.png" alt="Greyquill">
+      <div class="u">
+        greyquill.io/dc/services/automation-threshold.html<br>
+        Greyquill Software
+      </div>
+    </div>
+
+    <div class="sheet__head">
+      <div>
+        <h2 class="sheet__title">Automate, or ask a person</h2>
+        <p class="sheet__sub">Sorting the steps of a process, and setting the review threshold.</p>
+      </div>
+    </div>
+
+    <h3>Sort every step into one of three</h3>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th style="width:22%">Kind</th><th>Recognise it by</th><th style="width:30%">Implement with</th></tr></thead>
+      <tbody>
+        <tr><td>Deterministic</td><td>Same input, same correct output, and the rule can be written down.</td><td>Plain software. No model.</td></tr>
+        <tr><td>Judgement under a rule</td><td>A right answer exists, but reaching it needs reading, matching or interpreting.</td><td>An agent, with a verifier and a confidence output.</td></tr>
+        <tr><td>Accountability</td><td>Someone must be answerable. A regulator would ask who decided.</td><td>A person. Automation prepares, never decides.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="cols2">
+      <div>
+        <h3>The threshold works only if</h3>
+        <ul>
+          <li>The confidence figure is calibrated against known outcomes, not emitted by the model about itself.</li>
+          <li>The review is real. A queue nobody has time for becomes a rubber stamp in a month.</li>
+        </ul>
+        <h3>Set the first one by</h3>
+        <ul>
+          <li>Sending everything to review first, logging both decisions.</li>
+          <li>Reading agreement by confidence band.</li>
+          <li>Setting it where disagreement falls below what the process tolerates.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>It is in the wrong place when</h3>
+        <ul>
+          <li>Reviewers agree almost every time. Too low.</li>
+          <li>Reviewers overturn a meaningful share. Too high, or the model is not ready.</li>
+          <li>The queue is never empty. Set for capacity you do not have.</li>
+          <li>Nobody can say what it currently is. Not being managed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Every automated step records</h3>
+    <ul>
+      <li>Input by reference, the decision, and which implementation made it</li>
+      <li>Confidence, and whether it crossed the threshold</li>
+      <li>If a person saw it: who, when, what they did</li>
+      <li>Enough working to explain the outcome, without keeping so much that the record is itself a data protection problem</li>
+    </ul>
+
+    <div class="note note--bad">
+      <span class="note__label">Never automate</span>
+      <p>
+        A decision a regulation makes a named person accountable for. The final clearing of an
+        exception the system itself raised. Changes to the threshold. Those are control changes
+        and they belong to a person.
+      </p>
+    </div>
+
+    <div class="sheet__foot">
+      <p class="cta">
+        <strong>Greyquill Software</strong> builds governed automation for processes that have to
+        answer for themselves. If you are drawing this line right now, we would be glad to help.
+        <strong>greyquill.io</strong>
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="foot no-print">
+  <div class="foot__in">
+    <span>&copy; Greyquill Software</span>
+    <span><a href="/dc/services/">More service documentation</a> &middot; <a href="https://www.greyquill.io">greyquill.io</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
