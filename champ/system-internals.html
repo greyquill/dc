@@ -684,7 +684,7 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-</style>style
+</style>
 </head>
 <body>
 
@@ -746,7 +746,7 @@
           </div>
           <div style="padding:8px 0; border-bottom:1px solid var(--border);">
             <strong style="color:var(--text);">Full audit trail</strong><br>
-            Every packet gets a unique ID (<code style="color:var(--cyan);">wp-{hex8}</code>code), phase history with timestamps, and an event log entry. Nothing happens without a record.
+            Every packet gets a unique ID (<code style="color:var(--cyan);">wp-{hex8}</code>), phase history with timestamps, and an event log entry. Nothing happens without a record.
           </div>
           <div style="padding:8px 0; border-bottom:1px solid var(--border);">
             <strong style="color:var(--text);">Retry-safe</strong><br>
@@ -769,21 +769,21 @@
         <div>
           <div style="font-size:11px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Identity &amp; Routing</div>
           <table class="schema-table">
-            <tr><td style="width:130px;"><code>id</code>code</td><td><code style="color:var(--amber);">wp-{hex8}</code>code, unique ID generated from crypto.randomUUID()</td></tr>
-            <tr><td><code>agent</code>code</td><td>Target agent name (e.g. "dev", "qa", "architect")</td></tr>
-            <tr><td><code>invoked_by</code>code</td><td>Who created it, "human" for CLI, or another agent's name</td></tr>
-            <tr><td><code>priority</code>code</td><td><span class="tag tag-red">P0</span> <span class="tag tag-amber">P1</span> <span class="tag tag-green">P2</span>, urgency level (default P1)</td></tr>
-            <tr><td><code>timeout_minutes</code>code</td><td>Max execution time (default 60)</td></tr>
-            <tr><td><code>complexity</code>code</td><td><span class="tag tag-green">simple</span> <span class="tag tag-amber">medium</span> <span class="tag tag-red">complex</span>, drives model selection and fix loop limits</td></tr>
+            <tr><td style="width:130px;"><code>id</code></td><td><code style="color:var(--amber);">wp-{hex8}</code>, unique ID generated from crypto.randomUUID()</td></tr>
+            <tr><td><code>agent</code></td><td>Target agent name (e.g. "dev", "qa", "architect")</td></tr>
+            <tr><td><code>invoked_by</code></td><td>Who created it, "human" for CLI, or another agent's name</td></tr>
+            <tr><td><code>priority</code></td><td><span class="tag tag-red">P0</span> <span class="tag tag-amber">P1</span> <span class="tag tag-green">P2</span>, urgency level (default P1)</td></tr>
+            <tr><td><code>timeout_minutes</code></td><td>Max execution time (default 60)</td></tr>
+            <tr><td><code>complexity</code></td><td><span class="tag tag-green">simple</span> <span class="tag tag-amber">medium</span> <span class="tag tag-red">complex</span>, drives model selection and fix loop limits</td></tr>
           </table>
 
           <div style="font-size:11px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Lifecycle State</div>
           <table class="schema-table">
-            <tr><td style="width:130px;"><code>status</code>code</td><td>Legacy: pending → accepted → in_progress → done/failed/blocked</td></tr>
-            <tr><td><code>phase</code>code</td><td>FSM: PENDING → ACCEPTED → EXECUTING → VERIFYING → FIXING → DONE/FAILED/BLOCKED/CANCELLED</td></tr>
-            <tr><td><code>phase_history</code>code</td><td>Array of <code>{phase, timestamp, reason}</code>code, full transition audit</td></tr>
-            <tr><td><code>active</code>code</td><td>Boolean, false once in a terminal phase</td></tr>
-            <tr><td><code>fix_iteration</code>code</td><td>Current fix loop count (0-indexed, resets on restart)</td></tr>
+            <tr><td style="width:130px;"><code>status</code></td><td>Legacy: pending → accepted → in_progress → done/failed/blocked</td></tr>
+            <tr><td><code>phase</code></td><td>FSM: PENDING → ACCEPTED → EXECUTING → VERIFYING → FIXING → DONE/FAILED/BLOCKED/CANCELLED</td></tr>
+            <tr><td><code>phase_history</code></td><td>Array of <code>{phase, timestamp, reason}</code>, full transition audit</td></tr>
+            <tr><td><code>active</code></td><td>Boolean, false once in a terminal phase</td></tr>
+            <tr><td><code>fix_iteration</code></td><td>Current fix loop count (0-indexed, resets on restart)</td></tr>
           </table>
         </div>
 
@@ -791,33 +791,33 @@
         <div>
           <div style="font-size:11px; font-weight:600; color:var(--green); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Payload, The Actual Work</div>
           <table class="schema-table">
-            <tr><td style="width:130px;"><code>instruction</code>code</td><td>Free-text task description. This becomes the core of the agent's prompt.</td></tr>
+            <tr><td style="width:130px;"><code>instruction</code></td><td>Free-text task description. This becomes the core of the agent's prompt.</td></tr>
             <tr>
-              <td><code>context</code>code</td>
+              <td><code>context</code></td>
               <td>
-                <code>.files</code>code, specific file paths to read<br>
-                <code>.directories</code>code, dirs to explore<br>
-                <code>.references</code>code, related packet IDs or doc links<br>
-                <code>.notes</code>code, free-text extra context
+                <code>.files</code>, specific file paths to read<br>
+                <code>.directories</code>, dirs to explore<br>
+                <code>.references</code>, related packet IDs or doc links<br>
+                <code>.notes</code>, free-text extra context
               </td>
             </tr>
             <tr>
-              <td><code>expected_output</code>code</td>
+              <td><code>expected_output</code></td>
               <td>
-                <code>.type</code>code, one of: <span class="tag tag-blue">files</span> <span class="tag tag-purple">pr</span> <span class="tag tag-green">report</span> <span class="tag tag-amber">review</span> <span class="tag tag-cyan">plan</span> <span class="tag tag-pink">decision</span><br>
-                <code>.description</code>code, what the output should contain
+                <code>.type</code>, one of: <span class="tag tag-blue">files</span> <span class="tag tag-purple">pr</span> <span class="tag tag-green">report</span> <span class="tag tag-amber">review</span> <span class="tag tag-cyan">plan</span> <span class="tag tag-pink">decision</span><br>
+                <code>.description</code>, what the output should contain
               </td>
             </tr>
-            <tr><td><code>success_criteria</code>code</td><td>String array, each criterion is checked against the result</td></tr>
-            <tr><td><code>test_command</code>code</td><td>Shell command to verify output (e.g. <code>bun test</code>code)</td></tr>
+            <tr><td><code>success_criteria</code></td><td>String array, each criterion is checked against the result</td></tr>
+            <tr><td><code>test_command</code></td><td>Shell command to verify output (e.g. <code>bun test</code>)</td></tr>
           </table>
 
           <div style="font-size:11px; font-weight:600; color:var(--orange); text-transform:uppercase; letter-spacing:1px; margin:16px 0 8px;">Optional, Verification</div>
           <table class="schema-table">
             <tr>
-              <td style="width:130px;"><code>verificationSpec</code>code</td>
+              <td style="width:130px;"><code>verificationSpec</code></td>
               <td>
-                Structured checks array: <code>{type, command, required}</code>code<br>
+                Structured checks array: <code>{type, command, required}</code><br>
                 Types: test, typecheck, lint, build, runtime, security, performance
               </td>
             </tr>
@@ -842,8 +842,8 @@
             complexity: "medium"<br>
             phase: "PENDING"
           </div>
-          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createPacket()</code>code</div>
-          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/packets.json</code>code</div>
+          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createPacket()</code></div>
+          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/packets.json</code></div>
         </div>
 
         <!-- Arrow -->
@@ -865,8 +865,8 @@
             criteria_met: { "All tests pass": true }<br>
             verificationResult.passed: true
           </div>
-          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createResult()</code>code</div>
-          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/results.json</code>code</div>
+          <div style="font-size:10px; color:var(--text-dim); margin-top:8px;">Created by: <code>protocol.ts → createResult()</code></div>
+          <div style="font-size:10px; color:var(--text-dim);">Stored in: <code>shared/results.json</code></div>
         </div>
       </div>
     </div>
@@ -908,7 +908,7 @@
         </div>
         <div style="font-size:11px; color:var(--text-dim); margin-top:12px; text-align:center;">
           If verification fails and iterations remain, the packet loops back through the <strong style="color:var(--orange);">Fix Loop</strong> (EXECUTING → VERIFYING → FIXING → EXECUTING).
-          <br>Agents can also emit <code style="color:var(--cyan);">follow_up_packets</code>code in their result to spawn new work.
+          <br>Agents can also emit <code style="color:var(--cyan);">follow_up_packets</code> in their result to spawn new work.
         </div>
       </div>
     </div>
@@ -2585,6 +2585,6 @@ function renderDataFlow() {
 }
 
 renderDataFlow();
-</script>script
+</script>
 </body>
 </html>

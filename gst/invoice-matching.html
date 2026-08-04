@@ -113,7 +113,7 @@
     .wf-row { grid-template-columns: 100px 1fr 60px 50px; }
     .example-grid { grid-template-columns: 1fr; }
   }
-</style>style
+</style>
 </head>
 <body>
 
@@ -157,7 +157,7 @@
   </div>
 
   <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:48px; font-size:13px; color:var(--text-dim); border-left:3px solid var(--amber);">
-    These are the <strong style="color:var(--text);">same invoice</strong>. The supplier filed <code style="color:var(--amber);">202600042</code>code on the GST portal, but your Tally export has it as <code style="color:var(--cyan);">INV-2026/00042</code>code with a prefix and slashes. Without normalization, the system would flag this as <strong style="color:var(--red);">"Missing in GSTR-2B"</strong>, a false ITC risk alert.
+    These are the <strong style="color:var(--text);">same invoice</strong>. The supplier filed <code style="color:var(--amber);">202600042</code> on the GST portal, but your Tally export has it as <code style="color:var(--cyan);">INV-2026/00042</code> with a prefix and slashes. Without normalization, the system would flag this as <strong style="color:var(--red);">"Missing in GSTR-2B"</strong>, a false ITC risk alert.
   </div>
 
   <!-- ===== ANCHOR FIELDS ===== -->
@@ -277,7 +277,7 @@
       <div class="pipe-num">2</div>
       <div class="pipe-body">
         <h4>Strip Known Prefixes</h4>
-        <p>Removes common invoice prefixes that ERPs add but the GST portal strips. Case-insensitive match. Recognized: <code>INV-</code>code, <code>INV/</code>code, <code>BILL-</code>code, <code>BILL/</code>code, <code>TAX-</code>code, <code>TAX/</code>code.</p>
+        <p>Removes common invoice prefixes that ERPs add but the GST portal strips. Case-insensitive match. Recognized: <code>INV-</code>, <code>INV/</code>, <code>BILL-</code>, <code>BILL/</code>, <code>TAX-</code>, <code>TAX/</code>.</p>
         <div class="pipe-example">
           <span class="before">INV-2026/001</span>
           <span class="arrow">&rarr;</span>
@@ -291,7 +291,7 @@
       <div class="pipe-num">3</div>
       <div class="pipe-body">
         <h4>Remove Separators</h4>
-        <p>Hyphens (<code>-</code>code), slashes (<code>/</code>code), dots (<code>.</code>code), and spaces are all deleted. Different ERP systems use different separators for the same number.</p>
+        <p>Hyphens (<code>-</code>), slashes (<code>/</code>), dots (<code>.</code>), and spaces are all deleted. Different ERP systems use different separators for the same number.</p>
         <div class="pipe-example">
           <span class="before">2026/001</span>
           <span class="arrow">&rarr;</span>
@@ -305,7 +305,7 @@
       <div class="pipe-num">4</div>
       <div class="pipe-body">
         <h4>Strip Special Characters</h4>
-        <p>Everything except <code>a-z</code>code, <code>A-Z</code>code, <code>0-9</code>code is removed. Catches stray <code>#</code>code, <code>@</code>code, unicode characters.</p>
+        <p>Everything except <code>a-z</code>, <code>A-Z</code>, <code>0-9</code> is removed. Catches stray <code>#</code>, <code>@</code>, unicode characters.</p>
         <div class="pipe-example">
           <span class="before">2026001#A</span>
           <span class="arrow">&rarr;</span>
@@ -319,7 +319,7 @@
       <div class="pipe-num">5</div>
       <div class="pipe-body">
         <h4>Strip Leading Zeros</h4>
-        <p>Tally often pads with zeros (<code>00042</code>code). The GST portal usually doesn't. Minimum result: <code>0</code>code.</p>
+        <p>Tally often pads with zeros (<code>00042</code>). The GST portal usually doesn't. Minimum result: <code>0</code>.</p>
         <div class="pipe-example">
           <span class="before">00042</span>
           <span class="arrow">&rarr;</span>
@@ -333,7 +333,7 @@
       <div class="pipe-num">6</div>
       <div class="pipe-body">
         <h4>Case Fold to Uppercase</h4>
-        <p>Final step. <code>inv</code>code and <code>INV</code>code become identical after this.</p>
+        <p>Final step. <code>inv</code> and <code>INV</code> become identical after this.</p>
         <div class="pipe-example">
           <span class="before">abc123def</span>
           <span class="arrow">&rarr;</span>
@@ -759,7 +759,7 @@ function runMatch() {
 
 // Auto-run on load
 document.addEventListener('DOMContentLoaded', () => { runNormalize(); runMatch(); });
-</script>script
+</script>
 
 </body>
 </html>

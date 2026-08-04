@@ -76,13 +76,13 @@
     .stage-body { grid-template-columns: 1fr; }
     .stage-head { flex-wrap: wrap; }
   }
-</style>style
+</style>
 </head>
 <body>
 
 <div class="header">
   <h1>End-to-End Data Flow</h1>
-  <p>From a purchase-register upload to a risk-scored reconciliation report. Eight stages, each calling a specific module, this is the control flow for <code style="color:var(--green); font-family:monospace;">POST /reconcile</code>code.</p>
+  <p>From a purchase-register upload to a risk-scored reconciliation report. Eight stages, each calling a specific module, this is the control flow for <code style="color:var(--green); font-family:monospace;">POST /reconcile</code>.</p>
   <div class="header-nav">
     <a href="index.html">&larr; Architecture Overview</a>
     <a href="invoice-matching.html">Invoice Matching Logic &rarr;</a>
@@ -110,9 +110,9 @@
       <div class="stage-card">
         <h4>Where it runs</h4>
         <ul>
-          <li><code>server.ts</code>code &rarr; <code>POST /api/sessions/:id/upload</code>code</li>
-          <li><code>storage/storage.service.ts</code>code puts the file in COS under a generated key</li>
-          <li><code>db/repositories/document.repo.ts</code>code creates a <code>documents</code>code row (status=pending)</li>
+          <li><code>server.ts</code> &rarr; <code>POST /api/sessions/:id/upload</code></li>
+          <li><code>storage/storage.service.ts</code> puts the file in COS under a generated key</li>
+          <li><code>db/repositories/document.repo.ts</code> creates a <code>documents</code> row (status=pending)</li>
         </ul>
       </div>
       <div class="stage-card">
@@ -140,7 +140,7 @@
       <div class="stage-num">2</div>
       <div class="stage-title">
         <h3>Parse</h3>
-        <p>Format-aware parsers turn the raw files into a unified <code>ParsedInvoice</code>code shape.</p>
+        <p>Format-aware parsers turn the raw files into a unified <code>ParsedInvoice</code> shape.</p>
       </div>
       <span class="stage-chip" style="background:rgba(96,165,250,0.15); color:var(--accent);">Python AI</span>
     </div>
@@ -148,17 +148,17 @@
       <div class="stage-card">
         <h4>Excel / purchase register</h4>
         <ul>
-          <li><code>excel_parser/format_detectors.py</code>code identifies Tally / Zoho / generic</li>
-          <li><code>excel_parser/column_mapper.py</code>code fuzzy-matches headers to canonical fields</li>
-          <li><code>excel_parser/parser.py</code>code runs per-row validation and produces a <code>ParseReport</code>code</li>
+          <li><code>excel_parser/format_detectors.py</code> identifies Tally / Zoho / generic</li>
+          <li><code>excel_parser/column_mapper.py</code> fuzzy-matches headers to canonical fields</li>
+          <li><code>excel_parser/parser.py</code> runs per-row validation and produces a <code>ParseReport</code></li>
         </ul>
       </div>
       <div class="stage-card">
         <h4>GSTR-2B JSON</h4>
         <ul>
-          <li><code>gstr_parser/section_extractor.py</code>code pulls the B2B block from the GSTN envelope</li>
-          <li><code>gstr_parser/gstr2b_parser.py</code>code handles both post-Oct-2024 and legacy <code>itms[]</code>code shapes</li>
-          <li><code>gstr_parser/deduplication.py</code>code assigns <code>inv_uid</code>code and a <code>record_hash</code>code</li>
+          <li><code>gstr_parser/section_extractor.py</code> pulls the B2B block from the GSTN envelope</li>
+          <li><code>gstr_parser/gstr2b_parser.py</code> handles both post-Oct-2024 and legacy <code>itms[]</code> shapes</li>
+          <li><code>gstr_parser/deduplication.py</code> assigns <code>inv_uid</code> and a <code>record_hash</code></li>
         </ul>
       </div>
     </div>
@@ -166,11 +166,11 @@
       <div class="stage-card" style="grid-column: span 2;">
         <h4>PDF / Image Invoice Extraction, Dual Mode</h4>
         <ul>
-          <li><strong>Mode 1: pdfplumber + watsonx LLM (default for .pdf)</strong>, <code>pdfplumber</code>code extracts text from native PDFs (free, no API cost for text extraction). The extracted text is then sent to watsonx.ai Mistral model which parses structured invoice fields (invoice #, GSTIN, amounts, line items). Only LLM token cost applies (covered by existing watsonx credits).</li>
+          <li><strong>Mode 1: pdfplumber + watsonx LLM (default for .pdf)</strong>, <code>pdfplumber</code> extracts text from native PDFs (free, no API cost for text extraction). The extracted text is then sent to watsonx.ai Mistral model which parses structured invoice fields (invoice #, GSTIN, amounts, line items). Only LLM token cost applies (covered by existing watsonx credits).</li>
           <li><strong>Mode 2: watsonx Text Extraction / OCR (for images, scanned PDFs)</strong>, IBM watsonx.ai's built-in document extraction service with OCR. Handles scanned PDFs, JPG, PNG, and TIFF images. Requires a COS connection asset in the watsonx project. <strong>Pricing:</strong> 100 documents/month free, then $0.038/page.</li>
           <li><strong>Cost-optimisation strategy:</strong> PDFs always go through pdfplumber first (free). If pdfplumber cannot extract text (&lt;50 chars, scanned/image-only PDF), the UI shows a "Retry with watsonx OCR" button so the user can explicitly opt in to the paid OCR path. Image files (.jpg/.png/.tif) go directly to watsonx OCR since pdfplumber cannot process them.</li>
-          <li><strong>Endpoint:</strong> <code>POST /parse/pdf?ocr_mode=pdfplumber|watsonx</code>code, accepts multipart file upload. Both modes return the same <code>rows[]</code>code format used by the Excel parser, so downstream reconciliation and validation work identically.</li>
-          <li><strong>Setup for watsonx OCR:</strong> One-time: create a COS connection asset in watsonx.ai project settings &rarr; Connections &rarr; IBM Cloud Object Storage, then set <code>WATSONX_COS_CONNECTION_ID</code>code in <code>the AI service's environment</code>code.</li>
+          <li><strong>Endpoint:</strong> <code>POST /parse/pdf?ocr_mode=pdfplumber|watsonx</code>, accepts multipart file upload. Both modes return the same <code>rows[]</code> format used by the Excel parser, so downstream reconciliation and validation work identically.</li>
+          <li><strong>Setup for watsonx OCR:</strong> One-time: create a COS connection asset in watsonx.ai project settings &rarr; Connections &rarr; IBM Cloud Object Storage, then set <code>WATSONX_COS_CONNECTION_ID</code> in <code>the AI service's environment</code>.</li>
         </ul>
       </div>
     </div>
@@ -196,11 +196,11 @@
       <div class="stage-card">
         <h4>Call path</h4>
         <ul>
-          <li><code>watsonx/client.py</code>code returns a singleton <code>ModelInference</code>code</li>
-          <li><code>watsonx/extraction.py</code>code builds the prompt and calls Mistral with <code>temperature=0.1</code>code</li>
-          <li>60-second watchdog via <code>signal.alarm</code>code, returns <code>ExtractionResponse</code>code</li>
-          <li>For PDFs: pdfplumber text &rarr; <code>extract_invoice_fields(text)</code>code &rarr; <code>InvoiceFields</code>code</li>
-          <li>For images/scanned PDFs: watsonx OCR text &rarr; <code>extract_invoice_fields(text)</code>code &rarr; <code>InvoiceFields</code>code</li>
+          <li><code>watsonx/client.py</code> returns a singleton <code>ModelInference</code></li>
+          <li><code>watsonx/extraction.py</code> builds the prompt and calls Mistral with <code>temperature=0.1</code></li>
+          <li>60-second watchdog via <code>signal.alarm</code>, returns <code>ExtractionResponse</code></li>
+          <li>For PDFs: pdfplumber text &rarr; <code>extract_invoice_fields(text)</code> &rarr; <code>InvoiceFields</code></li>
+          <li>For images/scanned PDFs: watsonx OCR text &rarr; <code>extract_invoice_fields(text)</code> &rarr; <code>InvoiceFields</code></li>
         </ul>
       </div>
       <div class="stage-card">
@@ -209,7 +209,7 @@
           <li>Invoice # / date / supplier GSTIN / buyer GSTIN</li>
           <li>Line items: HSN, qty, rate, taxable, CGST/SGST/IGST</li>
           <li>Totals + raw model output retained for audit</li>
-          <li>Converted to <code>rows[]</code>code format matching the Excel parser for downstream compatibility</li>
+          <li>Converted to <code>rows[]</code> format matching the Excel parser for downstream compatibility</li>
         </ul>
       </div>
     </div>
@@ -240,7 +240,7 @@
 <span class="k">Step 6</span>  LLM field extraction (Mistral on text)       <span class="t">~5-10s</span>  <span class="c"># watsonx.ai inference</span>
 <span class="k">Step 7</span>  Post-processing (merge + validate + score)   <span class="t">&lt;1ms</span>   <span class="c"># pure Python, no API calls</span>
                                                     --------
-                                           <span class="k">Total</span>    <span class="t">~35-40s</span></pre>pre
+                                           <span class="k">Total</span>    <span class="t">~35-40s</span></pre>
     </div>
   </div>
 
@@ -254,7 +254,7 @@
 <span class="k">mistral-small-3.1-24b</span> (current)   <span class="t">24B</span>   ~5-10s   <span class="c"># Good at structured JSON extraction</span>
 <span class="k">meta-llama/llama-3-3-70b-instruct</span>  <span class="t">70B</span>   ~10-20s  <span class="c"># Better reasoning, but 2x slower</span>
 <span class="k">ibm/granite-3-8b-instruct</span>          <span class="t">8B</span>    ~2-3s    <span class="c"># Faster, but may miss edge cases</span>
-</pre>pre
+</pre>
     </div>
     <div class="model-card" style="border-left: 3px solid var(--green);">
       <h3 style="color:var(--green);">Why Model Size Matters Less Than You Think</h3>
@@ -269,7 +269,7 @@
 <span class="c"># A 70B model might handle messy/ambiguous text slightly</span>
 <span class="c"># better (e.g. garbled columns), but adds ~10s to an</span>
 <span class="c"># already slow pipeline. Not worth the trade-off.</span>
-</pre>pre
+</pre>
     </div>
   </div>
 
@@ -289,18 +289,18 @@
       <div class="stage-card">
         <h4>Rules applied</h4>
         <ul>
-          <li><code>gstin.py</code>code, 15-char structure + Luhn Mod 36 checksum</li>
-          <li><code>hsn_sac.py</code>code, 4 / 6 / 8-digit pattern, turnover-band warnings</li>
-          <li><code>tax_math.py</code>code, qty&times;rate = taxable, taxable&times;rate = tax, totals reconcile</li>
-          <li><code>tax_type.py</code>code, CGST+SGST for intra-state, IGST for inter-state</li>
-          <li><code>invoice_number.py</code>code, alphanumeric, &le; 16 chars (Rule 46)</li>
+          <li><code>gstin.py</code>, 15-char structure + Luhn Mod 36 checksum</li>
+          <li><code>hsn_sac.py</code>, 4 / 6 / 8-digit pattern, turnover-band warnings</li>
+          <li><code>tax_math.py</code>, qty&times;rate = taxable, taxable&times;rate = tax, totals reconcile</li>
+          <li><code>tax_type.py</code>, CGST+SGST for intra-state, IGST for inter-state</li>
+          <li><code>invoice_number.py</code>, alphanumeric, &le; 16 chars (Rule 46)</li>
         </ul>
       </div>
       <div class="stage-card">
         <h4>Output</h4>
         <ul>
-          <li>A <code>ValidationReport</code>code per invoice</li>
-          <li>Errors keyed by field path (e.g. <code>supplier.gstin</code>code)</li>
+          <li>A <code>ValidationReport</code> per invoice</li>
+          <li>Errors keyed by field path (e.g. <code>supplier.gstin</code>)</li>
           <li>Non-blocking, invalid rows continue to normalization with flags</li>
         </ul>
       </div>
@@ -319,7 +319,7 @@
       <div class="stage-num">5</div>
       <div class="stage-title">
         <h3>Normalize</h3>
-        <p>Strip format noise from invoice numbers so that <code>INV-00123/FY24</code>code and <code>inv 123 / fy24</code>code reconcile in Pass 2.</p>
+        <p>Strip format noise from invoice numbers so that <code>INV-00123/FY24</code> and <code>inv 123 / fy24</code> reconcile in Pass 2.</p>
       </div>
       <span class="stage-chip" style="background:rgba(244,114,182,0.15); color:var(--pink);">invoice_normalizer</span>
     </div>
@@ -327,8 +327,8 @@
       <div class="stage-card">
         <h4>Transformations</h4>
         <ul>
-          <li>Strip known prefixes: <code>INV-</code>code, <code>INV.</code>code, <code>TAX-</code>code</li>
-          <li>Unify separators (<code>-</code>code <code>/</code>code <code>.</code>code)</li>
+          <li>Strip known prefixes: <code>INV-</code>, <code>INV.</code>, <code>TAX-</code></li>
+          <li>Unify separators (<code>-</code> <code>/</code> <code>.</code>)</li>
           <li>Strip special chars &amp; leading zeros</li>
           <li>Case fold to upper</li>
           <li>Transform audit trail retained on the record</li>
@@ -365,21 +365,21 @@
       <div class="stage-card">
         <h4>Pipeline within the engine</h4>
         <ul>
-          <li><code>duplicate_detector.py</code>code removes exact dups, flags near-dups</li>
+          <li><code>duplicate_detector.py</code> removes exact dups, flags near-dups</li>
           <li>Pass 1-5 in order: IRN &rarr; exact &rarr; fuzzy &rarr; amount+date &rarr; loose</li>
-          <li><code>auto_resolver.py</code>code promotes trivial mismatches back to MATCHED</li>
-          <li><code>cross_period.py</code>code retries residue against adjacent periods</li>
-          <li><code>confidence.py</code>code final per-entry confidence adjustment</li>
+          <li><code>auto_resolver.py</code> promotes trivial mismatches back to MATCHED</li>
+          <li><code>cross_period.py</code> retries residue against adjacent periods</li>
+          <li><code>confidence.py</code> final per-entry confidence adjustment</li>
         </ul>
       </div>
       <div class="stage-card">
         <h4>Report fields per entry</h4>
         <ul>
-          <li><code>match_category</code>code &middot; MATCHED / MISMATCH / MISSING_IN_GSTR2B / MISSING_IN_BOOKS / PROBABLE</li>
-          <li><code>match_pass</code>code &middot; which pass produced the match</li>
-          <li><code>match_confidence</code>code &middot; 0.0-1.0</li>
-          <li><code>mismatch_types[]</code>code &middot; TAXABLE_VALUE / TAX_AMOUNT / DATE / ...</li>
-          <li><code>auto_resolved</code>code &middot; boolean</li>
+          <li><code>match_category</code> &middot; MATCHED / MISMATCH / MISSING_IN_GSTR2B / MISSING_IN_BOOKS / PROBABLE</li>
+          <li><code>match_pass</code> &middot; which pass produced the match</li>
+          <li><code>match_confidence</code> &middot; 0.0-1.0</li>
+          <li><code>mismatch_types[]</code> &middot; TAXABLE_VALUE / TAX_AMOUNT / DATE / ...</li>
+          <li><code>auto_resolved</code> &middot; boolean</li>
         </ul>
       </div>
     </div>
@@ -405,7 +405,7 @@
       <div class="stage-card">
         <h4>Per-invoice scoring</h4>
         <ul>
-          <li><code>itc_risk/scorer.py</code>code adds points per risk factor (missing in 2B, tax mismatch, cross-period, etc.)</li>
+          <li><code>itc_risk/scorer.py</code> adds points per risk factor (missing in 2B, tax mismatch, cross-period, etc.)</li>
           <li>Caps at 100 and assigns priority: CRITICAL / HIGH / MEDIUM / LOW</li>
           <li>Each priority maps to an SLA: 3 / 7 / 15 / 30 days</li>
         </ul>
@@ -413,7 +413,7 @@
       <div class="stage-card">
         <h4>Portfolio aggregation</h4>
         <ul>
-          <li><code>itc_risk/aggregator.py</code>code sums ITC at risk (INR)</li>
+          <li><code>itc_risk/aggregator.py</code> sums ITC at risk (INR)</li>
           <li>Counts per priority band</li>
           <li>Top-N vendors by risk contribution, drives vendor outreach</li>
         </ul>
@@ -441,9 +441,9 @@
       <div class="stage-card">
         <h4>Persistence</h4>
         <ul>
-          <li><code>documents.status</code>code &rarr; <code>completed</code>code</li>
-          <li><code>documents.processed_at</code>code &rarr; now()</li>
-          <li><code>documents.metadata</code>code (JSONB) &larr; full report for audit</li>
+          <li><code>documents.status</code> &rarr; <code>completed</code></li>
+          <li><code>documents.processed_at</code> &rarr; now()</li>
+          <li><code>documents.metadata</code> (JSONB) &larr; full report for audit</li>
         </ul>
       </div>
       <div class="stage-card">
@@ -479,7 +479,7 @@
 <span class="k">igst</span>/<span class="k">cgst</span>/<span class="k">sgst</span>/<span class="k">cess</span>: <span class="t">float</span>
 <span class="k">irn</span>: <span class="t">str | None</span>    <span class="c"># e-invoice only</span>
 <span class="k">inv_uid</span>: <span class="t">str</span>        <span class="c"># deterministic</span>
-<span class="k">record_hash</span>: <span class="t">str</span>    <span class="c"># change tracking</span></pre>pre
+<span class="k">record_hash</span>: <span class="t">str</span>    <span class="c"># change tracking</span></pre>
     </div>
 
     <div class="model-card">
@@ -496,7 +496,7 @@
 <span class="k">mismatch_types</span>: <span class="t">list[MismatchType]</span>
 <span class="k">auto_resolved</span>: <span class="t">bool</span>
 <span class="k">books_record</span>: <span class="t">dict | None</span>
-<span class="k">gstr2b_record</span>: <span class="t">dict | None</span></pre>pre
+<span class="k">gstr2b_record</span>: <span class="t">dict | None</span></pre>
     </div>
 
     <div class="model-card">
@@ -509,7 +509,7 @@
 <span class="k">risk_score</span>: <span class="t">int</span>       <span class="c"># 0-100</span>
 <span class="k">risk_factors</span>: <span class="t">list[str]</span>
 <span class="k">priority</span>: <span class="t">RiskLevel</span>    <span class="c"># CRITICAL | HIGH | MEDIUM | LOW</span>
-<span class="k">sla_days</span>: <span class="t">int</span>         <span class="c"># 3 / 7 / 15 / 30</span></pre>pre
+<span class="k">sla_days</span>: <span class="t">int</span>         <span class="c"># 3 / 7 / 15 / 30</span></pre>
     </div>
 
     <div class="model-card">
@@ -521,7 +521,7 @@
 <span class="k">warnings</span>: <span class="t">list[str]</span>
 
 <span class="c"># Errors are keyed by dotted field path:</span>
-<span class="c"># "supplier.gstin", "line_items[0].hsn_sac_code"...</span></pre>pre
+<span class="c"># "supplier.gstin", "line_items[0].hsn_sac_code"...</span></pre>
     </div>
 
     <div class="model-card">
@@ -536,7 +536,7 @@
 <span class="k">probable_matches</span>: <span class="t">int</span>
 <span class="k">auto_resolved</span>: <span class="t">int</span>
 <span class="k">duplicates_detected</span>: <span class="t">int</span>
-<span class="k">entries</span>: <span class="t">list[ReconciliationEntry]</span></pre>pre
+<span class="k">entries</span>: <span class="t">list[ReconciliationEntry]</span></pre>
     </div>
 
     <div class="model-card">
@@ -551,7 +551,7 @@
 <span class="k">metadata</span>: <span class="t">JSONB</span>
   <span class="c"># full reconciliation report here</span>
 <span class="k">uploaded_at</span>: <span class="t">TIMESTAMPTZ</span>
-<span class="k">processed_at</span>: <span class="t">TIMESTAMPTZ | null</span></pre>pre
+<span class="k">processed_at</span>: <span class="t">TIMESTAMPTZ | null</span></pre>
     </div>
   </div>
 
@@ -562,19 +562,19 @@
   <div class="error-grid">
     <div class="error-card">
       <h4>DATABASE_NOT_CONFIGURED</h4>
-      <p>Any <code>/api/documents/*</code>code route returns <code>503 { error, detail }</code>code. The rest of the API still works. Health shows components.database = unavailable.</p>
+      <p>Any <code>/api/documents/*</code> route returns <code>503 { error, detail }</code>. The rest of the API still works. Health shows components.database = unavailable.</p>
     </div>
     <div class="error-card">
       <h4>COS_NOT_CONFIGURED</h4>
-      <p><code>/api/storage/*</code>code returns <code>503</code>code. Reconciliation paths that bypass upload (direct JSON) still work.</p>
+      <p><code>/api/storage/*</code> returns <code>503</code>. Reconciliation paths that bypass upload (direct JSON) still work.</p>
     </div>
     <div class="error-card">
       <h4>watsonx 401 / 502 / 504</h4>
-      <p><code>main.py._do_extract</code>code maps IBM errors to explicit HTTP codes. Timeout is enforced by <code>signal.alarm</code>code at 30 s / 60 s.</p>
+      <p><code>main.py._do_extract</code> maps IBM errors to explicit HTTP codes. Timeout is enforced by <code>signal.alarm</code> at 30 s / 60 s.</p>
     </div>
     <div class="error-card">
       <h4>Excel format unknown</h4>
-      <p><code>format_detectors.detect_format</code>code falls back to generic; column mapper produces a best-effort mapping. User sees unmapped columns in the ParseReport.</p>
+      <p><code>format_detectors.detect_format</code> falls back to generic; column mapper produces a best-effort mapping. User sees unmapped columns in the ParseReport.</p>
     </div>
     <div class="error-card">
       <h4>GSTIN checksum fail</h4>
@@ -586,11 +586,11 @@
     </div>
     <div class="error-card">
       <h4>PDF: scanned/image-only</h4>
-      <p>pdfplumber extracts &lt;50 chars, returns <code>422</code>code with message "Scanned or image-only PDF detected". UI shows a "Retry with watsonx OCR" button so user can explicitly opt in to the paid OCR path.</p>
+      <p>pdfplumber extracts &lt;50 chars, returns <code>422</code> with message "Scanned or image-only PDF detected". UI shows a "Retry with watsonx OCR" button so user can explicitly opt in to the paid OCR path.</p>
     </div>
     <div class="error-card">
       <h4>watsonx OCR not configured</h4>
-      <p>If <code>WATSONX_COS_CONNECTION_ID</code>code is not set, OCR mode returns <code>422</code>code with setup instructions. Image uploads still show in the UI but cannot be processed until setup is complete.</p>
+      <p>If <code>WATSONX_COS_CONNECTION_ID</code> is not set, OCR mode returns <code>422</code> with setup instructions. Image uploads still show in the UI but cannot be processed until setup is complete.</p>
     </div>
   </div>
 
@@ -608,7 +608,7 @@
 <span class="k">Image files</span>:    <span class="t">NOT SUPPORTED</span> <span class="c"># pdfplumber is PDF-only</span>
 
 <span class="c"># Pipeline: .pdf &rarr; pdfplumber (text) &rarr; watsonx LLM (fields) &rarr; rows[]</span>
-<span class="c"># Used by: POST /parse/pdf?ocr_mode=pdfplumber</span></pre>pre
+<span class="c"># Used by: POST /parse/pdf?ocr_mode=pdfplumber</span></pre>
     </div>
     <div class="model-card" style="border-left: 3px solid var(--amber);">
       <h3 style="color:var(--amber);">Mode 2: watsonx Text Extraction / OCR</h3>
@@ -620,7 +620,7 @@
 
 <span class="c"># Pipeline: file &rarr; COS upload &rarr; watsonx OCR job &rarr; extracted text &rarr; LLM &rarr; rows[]</span>
 <span class="c"># Requires: COS connection asset in watsonx project</span>
-<span class="c"># Used by: POST /parse/pdf?ocr_mode=watsonx</span></pre>pre
+<span class="c"># Used by: POST /parse/pdf?ocr_mode=watsonx</span></pre>
     </div>
   </div>
 
@@ -634,7 +634,7 @@
 <span class="c"># 3. User explicitly opts in to paid OCR path</span>
 <span class="c"># 4. Images (.jpg/.png/.tif) go directly to watsonx OCR</span>
 <span class="c">#    (pdfplumber cannot process them)</span>
-<span class="c"># 5. No automatic OCR for PDFs = zero surprise costs</span></pre>pre
+<span class="c"># 5. No automatic OCR for PDFs = zero surprise costs</span></pre>
     </div>
     <div class="model-card" style="border-left: 3px solid var(--purple); grid-column: span 1;">
       <h3 style="color:var(--purple);">Demo Verification Checklist</h3>
@@ -647,7 +647,7 @@
 <span class="k">6.</span> Upload image (.jpg) &rarr; auto-detected as "Image Invoice"
 <span class="c"># If watsonx COS configured:</span>
 <span class="k">7.</span> Image parses via watsonx OCR &rarr; see pdf_ocr format
-<span class="k">8.</span> Force-fail a scanned PDF &rarr; "Retry with OCR" button appears</pre>pre
+<span class="k">8.</span> Force-fail a scanned PDF &rarr; "Retry with OCR" button appears</pre>
     </div>
   </div>
 
@@ -661,7 +661,7 @@
 <span class="k">3.</span> Point the AI service at that connection
 
 <span class="c"># The service reads storage endpoint, credentials and bucket</span>
-<span class="c"># from its environment. Nothing is baked into the image.</span></pre>pre
+<span class="c"># from its environment. Nothing is baked into the image.</span></pre>
     </div>
   </div>
 

@@ -692,7 +692,7 @@
     .dag-agents { flex-direction: column; align-items: center; }
     .dag-agent-card { max-width: 100%; }
   }
-</style>style
+</style>
 </head>
 <body>
 
@@ -2137,10 +2137,10 @@
       <h3>Agent Anatomy, Each Agent Has</h3>
       <table class="agent-table">
         <tr><th>Component</th><th>Purpose</th></tr>
-        <tr><td><code>agent.yaml</code>code</td><td>Manifest, name, model, complexity, capabilities, dependencies</td></tr>
-        <tr><td><code>prompt.md</code>code</td><td>System prompt / persona (updated by feedback loop)</td></tr>
-        <tr><td><code>knowledge/</code>code</td><td>Domain knowledge files (.md) injected into prompts</td></tr>
-        <tr><td><code>sub-agents/</code>code</td><td>Optional, nested agents for mini-swarm patterns (e.g. Architect)</td></tr>
+        <tr><td><code>agent.yaml</code></td><td>Manifest, name, model, complexity, capabilities, dependencies</td></tr>
+        <tr><td><code>prompt.md</code></td><td>System prompt / persona (updated by feedback loop)</td></tr>
+        <tr><td><code>knowledge/</code></td><td>Domain knowledge files (.md) injected into prompts</td></tr>
+        <tr><td><code>sub-agents/</code></td><td>Optional, nested agents for mini-swarm patterns (e.g. Architect)</td></tr>
       </table>
     </div>
 
@@ -2159,35 +2159,35 @@
       <h3>Harness Modules (the harness), 24 Modules</h3>
       <table class="agent-table">
         <tr><th>Module</th><th>Purpose</th></tr>
-        <tr><td><code>protocol.ts</code>code</td><td>WorkPacket &amp; WorkResult types, FSM transitions, packet creation</td></tr>
-        <tr><td><code>board.ts</code>code</td><td>Read/write shared board (packets, results, events, memory)</td></tr>
-        <tr><td><code>registry.ts</code>code</td><td>Agent discovery, Zod-validated manifest parsing</td></tr>
-        <tr><td><code>runner.ts</code>code</td><td>Execute agents via Claude Code CLI with fix loop &amp; worktree isolation</td></tr>
-        <tr><td><code>sub-registry.ts</code>code</td><td>Sub-agent discovery for mini-swarms</td></tr>
-        <tr><td><code>sub-runner.ts</code>code</td><td>Sub-agent execution with architecture context injection</td></tr>
-        <tr><td><code>prompt-utils.ts</code>code</td><td>Prompt assembly, anti-scope injection, workresult parsing</td></tr>
-        <tr><td><code>prompt-enricher.ts</code>code</td><td>Enrich prompts with verification feedback, memory, board context, sibling status</td></tr>
-        <tr><td><code>model-resolver.ts</code>code</td><td>Complexity &rarr; model mapping (simple&rarr;haiku, medium&rarr;sonnet, complex&rarr;opus)</td></tr>
-        <tr><td><code>tmux-runner.ts</code>code</td><td>Async tmux pane execution, DAG-based parallel sub-agent orchestration</td></tr>
-        <tr><td><code>planner.ts</code>code</td><td>Plan creation, approval/rejection, codebase mapping</td></tr>
-        <tr><td><code>pipeline.ts</code>code</td><td>Multi-stage pipeline execution &amp; resume</td></tr>
-        <tr><td><code>verifier.ts</code>code</td><td>Run verification checks on agent outputs</td></tr>
-        <tr><td><code>role-router.ts</code>code</td><td>Score-based task routing to best-fit agent</td></tr>
-        <tr><td><code>task-classifier.ts</code>code</td><td>Classify task size (trivial/explore/small/medium/large)</td></tr>
-        <tr><td><code>skill-loader.ts</code>code</td><td>Load &amp; resolve {{skill:name}} template refs in prompts</td></tr>
-        <tr><td><code>cost-tracker.ts</code>code</td><td>Parse token usage, calculate cost per invocation</td></tr>
-        <tr><td><code>session-metrics.ts</code>code</td><td>Compute session-level metrics &amp; summaries</td></tr>
-        <tr><td><code>worktree.ts</code>code</td><td>Git worktree create/remove for agent isolation</td></tr>
-        <tr><td><code>mcp-registry.ts</code>code</td><td>Load MCP server registry, validate availability</td></tr>
-        <tr><td><code>concurrency.ts</code>code</td><td>Slot-based concurrency cap (default 4 parallel agents)</td></tr>
-        <tr><td><code>contracts.ts</code>code</td><td>Derive contracts, validate inputs/outputs per agent manifest</td></tr>
-        <tr><td><code>stall-detector.ts</code>code</td><td>Detect stalled agents, nudge or block</td></tr>
-        <tr><td><code>escalation.ts</code>code</td><td>Create &amp; execute escalation plans for blocked agents</td></tr>
-        <tr><td><code>turn-tracker.ts</code>code</td><td>Append &amp; summarize conversation turns per packet</td></tr>
-        <tr><td><code>team-state.ts</code>code</td><td>Per-agent state writes, team-wide state aggregation</td></tr>
-        <tr><td><code>progress-ledger.ts</code>code</td><td>Append-only progress ledger with trim support</td></tr>
-        <tr><td><code>stage-roster.ts</code>code</td><td>Load pipeline stage rosters &amp; config</td></tr>
-        <tr><td><code>notify.ts</code>code</td><td>Notification dispatch for agent events</td></tr>
+        <tr><td><code>protocol.ts</code></td><td>WorkPacket &amp; WorkResult types, FSM transitions, packet creation</td></tr>
+        <tr><td><code>board.ts</code></td><td>Read/write shared board (packets, results, events, memory)</td></tr>
+        <tr><td><code>registry.ts</code></td><td>Agent discovery, Zod-validated manifest parsing</td></tr>
+        <tr><td><code>runner.ts</code></td><td>Execute agents via Claude Code CLI with fix loop &amp; worktree isolation</td></tr>
+        <tr><td><code>sub-registry.ts</code></td><td>Sub-agent discovery for mini-swarms</td></tr>
+        <tr><td><code>sub-runner.ts</code></td><td>Sub-agent execution with architecture context injection</td></tr>
+        <tr><td><code>prompt-utils.ts</code></td><td>Prompt assembly, anti-scope injection, workresult parsing</td></tr>
+        <tr><td><code>prompt-enricher.ts</code></td><td>Enrich prompts with verification feedback, memory, board context, sibling status</td></tr>
+        <tr><td><code>model-resolver.ts</code></td><td>Complexity &rarr; model mapping (simple&rarr;haiku, medium&rarr;sonnet, complex&rarr;opus)</td></tr>
+        <tr><td><code>tmux-runner.ts</code></td><td>Async tmux pane execution, DAG-based parallel sub-agent orchestration</td></tr>
+        <tr><td><code>planner.ts</code></td><td>Plan creation, approval/rejection, codebase mapping</td></tr>
+        <tr><td><code>pipeline.ts</code></td><td>Multi-stage pipeline execution &amp; resume</td></tr>
+        <tr><td><code>verifier.ts</code></td><td>Run verification checks on agent outputs</td></tr>
+        <tr><td><code>role-router.ts</code></td><td>Score-based task routing to best-fit agent</td></tr>
+        <tr><td><code>task-classifier.ts</code></td><td>Classify task size (trivial/explore/small/medium/large)</td></tr>
+        <tr><td><code>skill-loader.ts</code></td><td>Load &amp; resolve {{skill:name}} template refs in prompts</td></tr>
+        <tr><td><code>cost-tracker.ts</code></td><td>Parse token usage, calculate cost per invocation</td></tr>
+        <tr><td><code>session-metrics.ts</code></td><td>Compute session-level metrics &amp; summaries</td></tr>
+        <tr><td><code>worktree.ts</code></td><td>Git worktree create/remove for agent isolation</td></tr>
+        <tr><td><code>mcp-registry.ts</code></td><td>Load MCP server registry, validate availability</td></tr>
+        <tr><td><code>concurrency.ts</code></td><td>Slot-based concurrency cap (default 4 parallel agents)</td></tr>
+        <tr><td><code>contracts.ts</code></td><td>Derive contracts, validate inputs/outputs per agent manifest</td></tr>
+        <tr><td><code>stall-detector.ts</code></td><td>Detect stalled agents, nudge or block</td></tr>
+        <tr><td><code>escalation.ts</code></td><td>Create &amp; execute escalation plans for blocked agents</td></tr>
+        <tr><td><code>turn-tracker.ts</code></td><td>Append &amp; summarize conversation turns per packet</td></tr>
+        <tr><td><code>team-state.ts</code></td><td>Per-agent state writes, team-wide state aggregation</td></tr>
+        <tr><td><code>progress-ledger.ts</code></td><td>Append-only progress ledger with trim support</td></tr>
+        <tr><td><code>stage-roster.ts</code></td><td>Load pipeline stage rosters &amp; config</td></tr>
+        <tr><td><code>notify.ts</code></td><td>Notification dispatch for agent events</td></tr>
       </table>
     </div>
 
@@ -4767,7 +4767,7 @@ function showStandaloneAgent(key) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') document.getElementById('sa-modal-overlay').classList.remove('open');
 });
-</script>script
+</script>
 
 <!-- Standalone Agent Modal -->
 <div class="sa-modal-overlay" id="sa-modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
