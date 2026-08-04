@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Where automation stops and a person starts · Greyquill</title>
-<meta name="description" content="Deciding which steps of a process become plain software, which become agents, and which need a person. A threshold you can set, defend, and move on evidence.">
+<meta name="description" content="Sorting the steps of a process into plain software, agents, and human accountability. Setting the review threshold on calibrated evidence, and moving it safely.">
 <link rel="icon" href="/dc/assets/greyquill-logo.png">
 <link rel="stylesheet" href="assets/services.css">
 </head>
@@ -24,9 +24,8 @@
     <p class="eyebrow">Modernisation</p>
     <h1>Where automation stops and a person starts</h1>
     <p class="deck">
-      Not every step of a process should be automated, and not every automated step should be
-      done by a model. This is how to sort the steps, where to put the human review threshold,
-      and how to move it later without anyone having to take it on faith.
+      Not every step should be automated, and not every automated step should be done by a
+      model. How to sort them, and where to put the line.
     </p>
     <div class="hero__meta">
       <button class="pdfbtn" onclick="window.print()">
@@ -35,179 +34,208 @@
         </svg>
         Save as PDF
       </button>
-      <span class="pdfbtn__hint">Prints the one-page decision guide at the end of this document.</span>
+      <span class="pdfbtn__hint">One page, the whole method.</span>
     </div>
   </div>
 </section>
 
-<main class="doc">
+<main class="doc doc--wide">
 
-<h2>Start from the process, not the tool</h2>
+<h2>Sort the steps before you pick a tool</h2>
 
-<p>
-  Most automation programmes begin with a platform and then look for work to put on it. That
-  ordering produces automation of the steps that were easiest to automate rather than the steps
-  that were worth automating, and it is why so many of these programmes stall after the first
-  three processes.
+<p class="key">
+  Map the process first, then sort each step. Programmes that start with a platform end up
+  automating what was easiest rather than what was worth it.
 </p>
 
-<p>
-  Map the process first, step by step, as it is actually performed. Then sort each step. Only
-  then does the question of tooling arise, and by that point it mostly answers itself.
+<div class="viz">
+<svg viewBox="0 0 760 268" role="img" aria-labelledby="sT sD">
+  <title id="sT">Sorting process steps into three kinds</title>
+  <desc id="sD">Each step of a mapped process is sorted by asking one question. If the rule can be written down it is deterministic and becomes plain software with no model. If a right answer exists but reaching it needs interpretation it is a judgement step and becomes an agent with a verifier and a confidence output. If someone must be answerable it is an accountability step and stays with a person, where automation prepares the decision and never makes it.</desc>
+
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b98a8"/>
+    </marker>
+  </defs>
+
+  <g font-family="Sora,sans-serif" font-size="10" font-weight="600" fill="#8b98a8" letter-spacing="1">
+    <text x="14" y="18">ASK THIS</text>
+    <text x="304" y="18">THE KIND OF STEP</text>
+    <text x="530" y="18">IMPLEMENT WITH</text>
+  </g>
+  <line x1="10" y1="26" x2="750" y2="26" stroke="#e2e8ef" stroke-width="1"/>
+
+  <!-- row 1 -->
+  <rect x="10" y="38" width="272" height="58" rx="7" fill="#f5f9fd" stroke="#c9d2dd" stroke-width="1.2"/>
+  <text x="26" y="62" font-family="Inter,sans-serif" font-size="12" fill="#0a1628">Can you write the rule down?</text>
+  <text x="26" y="80" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">same input, same correct output</text>
+  <path d="M284 67 L 298 67" stroke="#8b98a8" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+  <rect x="302" y="38" width="196" height="58" rx="7" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1.4"/>
+  <text x="400" y="62" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#136647">Deterministic</text>
+  <text x="400" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">validation, arithmetic, routing</text>
+  <path d="M500 67 L 514 67" stroke="#8b98a8" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+  <rect x="518" y="38" width="232" height="58" rx="7" fill="#ffffff" stroke="#1a7f5a" stroke-width="1.6"/>
+  <text x="634" y="62" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#136647">Plain software</text>
+  <text x="634" y="80" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">no model</text>
+
+  <!-- row 2 -->
+  <rect x="10" y="104" width="272" height="58" rx="7" fill="#f5f9fd" stroke="#c9d2dd" stroke-width="1.2"/>
+  <text x="26" y="128" font-family="Inter,sans-serif" font-size="12" fill="#0a1628">No, but is there a right answer?</text>
+  <text x="26" y="146" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">reaching it needs interpreting</text>
+  <path d="M284 133 L 298 133" stroke="#8b98a8" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+  <rect x="302" y="104" width="196" height="58" rx="7" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.4"/>
+  <text x="400" y="128" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0b4f88">Judgement</text>
+  <text x="400" y="146" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">matching, extraction, classifying</text>
+  <path d="M500 133 L 514 133" stroke="#8b98a8" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+  <rect x="518" y="104" width="232" height="58" rx="7" fill="#ffffff" stroke="#0b4f88" stroke-width="1.6"/>
+  <text x="634" y="128" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0b4f88">Agent and verifier</text>
+  <text x="634" y="146" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">with a confidence output</text>
+
+  <!-- row 3 -->
+  <rect x="10" y="170" width="272" height="58" rx="7" fill="#f5f9fd" stroke="#c9d2dd" stroke-width="1.2"/>
+  <text x="26" y="194" font-family="Inter,sans-serif" font-size="12" fill="#0a1628">Must someone be answerable?</text>
+  <text x="26" y="212" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">a regulator would ask who decided</text>
+  <path d="M284 199 L 298 199" stroke="#8b98a8" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+  <rect x="302" y="170" width="196" height="58" rx="7" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1.4"/>
+  <text x="400" y="194" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#7d5700">Accountability</text>
+  <text x="400" y="212" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">approving, accepting risk</text>
+  <path d="M500 199 L 514 199" stroke="#8b98a8" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+  <rect x="518" y="170" width="232" height="58" rx="7" fill="#ffffff" stroke="#9a6b00" stroke-width="1.6"/>
+  <text x="634" y="194" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#7d5700">A person</text>
+  <text x="634" y="212" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">automation prepares, never decides</text>
+
+  <text x="14" y="252" font-family="Inter,sans-serif" font-size="11" fill="#7b8798">Work down the rows. The first question a step answers yes to is the lane it belongs in.</text>
+</svg>
+<p class="viz__cap">
+  One question sorts most steps. The expensive mistake is putting a model on a deterministic
+  step because the platform makes it easy: slower, priced per call, and it adds variance to the
+  one part of the process that had none.
 </p>
-
-<h2>Three kinds of step</h2>
-
-<p>
-  Every step in a business process falls into one of three categories, and the category
-  determines what should implement it.
-</p>
-
-<div class="tablewrap">
-<table>
-  <thead><tr><th style="width:20%">Kind</th><th>How to recognise it</th><th style="width:28%">What implements it</th></tr></thead>
-  <tbody>
-    <tr>
-      <td><strong>Deterministic</strong></td>
-      <td>Given the same input, the correct output is always the same, and the rule can be written down. Validation, arithmetic, routing on a documented condition, format conversion.</td>
-      <td>Plain software. No model. A model here adds cost, latency and variance in exchange for nothing.</td>
-    </tr>
-    <tr>
-      <td><strong>Judgement under a rule</strong></td>
-      <td>There is a right answer but reaching it needs reading, matching, or interpreting something unstructured. Matching an invoice to a purchase order, extracting fields from a document, classifying an exception.</td>
-      <td>An agent or model, with a verifier around it and a confidence output.</td>
-    </tr>
-    <tr>
-      <td><strong>Accountability</strong></td>
-      <td>Someone has to be answerable for the outcome. Approving a payment above a limit, accepting a risk, overriding a control, anything where a regulator would ask who decided.</td>
-      <td>A person. Automation prepares the decision and never makes it.</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<div class="note note--warn">
-  <span class="note__label">The most expensive misclassification</span>
-  <p>
-    Putting a model on a deterministic step because the platform makes it easy. It is slower,
-    it costs per call, and it introduces variance into the one part of the process that had
-    none. If you can write the rule down, write it down.
-  </p>
 </div>
 
 <h2>The threshold</h2>
 
-<p>
-  For judgement steps the useful design is not automated or manual. It is a confidence
-  threshold, with everything below it going to a person and everything above it proceeding on
-  its own.
+<p class="key">
+  For judgement steps the design is not automated or manual. It is a line, with everything below
+  it going to a person.
 </p>
 
-<p>
-  This only works if two things are true, and both are easy to get wrong.
+<div class="viz">
+<svg viewBox="0 0 760 236" role="img" aria-labelledby="tT tD">
+  <title id="tT">The confidence threshold</title>
+  <desc id="tD">Work is distributed across a confidence scale. A threshold line divides it. Items above the threshold proceed automatically. Items below go to a human review queue. Moving the threshold left sends more work to review; moving it right automates more.</desc>
+
+  <text x="30" y="28" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">Items by confidence</text>
+
+  <g fill="#cfe0ef">
+    <rect x="40" y="92" width="26" height="18" rx="2"/>
+    <rect x="70" y="86" width="26" height="24" rx="2"/>
+    <rect x="100" y="78" width="26" height="32" rx="2"/>
+    <rect x="130" y="70" width="26" height="40" rx="2"/>
+    <rect x="160" y="62" width="26" height="48" rx="2"/>
+    <rect x="190" y="56" width="26" height="54" rx="2"/>
+    <rect x="220" y="50" width="26" height="60" rx="2"/>
+  </g>
+  <g fill="#9fc4e2">
+    <rect x="250" y="46" width="26" height="64" rx="2"/>
+    <rect x="280" y="42" width="26" height="68" rx="2"/>
+  </g>
+  <g fill="#0b4f88">
+    <rect x="330" y="38" width="26" height="72" rx="2"/>
+    <rect x="360" y="32" width="26" height="78" rx="2"/>
+    <rect x="390" y="28" width="26" height="82" rx="2"/>
+    <rect x="420" y="24" width="26" height="86" rx="2"/>
+    <rect x="450" y="22" width="26" height="88" rx="2"/>
+    <rect x="480" y="20" width="26" height="90" rx="2"/>
+    <rect x="510" y="20" width="26" height="90" rx="2"/>
+    <rect x="540" y="22" width="26" height="88" rx="2"/>
+    <rect x="570" y="26" width="26" height="84" rx="2"/>
+    <rect x="600" y="34" width="26" height="76" rx="2"/>
+    <rect x="630" y="44" width="26" height="66" rx="2"/>
+    <rect x="660" y="58" width="26" height="52" rx="2"/>
+    <rect x="690" y="76" width="26" height="34" rx="2"/>
+  </g>
+
+  <line x1="40" y1="110" x2="726" y2="110" stroke="#4a5a70" stroke-width="1.2"/>
+  <text x="40" y="128" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">lower confidence</text>
+  <text x="726" y="128" text-anchor="end" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">higher confidence</text>
+
+  <line x1="318" y1="14" x2="318" y2="156" stroke="#a63232" stroke-width="2" stroke-dasharray="5 3"/>
+  <text x="312" y="152" text-anchor="end" font-family="Sora,sans-serif" font-size="11.5" font-weight="600" fill="#a63232">threshold</text>
+
+  <rect x="40" y="168" width="272" height="42" rx="7" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1.3"/>
+  <text x="176" y="185" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="600" fill="#7d5700">Human review queue</text>
+  <text x="176" y="201" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">must be real, or it becomes a rubber stamp</text>
+
+  <rect x="330" y="168" width="396" height="42" rx="7" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1.3"/>
+  <text x="528" y="185" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="600" fill="#136647">Proceeds automatically</text>
+  <text x="528" y="201" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#4a5a70">still recorded, still reconstructable</text>
+</svg>
+<p class="viz__cap">
+  The threshold only means something if the confidence figure is calibrated against known
+  outcomes. A number a model emits about its own certainty is a dial with no scale on it.
 </p>
+</div>
 
-<ul>
-  <li><strong>The confidence figure has to mean something.</strong> A number a model emits about
-    its own certainty is not a measurement. It has to be calibrated against known outcomes: of
-    the items scored above the threshold, what proportion were actually right? Until you have
-    that, you have a dial with no scale on it.</li>
-  <li><strong>The review has to be real.</strong> A queue nobody has time for becomes a rubber
-    stamp within a month, and a rubber stamp is worse than full automation because it creates
-    the appearance of oversight without the substance.</li>
-</ul>
+<h3>Setting it, then moving it</h3>
 
-<h3>Setting the first threshold</h3>
+<div class="flow">
+  <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Shadow period</p><p class="flow__b">Everything goes to review. Log the reviewer's decision next to the system's.</p></div>
+  <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Read the bands</p><p class="flow__b">Agreement rate by confidence band, once there is enough volume.</p></div>
+  <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Set the line</p><p class="flow__b">Where disagreement falls below what the process tolerates. A business call.</p></div>
+  <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Move it on evidence</p><p class="flow__b">Sustained agreement, unchanged work shape, a named approver and a date.</p></div>
+</div>
 
-<p>
-  Start with everything going to review, and log the reviewer's decision next to the system's.
-  That is a shadow period and it serves the same purpose as the
-  <a href="/dc/services/parallel-run.html">parallel run</a>: it produces the evidence before
-  the risk is taken.
-</p>
+<div class="note">
+  <span class="note__label">Keep the reverse gear</span>
+  <p>
+    Make moving the threshold back cheap. One that can only travel in one direction will be
+    defended long past the point where it should have been lowered.
+  </p>
+</div>
 
-<p>
-  After enough volume you can read the agreement rate by confidence band, and set the threshold
-  where the disagreement rate falls below what the process can tolerate. That tolerance is a
-  business decision, and it differs enormously between a marketing classification and a payment
-  release.
-</p>
+<h2>Reading the queue</h2>
 
-<h3>Moving it later</h3>
-
-<p>
-  Thresholds should move as the system improves, and that movement is a controlled change with
-  evidence behind it, not a configuration edit somebody makes on a Friday. What justifies a
-  move:
-</p>
-
-<ul>
-  <li>Sustained agreement above the new threshold across a period covering the process cycle.</li>
-  <li>No change in the shape of the incoming work that would invalidate the history.</li>
-  <li>A named person who agreed to the new level, and the date they agreed.</li>
-</ul>
-
-<p>
-  Keep the ability to move it back, and make moving it back cheap. A threshold that can only go
-  one direction will be defended past the point where it should have been lowered.
-</p>
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:34%">What you see</th><th>What it means</th></tr></thead>
+  <tbody>
+    <tr><td>Reviewers agree almost every time</td><td>Too low. You are paying attention where it earns nothing.</td></tr>
+    <tr><td>Reviewers overturn a meaningful share</td><td>Too high, or the model is not good enough for this step yet. Lower it and find out which.</td></tr>
+    <tr><td>The queue is never empty</td><td>Set for a review capacity you do not have. It will resolve as a rubber stamp unless someone changes it deliberately.</td></tr>
+    <tr><td>Nobody can say what it currently is</td><td>The control is not being managed at all. More common than it sounds.</td></tr>
+  </tbody>
+</table>
+</div>
 
 <h2>What every automated step leaves behind</h2>
 
-<p>
-  The point of automating a governed process is not only that it runs without a person. It is
-  that afterwards you can show what happened. Each automated step should record enough that
-  somebody who was not there can reconstruct it:
-</p>
-
-<ul>
-  <li>What the input was, by reference.</li>
-  <li>What the step decided, and which implementation decided it.</li>
-  <li>The confidence, where the step was a judgement step.</li>
-  <li>Whether it crossed the threshold, and therefore whether a person saw it.</li>
-  <li>If a person saw it, who, when, and what they did.</li>
-  <li>Enough of the working to explain the outcome, without keeping so much that the record
-    itself becomes a data protection problem.</li>
-</ul>
-
-<p>
-  That last balance is a real design decision and it is worth making deliberately. Keeping the
-  full input of every step forever is the easy answer and it is frequently the wrong one.
-</p>
+<div class="facts">
+  <div class="fact"><b>The input</b><span>By reference, not by copy.</span></div>
+  <div class="fact"><b>The decision</b><span>And which implementation made it.</span></div>
+  <div class="fact"><b>Confidence</b><span>Where the step was a judgement step.</span></div>
+  <div class="fact"><b>Threshold crossing</b><span>So you know whether a person saw it.</span></div>
+  <div class="fact"><b>The reviewer</b><span>Who, when, and what they did.</span></div>
+  <div class="fact"><b>Enough working</b><span>To explain the outcome. Not so much that the record is itself a data protection problem.</span></div>
+</div>
 
 <div class="note">
   <span class="note__label">Related</span>
   <p>
-    The verification and evidence model these records fit into is described in
+    The verification and evidence model these records fit into is in
     <a href="/dc/champ/harness-verification.html">Harness and verification</a>, and the runtime
-    that produces them in
-    <a href="/dc/champ/agent-swarm-architecture.html">Agent swarm architecture</a>.
+    that produces them in <a href="/dc/champ/agent-swarm-architecture.html">Agent swarm architecture</a>.
   </p>
 </div>
 
-<h2>Signs the threshold is in the wrong place</h2>
+<h2>Never automated, at any confidence</h2>
 
-<ul>
-  <li><strong>Reviewers agree with the system almost every time.</strong> The threshold is too
-    low. You are paying people to confirm work that did not need confirming, and their
-    attention is being spent where it earns nothing.</li>
-  <li><strong>Reviewers overturn a meaningful share.</strong> Too high, or the model is not
-    good enough for this step yet. Either way, lower it and find out which.</li>
-  <li><strong>The queue is never empty.</strong> The threshold is set for a review capacity you
-    do not have. This resolves as a rubber stamp unless someone changes it deliberately.</li>
-  <li><strong>Nobody can say what the current threshold is.</strong> More common than it sounds,
-    and it means the control is not being managed at all.</li>
-</ul>
-
-<h2>What not to automate, at any confidence</h2>
-
-<ul>
-  <li>Anything where a regulation names a person as accountable. The automation prepares, the
-    person decides, and the record shows both.</li>
-  <li>The final approval on an exception the system itself raised. A system that both flags and
-    clears its own exceptions has no control in it.</li>
-  <li>Changes to the threshold itself. That is a control change and it belongs to a person.</li>
-</ul>
+<div class="dont">
+  <div><strong>A named accountability</strong>Where a regulation makes a person answerable. Automation prepares, the person decides.</div>
+  <div><strong>Self-cleared exceptions</strong>A system that both flags and clears its own exceptions has no control in it.</div>
+  <div><strong>The threshold itself</strong>Changing it is a control change, and control changes belong to a person.</div>
+</div>
 
 </main>
 
@@ -226,54 +254,50 @@
     <div class="sheet__head">
       <div>
         <h2 class="sheet__title">Automate, or ask a person</h2>
-        <p class="sheet__sub">Sorting the steps of a process, and setting the review threshold.</p>
+        <p class="sheet__sub">Sorting the steps, and setting the review threshold.</p>
       </div>
     </div>
 
-    <h3>Sort every step into one of three</h3>
+    <h3>Sort every step by one question</h3>
     <div class="tablewrap">
     <table>
-      <thead><tr><th style="width:22%">Kind</th><th>Recognise it by</th><th style="width:30%">Implement with</th></tr></thead>
+      <thead><tr><th style="width:22%">Kind</th><th>Recognise it by</th><th style="width:28%">Implement with</th></tr></thead>
       <tbody>
-        <tr><td>Deterministic</td><td>Same input, same correct output, and the rule can be written down.</td><td>Plain software. No model.</td></tr>
-        <tr><td>Judgement under a rule</td><td>A right answer exists, but reaching it needs reading, matching or interpreting.</td><td>An agent, with a verifier and a confidence output.</td></tr>
-        <tr><td>Accountability</td><td>Someone must be answerable. A regulator would ask who decided.</td><td>A person. Automation prepares, never decides.</td></tr>
+        <tr><td><span class="pill pill--good">Deterministic</span></td><td>The rule can be written down. Same input, same correct output.</td><td>Plain software. No model.</td></tr>
+        <tr><td><span class="pill pill--info">Judgement</span></td><td>A right answer exists, but reaching it needs reading, matching or interpreting.</td><td>Agent, with a verifier and a confidence output.</td></tr>
+        <tr><td><span class="pill pill--warn">Accountability</span></td><td>Someone must be answerable. A regulator would ask who decided.</td><td>A person. Automation prepares, never decides.</td></tr>
       </tbody>
     </table>
     </div>
 
+    <h3>Setting the threshold</h3>
+    <div class="flow">
+      <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Shadow period</p><p class="flow__b">Everything to review. Log both decisions.</p></div>
+      <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Read the bands</p><p class="flow__b">Agreement rate by confidence band.</p></div>
+      <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Set the line</p><p class="flow__b">Where disagreement falls below tolerance.</p></div>
+      <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Move on evidence</p><p class="flow__b">Named approver, a date, and a cheap way back.</p></div>
+    </div>
+
     <div class="cols2">
       <div>
-        <h3>The threshold works only if</h3>
+        <h3>The queue is telling you</h3>
         <ul>
-          <li>The confidence figure is calibrated against known outcomes, not emitted by the model about itself.</li>
-          <li>The review is real. A queue nobody has time for becomes a rubber stamp in a month.</li>
-        </ul>
-        <h3>Set the first one by</h3>
-        <ul>
-          <li>Sending everything to review first, logging both decisions.</li>
-          <li>Reading agreement by confidence band.</li>
-          <li>Setting it where disagreement falls below what the process tolerates.</li>
+          <li>Reviewers almost always agree: too low.</li>
+          <li>Reviewers overturn a real share: too high, or the model is not ready.</li>
+          <li>Never empty: set for capacity you do not have.</li>
+          <li>Nobody knows the current value: not being managed.</li>
         </ul>
       </div>
       <div>
-        <h3>It is in the wrong place when</h3>
+        <h3>Every step records</h3>
         <ul>
-          <li>Reviewers agree almost every time. Too low.</li>
-          <li>Reviewers overturn a meaningful share. Too high, or the model is not ready.</li>
-          <li>The queue is never empty. Set for capacity you do not have.</li>
-          <li>Nobody can say what it currently is. Not being managed.</li>
+          <li>Input by reference, the decision, which implementation made it</li>
+          <li>Confidence, and whether it crossed the threshold</li>
+          <li>If a person saw it: who, when, what they did</li>
+          <li>Enough working to explain it, no more</li>
         </ul>
       </div>
     </div>
-
-    <h3>Every automated step records</h3>
-    <ul>
-      <li>Input by reference, the decision, and which implementation made it</li>
-      <li>Confidence, and whether it crossed the threshold</li>
-      <li>If a person saw it: who, when, what they did</li>
-      <li>Enough working to explain the outcome, without keeping so much that the record is itself a data protection problem</li>
-    </ul>
 
     <div class="note note--bad">
       <span class="note__label">Never automate</span>
@@ -287,8 +311,7 @@
     <div class="sheet__foot">
       <p class="cta">
         <strong>Greyquill Software</strong> builds governed automation for processes that have to
-        answer for themselves. If you are drawing this line right now, we would be glad to help.
-        <strong>greyquill.io</strong>
+        answer for themselves. <strong>greyquill.io</strong>
       </p>
     </div>
 

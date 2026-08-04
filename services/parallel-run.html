@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The parallel run · Greyquill</title>
-<meta name="description" content="How to replace a legacy system without a big-bang rewrite: pick a seam, build alongside, run both against the same work, and reconcile the outputs until you can prove the new one is right.">
+<meta name="description" content="Replacing a legacy system without a big-bang rewrite. Pick a seam, build alongside, run both against the same work, and classify every difference until you can prove the new one is right.">
 <link rel="icon" href="/dc/assets/greyquill-logo.png">
 <link rel="stylesheet" href="assets/services.css">
 </head>
@@ -24,9 +24,8 @@
     <p class="eyebrow">Modernisation</p>
     <h1>The parallel run</h1>
     <p class="deck">
-      How to replace a legacy system without a big-bang rewrite. Pick one seam, build the
-      replacement beside it, then let both process the same work until you can show that the
-      new one is right. The evidence comes before the cutover, not after it.
+      Replacing a legacy system without a big-bang rewrite. Both systems process the same work
+      until the evidence says the new one is right.
     </p>
     <div class="hero__meta">
       <button class="pdfbtn" onclick="window.print()">
@@ -35,151 +34,98 @@
         </svg>
         Save as PDF
       </button>
-      <span class="pdfbtn__hint">Prints the one-page summary at the end of this document.</span>
+      <span class="pdfbtn__hint">One page, the whole method.</span>
     </div>
   </div>
 </section>
 
-<main class="doc">
+<main class="doc doc--wide">
 
-<h2>Why the big bang keeps failing</h2>
+<h2>Where the risk lands</h2>
 
-<p>
-  A rewrite promises a clean end state. You build the replacement, you pick a weekend, you
-  switch over. The problem is not the engineering. It is that you cannot prove the new system
-  is correct until it is processing real work, and the moment you cut over you have switched
-  off the only thing that could have told you.
+<p class="key">
+  A big-bang rewrite puts all of its risk on one night. A parallel run spreads the same risk
+  across months, while the old system is still there to catch it.
 </p>
 
-<p>
-  So the first weeks after a big-bang cutover are spent discovering, from customers and from
-  the finance team, the ways in which the new system disagrees with the old one. Every
-  disagreement arrives as an incident. Nobody can say whether the old behaviour was correct,
-  because the old system is off, and the people who understood it have moved on.
+<div class="viz">
+<svg viewBox="0 0 760 230" role="img" aria-labelledby="rT rD">
+  <title id="rT">Risk over time, big bang against parallel run</title>
+  <desc id="rD">In a big-bang rewrite risk stays flat during the build and spikes sharply at cutover. In a parallel run, risk is discovered and resolved in small amounts throughout the parallel period, so the cutover itself is a small step.</desc>
+
+  <line x1="40" y1="180" x2="350" y2="180" stroke="#c9d2dd" stroke-width="1.2"/>
+  <line x1="40" y1="180" x2="40" y2="40" stroke="#c9d2dd" stroke-width="1.2"/>
+  <text x="40" y="28" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#a63232">Big bang</text>
+  <path d="M40 172 L 250 170 L 262 60 L 275 168 L 350 166" fill="none" stroke="#a63232" stroke-width="2.2"/>
+  <line x1="262" y1="60" x2="262" y2="180" stroke="#a63232" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="262" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#8c2929">cutover</text>
+  <text x="130" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">build, nothing proven</text>
+  <text x="30" y="46" text-anchor="end" font-family="Inter,sans-serif" font-size="10" fill="#7b8798">risk</text>
+
+  <line x1="410" y1="180" x2="720" y2="180" stroke="#c9d2dd" stroke-width="1.2"/>
+  <line x1="410" y1="180" x2="410" y2="40" stroke="#c9d2dd" stroke-width="1.2"/>
+  <text x="410" y="28" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#1a7f5a">Parallel run</text>
+  <rect x="490" y="40" width="140" height="140" fill="#eaf4fc"/>
+  <text x="560" y="55" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#0b4f88">parallel period</text>
+  <path d="M410 172 L 490 170 L 500 120 L 512 152 L 524 108 L 537 150 L 550 132 L 563 158 L 576 145 L 590 163 L 605 158 L 630 166 L 640 158 L 650 168 L 720 168" fill="none" stroke="#1a7f5a" stroke-width="2.2"/>
+  <line x1="640" y1="158" x2="640" y2="180" stroke="#1a7f5a" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="640" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#136647">cutover</text>
+  <text x="560" y="198" text-anchor="middle" font-family="Inter,sans-serif" font-size="10.5" fill="#7b8798">found and fixed here</text>
+</svg>
+<p class="viz__cap">
+  You cannot prove a rewrite is correct until it processes real work, and a big-bang cutover
+  switches off the only thing that could have told you.
 </p>
-
-<p>
-  The alternative is not to be braver about the cutover. It is to move the proof earlier, so
-  that by the time you switch, the disagreements have already been found, explained, and
-  either fixed or accepted in writing.
-</p>
-
-<h2>The shape of it</h2>
-
-<div class="stages">
-  <div class="stage">
-    <div class="stage__n">01</div>
-    <div>
-      <p class="stage__t">Map the estate</p>
-      <p class="stage__b">Systems, data flows, owners, and risk. Write down what actually exists rather than what the architecture diagram claims.</p>
-    </div>
-  </div>
-  <div class="stage">
-    <div class="stage__n">02</div>
-    <div>
-      <p class="stage__t">Pick the seam</p>
-      <p class="stage__b">One capability with real pain and a small blast radius. Never the whole system, and never the piece with the most political heat.</p>
-    </div>
-  </div>
-  <div class="stage">
-    <div class="stage__n">03</div>
-    <div>
-      <p class="stage__t">Build alongside</p>
-      <p class="stage__b">The replacement goes up behind a clean interface. The legacy keeps running and stays untouched.</p>
-    </div>
-  </div>
-  <div class="stage">
-    <div class="stage__n">04</div>
-    <div>
-      <p class="stage__t">Run in parallel</p>
-      <p class="stage__b">Both process the same work. Only the legacy output is used. Every difference is classified and explained.</p>
-    </div>
-  </div>
-  <div class="stage">
-    <div class="stage__n">05</div>
-    <div>
-      <p class="stage__t">Retire and repeat</p>
-      <p class="stage__b">Cut over on evidence, switch the legacy piece off for real, and start the next seam with what you learned.</p>
-    </div>
-  </div>
 </div>
 
-<p>
-  Most of the value is in stage four, and most write-ups skip it. The rest of this document is
-  mainly about stage four.
-</p>
+<h2>Five stages</h2>
+
+<div class="flow">
+  <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Map the estate</p><p class="flow__b">What exists, who owns it, where the risk sits.</p></div>
+  <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Pick the seam</p><p class="flow__b">One capability. Small blast radius.</p></div>
+  <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Build alongside</p><p class="flow__b">Behind a facade. Legacy untouched.</p></div>
+  <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Run in parallel</p><p class="flow__b">Both process the same work.</p></div>
+  <div class="flow__step"><div class="flow__n">05</div><p class="flow__t">Retire and repeat</p><p class="flow__b">Cut over on evidence, switch the old one off.</p></div>
+</div>
+
+<p>Most of the value is in stage four, and most write-ups skip it.</p>
 
 <h2>Picking a seam</h2>
 
-<p>
-  A seam is a capability you can lift out with a boundary you can describe. The test is whether
-  you can name what goes in, what comes out, and who is accountable for the result. If you
-  cannot, you have found a region rather than a seam, and you should keep looking.
-</p>
-
-<h3>What makes a good first seam</h3>
-
-<ul>
-  <li><strong>Observable output.</strong> It produces something you can compare: a file, a
-    ledger entry, a decision, a number. If the only output is a screen a person looks at, you
-    cannot run this method on it.</li>
-  <li><strong>Enough volume to learn from.</strong> You need enough throughput to establish a
-    divergence rate. A process that runs four times a month will take a year to tell you
-    anything.</li>
-  <li><strong>Real pain.</strong> Somebody should want this fixed. Modernising a component
-    nobody complains about spends your credibility on nothing.</li>
-  <li><strong>A small blast radius.</strong> Few downstream consumers, and ones you can name.</li>
-  <li><strong>An owner who will answer questions.</strong> The parallel run generates questions
-    about intended behaviour that only a person can settle.</li>
-</ul>
-
-<h3>Seams to avoid first</h3>
-
-<ul>
-  <li>Anything where the output is a side effect you cannot observe, such as a job whose only
-    result is that a downstream system was called.</li>
-  <li>The component with the worst reputation. It is usually the most coupled, and a first
-    attempt that stalls there ends the programme.</li>
-  <li>Anything that has to change functionally at the same time. Replacing the implementation
-    and changing the behaviour together removes your ability to interpret any difference you
-    see. Do one, then the other.</li>
-</ul>
+<div class="vs">
+  <div class="vs__side vs__side--good">
+    <p class="vs__label">Good first seam</p>
+    <ul>
+      <li>Output you can compare: a file, a ledger entry, a number</li>
+      <li>Enough volume to establish a divergence rate</li>
+      <li>Somebody actually wants it fixed</li>
+      <li>Few downstream consumers, and you can name them</li>
+      <li>An owner who will answer questions</li>
+    </ul>
+  </div>
+  <div class="vs__side vs__side--bad">
+    <p class="vs__label">Not first</p>
+    <ul>
+      <li>Output is a side effect you cannot observe</li>
+      <li>The component with the worst reputation, usually the most coupled</li>
+      <li>Anything that has to change behaviour at the same time</li>
+      <li>Four runs a month, so a year before it tells you anything</li>
+    </ul>
+  </div>
+</div>
 
 <div class="note note--warn">
-  <span class="note__label">The single most common mistake</span>
+  <span class="note__label">The mistake that voids the exercise</span>
   <p>
-    Teams pick a seam, then quietly agree to also improve the logic while they are in there.
-    Now every divergence in the parallel run has two possible causes and the comparison tells
-    you nothing. Freeze behaviour for the replacement, prove equivalence, cut over, and only
-    then change what the system does.
+    Improving the logic while you are in there. Every difference then has two possible causes
+    and the comparison proves nothing. Freeze behaviour, prove equivalence, cut over, then
+    change what the system does.
   </p>
 </div>
 
-<h2>Building alongside</h2>
+<h2>Stage four, in one picture</h2>
 
-<p>
-  The replacement is built behind an interface that describes the seam, not the legacy
-  implementation. Where the legacy cannot be changed, it gets a facade in front of it so that
-  callers talk to the boundary rather than to the old system directly. That facade is what
-  eventually lets you swap which implementation is live without touching any caller.
-</p>
-
-<p>
-  Before writing the replacement, put a regression harness around the existing behaviour. The
-  harness records real inputs and the outputs the legacy produced for them. It is the thing you
-  will develop against, and it is what turns "we think this is what it does" into a set of
-  cases you can run.
-</p>
-
-<h2>The parallel run</h2>
-
-<p>
-  Both implementations receive the same work. The legacy output is the one that is used, and
-  the replacement's output goes to a comparator instead of to the consumer. Nothing downstream
-  changes and nothing is at risk, which is what buys you the freedom to be wrong for a while.
-</p>
-
-<figure>
+<div class="viz">
 <svg viewBox="0 0 760 330" role="img" aria-labelledby="prTitle prDesc">
   <title id="prTitle">The parallel run</title>
   <desc id="prDesc">Inbound work is sent to both the legacy system and the replacement. The legacy output goes downstream and is the one used. The replacement output goes to a comparator, which classifies each pair as match, tolerable divergence, real divergence, or legacy defect, and writes the result to an evidence store.</desc>
@@ -190,54 +136,43 @@
     </marker>
   </defs>
 
-  <!-- inbound -->
   <rect x="10" y="130" width="104" height="52" rx="7" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1.4"/>
   <text x="62" y="152" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0a1628">Inbound</text>
   <text x="62" y="169" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#0a1628">work</text>
 
-  <!-- split -->
   <path d="M114 156 L 150 156 L 150 78 L 196 78" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
   <path d="M150 156 L 150 240 L 196 240" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
 
-  <!-- legacy -->
   <rect x="198" y="50" width="150" height="58" rx="7" fill="#ffffff" stroke="#0a1628" stroke-width="1.6"/>
   <text x="273" y="74" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0a1628">Legacy</text>
   <text x="273" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">still live, untouched</text>
 
-  <!-- replacement -->
   <rect x="198" y="212" width="150" height="58" rx="7" fill="#ffffff" stroke="#0b4f88" stroke-width="1.6"/>
   <text x="273" y="236" text-anchor="middle" font-family="Sora,sans-serif" font-size="13.5" font-weight="600" fill="#0b4f88">Replacement</text>
   <text x="273" y="254" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">output not used yet</text>
 
-  <!-- legacy to downstream -->
   <path d="M348 79 L 452 79" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
   <rect x="454" y="52" width="140" height="54" rx="7" fill="#f5f9fd" stroke="#4a5a70" stroke-width="1.3"/>
   <text x="524" y="75" text-anchor="middle" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">Downstream</text>
   <text x="524" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#4a5a70">the real result</text>
 
-  <!-- both to comparator -->
   <path d="M348 96 L 392 96 L 392 150" stroke="#4a5a70" stroke-width="1.4" fill="none" stroke-dasharray="4 3" marker-end="url(#ah)"/>
   <path d="M348 241 L 392 241 L 392 190" stroke="#0b4f88" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
 
   <rect x="330" y="150" width="124" height="42" rx="7" fill="#0b4f88"/>
   <text x="392" y="176" text-anchor="middle" font-family="Sora,sans-serif" font-size="13" font-weight="600" fill="#ffffff">Comparator</text>
 
-  <!-- outcomes -->
   <path d="M454 171 L 492 171" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
 
   <rect x="494" y="124" width="150" height="26" rx="4" fill="#e4f4ec" stroke="#1a7f5a" stroke-width="1"/>
   <text x="569" y="141" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#136647">1 · Match</text>
-
   <rect x="494" y="154" width="150" height="26" rx="4" fill="#fbf1dc" stroke="#9a6b00" stroke-width="1"/>
   <text x="569" y="171" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#7d5700">2 · Tolerable divergence</text>
-
   <rect x="494" y="184" width="150" height="26" rx="4" fill="#fbe6e6" stroke="#a63232" stroke-width="1"/>
   <text x="569" y="201" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#8c2929">3 · Real divergence</text>
-
   <rect x="494" y="214" width="150" height="26" rx="4" fill="#eaf4fc" stroke="#0b4f88" stroke-width="1"/>
   <text x="569" y="231" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="#0b4f88">4 · Legacy defect</text>
 
-  <!-- evidence -->
   <path d="M644 182 L 682 182" stroke="#4a5a70" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
   <rect x="672" y="140" width="78" height="84" rx="7" fill="#ffffff" stroke="#0b4f88" stroke-width="1.4" stroke-dasharray="4 3"/>
   <text x="711" y="174" text-anchor="middle" font-family="Sora,sans-serif" font-size="12" font-weight="600" fill="#0b4f88">Evidence</text>
@@ -245,255 +180,87 @@
 
   <text x="392" y="308" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">Solid line: the path in use. Dashed: observation only.</text>
 </svg>
-<figcaption>
-  The replacement runs against production work from the first day, and carries none of the
-  production risk. What it produces is compared, classified, and kept.
-</figcaption>
-</figure>
+<p class="viz__cap">
+  The replacement sees production work from day one and carries none of the production risk.
+  Compare the output, not the internals. It is allowed to reach the answer differently.
+</p>
+</div>
 
-<h3>What to compare</h3>
+<h2>Four outcomes, four responses</h2>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th style="width:20%">Class</th><th>Meaning</th><th style="width:38%">What you do</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill pill--good">Match</span></td><td>Same result within the agreed tolerance.</td><td>Count it.</td></tr>
+    <tr><td><span class="pill pill--warn">Tolerable</span></td><td>Differs in a way that is understood and does not matter: ordering, formatting, an always-arbitrary rounding step.</td><td>Encode the rule in the comparator. Never wave one through twice by hand.</td></tr>
+    <tr><td><span class="pill pill--bad">Real</span></td><td>The replacement is wrong.</td><td>Fix it, add the case to the harness, keep running. Expect this to dominate early and approach zero.</td></tr>
+    <tr><td><span class="pill pill--info">Legacy defect</span></td><td>The replacement is right and the legacy has been wrong, possibly for years.</td><td>Stop. This is a business decision, not an engineering one.</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>The awkward one</h3>
 
 <p>
-  Compare the output, not the internals. The replacement is allowed to reach the answer
-  differently, and it usually will. What has to agree is the thing the rest of the business
-  consumes.
+  Class four arrives in almost every parallel run of any length, and the instinct is to make the
+  replacement match so the run can finish. That silently bakes a known defect into a new system.
 </p>
 
+<div class="flow">
+  <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Quantify</p><p class="flow__b">How many records, over what period, in which direction.</p></div>
+  <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Ask the outcome owner</p><p class="flow__b">Not the system owner. What should the answer be?</p></div>
+  <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Record the ruling</p><p class="flow__b">In writing, dated, attributed.</p></div>
+  <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Implement and mark</p><p class="flow__b">The comparator now expects this difference.</p></div>
+</div>
+
 <p>
-  Decide the comparison key before you start. For a record-level process it is usually the
-  business identifier plus the fields that matter. For a calculation it is the value and its
-  tolerance. Write this down as a specification rather than leaving it to whoever builds the
-  comparator, because a loose comparison produces a reassuring number that means nothing.
+  A modernisation that surfaces four long-standing defects and documents the ruling on each has
+  paid for itself before the cutover.
 </p>
+
+<h2>When to stop, and when to cut over</h2>
+
+<div class="facts">
+  <div class="fact"><b>Real divergences at zero</b><span>Stable across a full business cycle, including month and quarter end.</span></div>
+  <div class="fact"><b>Differences explained in code</b><span>Every tolerable one is a comparator rule, not a person reading a report.</span></div>
+  <div class="fact"><b>Rulings closed</b><span>Every legacy defect has a dated, attributed decision.</span></div>
+  <div class="fact"><b>Coverage stated</b><span>If sampled, the sampling rule is written down and the approver has seen it.</span></div>
+  <div class="fact"><b>Runbooks used</b><span>By somebody outside the build team, before cutover rather than during it.</span></div>
+  <div class="fact"><b>Rollback tested</b><span>A configuration change that has been exercised, not a plan on a slide.</span></div>
+</div>
 
 <div class="note">
-  <span class="note__label">A comparator is a grader</span>
+  <span class="note__label">Then make the cutover dull</span>
   <p>
-    Everything that applies to any other automated check applies here. A comparator that
-    reports a match because both sides produced nothing is worse than no comparator, because
-    it produces a number people trust. Prove it fails before you trust it passing, exactly as
-    described in
-    <a href="/dc/champ/harness-verification.html">Harness and verification</a>.
+    Flip which implementation the facade routes to. Keep the comparator running with the roles
+    reversed for a while, so the legacy is now the one being observed. That costs almost nothing
+    and catches the difference that only appears under real load.
   </p>
 </div>
 
-<h3>The four outcomes</h3>
-
-<p>
-  Every compared pair falls into one of four classes. The classification is the work. A run
-  that reports only "matched" and "did not match" throws away everything useful.
-</p>
-
-<div class="tablewrap">
-<table>
-  <thead>
-    <tr><th style="width:20%">Class</th><th>What it means</th><th style="width:34%">What you do</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><span class="pill pill--good">Match</span></td>
-      <td>Both produced the same result within the agreed tolerance.</td>
-      <td>Count it. Nothing else.</td>
-    </tr>
-    <tr>
-      <td><span class="pill pill--warn">Tolerable divergence</span></td>
-      <td>They differ in a way that is understood and does not matter, such as ordering, formatting, timestamp precision, or a rounding step that was always arbitrary.</td>
-      <td>Write down the rule that makes it tolerable, then encode that rule in the comparator so it stops appearing. Never dismiss one by hand twice.</td>
-    </tr>
-    <tr>
-      <td><span class="pill pill--bad">Real divergence</span></td>
-      <td>The replacement is wrong.</td>
-      <td>Fix the replacement, add the case to the regression harness, and keep running. This is the class you expect to dominate early and approach zero.</td>
-    </tr>
-    <tr>
-      <td><span class="pill pill--info">Legacy defect</span></td>
-      <td>The replacement is right and the legacy has been wrong, possibly for years.</td>
-      <td>Stop. This one needs a decision from the business, not from engineering. See below.</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<h3>The awkward case</h3>
-
-<p>
-  Class four is the one nobody plans for and it arrives in almost every parallel run of any
-  length. The replacement produces a different answer, you investigate expecting to find a bug,
-  and instead you find that the legacy has been doing something indefensible since before
-  anyone currently employed was there.
-</p>
-
-<p>
-  The engineering instinct is to make the replacement match, because matching is the goal and
-  the run is nearly over. Doing that silently bakes a known defect into a new system and
-  destroys the honesty of everything else the comparison told you.
-</p>
-
-<p>The handling is procedural rather than technical:</p>
-
-<ol>
-  <li><strong>Quantify it.</strong> How many records, over what period, and in which direction.
-    A business owner cannot rule on "sometimes the rounding is off".</li>
-  <li><strong>Take it to the owner of the outcome</strong>, not to the owner of the system. The
-    question is what the answer should be, which is a business question.</li>
-  <li><strong>Record the ruling in writing</strong>, with its date and who made it.</li>
-  <li><strong>Then implement whichever answer was chosen</strong>, and mark the comparator so
-    that this divergence is expected from now on rather than silently equal.</li>
-  <li><strong>Keep the finding.</strong> If the defect had financial or regulatory effect, it
-    is now a disclosed issue with a paper trail, which is a far better position than
-    discovering it after the legacy has been switched off.</li>
-</ol>
-
-<p>
-  Teams find this uncomfortable and then discover it is the most valuable output of the whole
-  exercise. A modernisation that surfaces four long-standing defects and documents the ruling
-  on each has paid for itself before the cutover.
-</p>
-
-<h3>How long to run</h3>
-
-<p>
-  Not to a date. Run until the divergence rate on each class of work is low, stable, and
-  explained. Three conditions, and all three have to hold:
-</p>
-
-<ul>
-  <li>Real divergences have reached zero and stayed there across a period that includes the
-    cycles this process actually has. If there is a month-end shape to the work, you have not
-    seen the process until you have seen a month end.</li>
-  <li>Every tolerable divergence is encoded as a rule rather than being waved through by a
-    person reading a report.</li>
-  <li>Every legacy defect has a written ruling.</li>
-</ul>
-
-<p>
-  The calendar matters only in that it tells you whether you have seen the rare cases yet.
-  Quarter end, year end, the annual price change, the one customer whose contract predates the
-  system. A parallel run that has not covered a full business cycle has not covered the cases
-  most likely to break after cutover.
-</p>
-
-<h3>Sampling, when full comparison is too expensive</h3>
-
-<p>
-  Running everything twice is not always affordable. Where it is not, sample deliberately
-  rather than by convenience:
-</p>
-
-<ul>
-  <li>Full comparison on the high-value tail, defined by an actual threshold.</li>
-  <li>A random sample of the rest, at a rate you write down.</li>
-  <li>Deliberate coverage of the known-awkward categories, which are the ones the domain
-    experts will name for you in an afternoon.</li>
-</ul>
-
-<p>
-  Then say in the record that this is what was sampled, because a cutover decision made on a
-  sample is a different claim from one made on the whole population, and the person reading it
-  in two years has a right to know which one they are looking at.
-</p>
-
-<h3>What to keep</h3>
-
-<p>
-  The evidence store is the point of the exercise. At minimum, per compared pair: the input
-  reference, both outputs, the class, the rule or ruling that explains it if it was not a
-  match, and when the comparison ran. Aggregated, it gives you the divergence rate over time,
-  which is the chart the cutover decision is actually made on.
-</p>
-
-<p>
-  Keep it after cutover. It is the only complete account of how the two systems differed, and
-  it is the first thing anyone asks for when a number looks strange six months later.
-</p>
-
-<h2>Deciding to cut over</h2>
-
-<p>
-  Cutting over is a decision someone signs, so it should have gates rather than a feeling.
-  These are the ones worth holding.
-</p>
-
-<div class="tablewrap">
-<table>
-  <thead>
-    <tr><th style="width:30%">Gate</th><th>What has to be true</th><th style="width:15%">Blocking</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><strong>Divergence</strong></td><td>Zero real divergences across a period covering a full business cycle, including the rare cases named by the domain owners.</td><td><span class="pill pill--bad">Yes</span></td></tr>
-    <tr><td><strong>Explained differences</strong></td><td>Every tolerable divergence encoded as a comparator rule. None being dismissed by hand.</td><td><span class="pill pill--bad">Yes</span></td></tr>
-    <tr><td><strong>Rulings closed</strong></td><td>Every legacy defect has a written business ruling, dated and attributed.</td><td><span class="pill pill--bad">Yes</span></td></tr>
-    <tr><td><strong>Coverage stated</strong></td><td>If sampled, the sampling rule is written down and the decision-maker has seen it.</td><td><span class="pill pill--bad">Yes</span></td></tr>
-    <tr><td><strong>Operational readiness</strong></td><td>Runbooks, alerting and support handover exist for the replacement, and someone other than the build team has used them.</td><td><span class="pill pill--bad">Yes</span></td></tr>
-    <tr><td><strong>Rollback</strong></td><td>Switching back is a configuration change that has been tested, not a plan on a slide.</td><td><span class="pill pill--bad">Yes</span></td></tr>
-    <tr><td><strong>Performance</strong></td><td>The replacement holds the throughput and latency the process needs at peak, not at average.</td><td><span class="pill pill--warn">Advisory</span></td></tr>
-  </tbody>
-</table>
-</div>
-
-<p>
-  The cutover itself should be dull. Flip which implementation the facade routes to. Keep the
-  comparator running for a while with the roles reversed, so the legacy is now the one being
-  observed. That costs almost nothing and it is how you catch the difference that only shows up
-  under real load.
-</p>
-
 <h2>Retiring, for real</h2>
 
-<p>
-  The last stage is the one that gets skipped, and skipping it is how an estate ends up with
-  forty systems nobody can switch off. Leaving the legacy running "just in case" means you now
-  operate, patch and licence two systems, and the second one has no owner.
+<div class="flow">
+  <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Set the date at cutover</p><p class="flow__b">A date negotiated afterwards is never reached.</p></div>
+  <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Cut the inputs first</p><p class="flow__b">Anything still calling it announces itself while it is still running.</p></div>
+  <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Archive the data</p><p class="flow__b">Readable without the application. The data is why people keep old systems alive.</p></div>
+  <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Decommission</p><p class="flow__b">Licences, credentials, network, jobs, monitoring nobody will act on.</p></div>
+</div>
+
+<h2>What it costs, and when not to</h2>
+
+<p class="key">
+  Slower to the first cutover. Considerably faster to the last one, because the harness, the
+  comparator and the facade already exist for every seam after it.
 </p>
 
-<ul>
-  <li>Set the switch-off date at cutover, not later. A date that is negotiated afterwards is
-    never reached.</li>
-  <li>Cut its inputs first and watch what breaks. Anything still calling it will announce
-    itself, and it is better to learn that while the system is still running.</li>
-  <li>Archive the data and its schema somewhere readable without the application, since the
-    reason people keep old systems alive is usually the data rather than the code.</li>
-  <li>Then decommission properly: licences, credentials, network access, scheduled jobs, the
-    monitoring that nobody will act on any more.</li>
-</ul>
-
-<h2>What this costs</h2>
-
-<p>
-  It is not free and it should not be sold as free.
-</p>
-
-<ul>
-  <li>You run two implementations for the length of the parallel period, with the compute and
-    the operational attention that implies.</li>
-  <li>You build a comparator and an evidence store, which is real engineering that produces no
-    customer-visible feature.</li>
-  <li>The first cutover is slower to reach than it would have been with a big bang.</li>
-</ul>
-
-<p>
-  What you get back is that the first cutover is the last risky moment rather than the first
-  one, and every seam after it is faster because the harness, the comparator and the facade
-  pattern already exist. Programmes that use this method tend to be slower to the first switch
-  and considerably faster to the last one.
-</p>
-
-<h2>When not to use this</h2>
-
-<ul>
-  <li><strong>No observable output.</strong> If the seam produces nothing you can compare, this
-    method has no grip. Find a different boundary or a different approach.</li>
-  <li><strong>A genuine one-shot migration.</strong> Moving data from one store to another once
-    is a migration with reconciliation, not a parallel run. The vocabulary overlaps and the
-    method does not.</li>
-  <li><strong>Volume too low to learn from.</strong> Below a certain throughput you will never
-    establish a divergence rate, and a designed test suite plus a staged rollout is the better
-    tool.</li>
-  <li><strong>The behaviour has to change immediately.</strong> If regulation or a customer
-    commitment means the new behaviour must differ from day one, you cannot prove equivalence
-    because equivalence is not the goal. Handle it as a change programme with its own
-    acceptance criteria.</li>
-</ul>
+<div class="dont">
+  <div><strong>No observable output</strong>The method has no grip. Find a different boundary.</div>
+  <div><strong>A one-shot migration</strong>That is a migration with reconciliation. Different method, similar words.</div>
+  <div><strong>Volume too low</strong>You will never establish a divergence rate. Use a designed test suite and a staged rollout.</div>
+  <div><strong>Behaviour must change on day one</strong>Equivalence is not the goal, so there is nothing to prove.</div>
+</div>
 
 </main>
 
@@ -516,35 +283,42 @@
       </div>
     </div>
 
-    <h3>The five stages</h3>
-    <div class="stages">
-      <div class="stage"><div class="stage__n">01</div><div><p class="stage__t">Map the estate</p><p class="stage__b">What exists, who owns it, where the risk sits. Not what the diagram claims.</p></div></div>
-      <div class="stage"><div class="stage__n">02</div><div><p class="stage__t">Pick the seam</p><p class="stage__b">Observable output, enough volume, real pain, small blast radius, an owner who answers questions.</p></div></div>
-      <div class="stage"><div class="stage__n">03</div><div><p class="stage__t">Build alongside</p><p class="stage__b">Replacement behind a facade. Regression harness around existing behaviour first. Legacy untouched.</p></div></div>
-      <div class="stage"><div class="stage__n">04</div><div><p class="stage__t">Run in parallel</p><p class="stage__b">Both process the same work. Only the legacy output is used. Every difference is classified.</p></div></div>
-      <div class="stage"><div class="stage__n">05</div><div><p class="stage__t">Retire and repeat</p><p class="stage__b">Cut over on evidence, switch the legacy off on a date set at cutover, start the next seam.</p></div></div>
+    <h3>Five stages</h3>
+    <div class="flow">
+      <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Map the estate</p><p class="flow__b">What exists, who owns it, where risk sits.</p></div>
+      <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Pick the seam</p><p class="flow__b">Observable output, real volume, small blast radius, an owner.</p></div>
+      <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Build alongside</p><p class="flow__b">Behind a facade. Regression harness first. Legacy untouched.</p></div>
+      <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Run in parallel</p><p class="flow__b">Both process the same work. Only legacy output is used.</p></div>
+      <div class="flow__step"><div class="flow__n">05</div><p class="flow__t">Retire and repeat</p><p class="flow__b">Cut over on evidence. Switch the old one off on a set date.</p></div>
     </div>
 
-    <h3>Classify every difference into one of four</h3>
+    <h3>Classify every difference</h3>
     <div class="tablewrap">
     <table>
-      <thead><tr><th style="width:22%">Class</th><th>Meaning</th><th style="width:38%">Action</th></tr></thead>
+      <thead><tr><th style="width:20%">Class</th><th>Meaning</th><th style="width:40%">Action</th></tr></thead>
       <tbody>
-        <tr><td><span class="pill pill--good">Match</span></td><td>Same result within the agreed tolerance.</td><td>Count it.</td></tr>
-        <tr><td><span class="pill pill--warn">Tolerable</span></td><td>Differs in a way that is understood and does not matter.</td><td>Encode the rule in the comparator. Never wave one through twice by hand.</td></tr>
+        <tr><td><span class="pill pill--good">Match</span></td><td>Same result within tolerance.</td><td>Count it.</td></tr>
+        <tr><td><span class="pill pill--warn">Tolerable</span></td><td>Understood, and does not matter.</td><td>Encode the rule in the comparator. Never wave one through twice by hand.</td></tr>
         <tr><td><span class="pill pill--bad">Real</span></td><td>The replacement is wrong.</td><td>Fix it, add the case to the harness, keep running.</td></tr>
-        <tr><td><span class="pill pill--info">Legacy defect</span></td><td>The replacement is right and the legacy has been wrong.</td><td>Quantify, take it to the outcome owner, get a written ruling, then implement.</td></tr>
+        <tr><td><span class="pill pill--info">Legacy defect</span></td><td>The replacement is right, the legacy has been wrong.</td><td>Quantify, ask the outcome owner, get a written ruling, then implement.</td></tr>
       </tbody>
     </table>
     </div>
 
     <div class="cols2">
       <div>
-        <h3>Stop the run when all three hold</h3>
+        <h3>Stop when all three hold</h3>
         <ul>
-          <li>Real divergences at zero and stable across a full business cycle, including month and quarter end.</li>
-          <li>Every tolerable divergence encoded as a rule, not dismissed by a person.</li>
-          <li>Every legacy defect closed with a dated, attributed ruling.</li>
+          <li>Real divergences at zero, stable across a full business cycle</li>
+          <li>Every tolerable one encoded as a rule</li>
+          <li>Every legacy defect closed with a dated ruling</li>
+        </ul>
+        <h3>Do not use this when</h3>
+        <ul>
+          <li>The seam has no observable output</li>
+          <li>It is a one-shot data migration</li>
+          <li>Volume is too low for a divergence rate</li>
+          <li>Behaviour must change on day one</li>
         </ul>
       </div>
       <div>
@@ -563,25 +337,16 @@
     <div class="note note--warn">
       <span class="note__label">The mistake that voids the whole exercise</span>
       <p>
-        Changing behaviour and changing implementation at the same time. Every divergence then
-        has two possible causes and the comparison proves nothing. Freeze behaviour, prove
-        equivalence, cut over, then change what the system does.
+        Changing behaviour and implementation at the same time. Every difference then has two
+        possible causes and the comparison proves nothing. Freeze behaviour, prove equivalence,
+        cut over, then change what the system does.
       </p>
     </div>
-
-    <h3>Do not use this when</h3>
-    <ul>
-      <li>The seam has no observable output to compare</li>
-      <li>It is a one-shot data migration, which is a different method</li>
-      <li>Volume is too low to establish a divergence rate</li>
-      <li>The behaviour has to change on day one, so equivalence is not the goal</li>
-    </ul>
 
     <div class="sheet__foot">
       <p class="cta">
         <strong>Greyquill Software</strong> builds AI and data systems that can be audited, and
-        modernises the ones that cannot. If this is on your desk right now, we would be glad to
-        talk it through. <strong>greyquill.io</strong>
+        modernises the ones that cannot. <strong>greyquill.io</strong>
       </p>
     </div>
 
