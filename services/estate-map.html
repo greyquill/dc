@@ -24,8 +24,8 @@
     <p class="eyebrow">Modernisation</p>
     <h1>Mapping an estate before you touch it</h1>
     <p class="deck">
-      Most architecture diagrams record what somebody intended to build. A map records what is
-      running, and it is finished when it can predict what breaks.
+      An architecture diagram usually shows the system somebody set out to build. Before you
+      change any of it, you need a record of the one that is actually running.
     </p>
     <div class="hero__meta">
       <button class="pdfbtn" onclick="window.print()">
@@ -41,11 +41,11 @@
 
 <main class="doc doc--wide">
 
-<h2>Six things per system</h2>
+<h2>Six columns per system</h2>
 
 <p class="key">
-  Fewer and the map cannot answer the questions you need it for. More and it never gets
-  finished, which is the more common failure.
+  Six columns will answer the questions you actually end up asking. Maps that try to capture
+  everything tend not to get finished.
 </p>
 
 <div class="viz">
@@ -94,8 +94,8 @@
 
   <line x1="512" y1="24" x2="512" y2="240" stroke="#e2e8ef" stroke-width="1.2"/>
 
-  <text x="536" y="42" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">The tell that it is finished</text>
-  <text x="536" y="66" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">You can pick any system and say,</text>
+  <text x="536" y="42" font-family="Sora,sans-serif" font-size="12.5" font-weight="600" fill="#0a1628">You are finished when</text>
+  <text x="536" y="66" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">you can pick any system and say,</text>
   <text x="536" y="83" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">without checking, what breaks if</text>
   <text x="536" y="100" font-family="Inter,sans-serif" font-size="11.5" fill="#4a5a70">it stops.</text>
 
@@ -113,19 +113,19 @@
 </p>
 </div>
 
-<h2>Finding what nobody will tell you</h2>
+<h2>What interviews will miss</h2>
 
 <p class="key">
-  Interviews give you the systems people think about. The ones that break modernisations are
-  the ones nobody thinks about, so they have to be found from evidence.
+  People will tell you about the systems they work with. The ones that cause trouble later are
+  usually the ones nobody has thought about in years, so you have to go looking.
 </p>
 
 <div class="facts">
-  <div class="fact"><b>Firewall, load balancer, DNS</b><span>Lists what is actually talking to what. Entries nobody can explain are the best rows in your map.</span></div>
-  <div class="fact"><b>Scheduled jobs and cron</b><span>Batch is where undocumented behaviour lives.</span></div>
-  <div class="fact"><b>Database accounts</b><span>Which account connects from where. Direct cross-system reads are the commonest surprise.</span></div>
-  <div class="fact"><b>Ask operations</b><span>"What do you do by hand every month?" Those spreadsheets are load-bearing.</span></div>
-  <div class="fact"><b>Certificate and licence renewals</b><span>Whoever pays for it knows something.</span></div>
+  <div class="fact"><b>Firewall, load balancer, DNS</b><span>Shows what is actually talking to what. Chase down anything nobody can account for.</span></div>
+  <div class="fact"><b>Scheduled jobs and cron</b><span>Batch work is rarely documented, and it is often where the surprises are.</span></div>
+  <div class="fact"><b>Database accounts</b><span>Which account connects, and from where. One system reading another's tables directly turns up more often than people expect.</span></div>
+  <div class="fact"><b>Ask operations</b><span>Ask what they do by hand every month. Those spreadsheets carry more load than anyone realises.</span></div>
+  <div class="fact"><b>Certificate and licence renewals</b><span>Somebody pays for each one. They can usually tell you what it is for.</span></div>
 </div>
 
 <h2>Ordering the work</h2>
@@ -163,30 +163,32 @@
   <text x="266" y="226" text-anchor="middle" font-family="Inter,sans-serif" font-size="11.5" fill="#7b8798">leave it alone</text>
 </svg>
 <p class="viz__cap">
-  Two questions the owner can answer in a minute. Anything high on both is where the budget will
-  land eventually, and a first attempt that stalls there ends the programme.
+  The system's owner can answer both without going away to look anything up. Anything high on
+  both axes will need attention eventually, though starting there is risky. Those systems tend
+  to be the most coupled, and a first attempt that stalls is hard to come back from.
 </p>
 </div>
 
 <div class="note note--warn">
   <span class="note__label">What to resist</span>
   <p>
-    A tooling decision. Estate maps get delayed for months while a discovery platform is
-    evaluated. Six honest columns in a spreadsheet beat an empty tool, and take an afternoon.
+    Starting with a tooling decision. Mapping often stalls while a discovery platform is
+    evaluated and procured. You learn more from a spreadsheet with the six columns filled in
+    than from a platform nobody has populated yet.
   </p>
 </div>
 
-<h2>Keep it, do not file it</h2>
+<h2>What you use it for afterwards</h2>
 
 <div class="facts">
-  <div class="fact"><b>Choosing the next seam</b><span>The map is the only place blast radius is written down.</span></div>
-  <div class="fact"><b>Audit and due diligence</b><span>Arrives without notice, always asks which systems process a given category of data.</span></div>
-  <div class="fact"><b>Decommissioning</b><span>Tells you whether anything still depends on what you want to switch off.</span></div>
+  <div class="fact"><b>Choosing the next seam</b><span>In most organisations it is the one place blast radius has been written down.</span></div>
+  <div class="fact"><b>Audit and due diligence</b><span>These requests arrive at short notice, and they tend to ask which systems process a given category of data.</span></div>
+  <div class="fact"><b>Decommissioning</b><span>Before you switch something off, the map tells you what still depends on it.</span></div>
 </div>
 
 <p>
-  Attach the upkeep to a ritual that already happens, such as a change approval step, rather than
-  creating a review nobody attends.
+  Keeping it current is a small standing job. Attach it to something that already happens, such
+  as a change approval step, so it does not rely on a review nobody attends.
 </p>
 
 </main>
@@ -222,7 +224,7 @@
 
     <div class="cols2">
       <div>
-        <h3>Find what nobody mentions</h3>
+        <h3>What interviews will miss</h3>
         <ul>
           <li>Firewall rules, load balancer config, DNS</li>
           <li>Scheduled jobs and cron tables</li>
@@ -237,7 +239,7 @@
           <li><strong>Consequence.</strong> Down for a day: inconvenience, revenue, or regulatory?</li>
           <li><strong>Fragility.</strong> Supported? Understood? Last successful change?</li>
         </ul>
-        <p>High on both is where the money goes eventually, and it is almost never the right first seam. Start where there is real pain and a small blast radius.</p>
+        <p>Anything high on both will need attention eventually, though it is rarely the right place to start. Begin where there is real pain and a small blast radius.</p>
       </div>
     </div>
 
@@ -252,8 +254,8 @@
 
     <h3>Resist</h3>
     <div class="dont">
-      <div><strong>Evaluating a tool first</strong>Six honest columns in a spreadsheet beat an empty platform.</div>
-      <div><strong>Starting at the frightening system</strong>Prove the method elsewhere, then come back to it.</div>
+      <div><strong>Evaluating a tool first</strong>A spreadsheet with six columns filled in is worth more than a platform with nothing in it.</div>
+      <div><strong>Starting at the worst system</strong>Prove the approach somewhere smaller, then come back to it.</div>
     </div>
 
     <div class="sheet__foot">

@@ -88,7 +88,7 @@
   <div class="flow__step"><div class="flow__n">05</div><p class="flow__t">Retire and repeat</p><p class="flow__b">Cut over on evidence, switch the old one off.</p></div>
 </div>
 
-<p>Most of the value is in stage four, and most write-ups skip it.</p>
+<p>Stage four is where most of the work sits, and it is the stage that usually gets the least attention.</p>
 
 <h2>Picking a seam</h2>
 
@@ -215,8 +215,9 @@
 </div>
 
 <p>
-  A modernisation that surfaces four long-standing defects and documents the ruling on each has
-  paid for itself before the cutover.
+  Teams find this uncomfortable at first. It is also one of the more useful things a parallel
+  run turns up, because you end up with a written decision on something that had been running
+  unexamined for years.
 </p>
 
 <h2>When to stop, and when to cut over</h2>
@@ -226,7 +227,7 @@
   <div class="fact"><b>Differences explained in code</b><span>Every tolerable one is a comparator rule, not a person reading a report.</span></div>
   <div class="fact"><b>Rulings closed</b><span>Every legacy defect has a dated, attributed decision.</span></div>
   <div class="fact"><b>Coverage stated</b><span>If sampled, the sampling rule is written down and the approver has seen it.</span></div>
-  <div class="fact"><b>Runbooks used</b><span>By somebody outside the build team, before cutover rather than during it.</span></div>
+  <div class="fact"><b>Runbooks used</b><span>By somebody outside the build team, while there is still time to fix what they find.</span></div>
   <div class="fact"><b>Rollback tested</b><span>A configuration change that has been exercised, not a plan on a slide.</span></div>
 </div>
 
@@ -242,17 +243,17 @@
 <h2>Retiring, for real</h2>
 
 <div class="flow">
-  <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Set the date at cutover</p><p class="flow__b">A date negotiated afterwards is never reached.</p></div>
-  <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Cut the inputs first</p><p class="flow__b">Anything still calling it announces itself while it is still running.</p></div>
-  <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Archive the data</p><p class="flow__b">Readable without the application. The data is why people keep old systems alive.</p></div>
+  <div class="flow__step"><div class="flow__n">01</div><p class="flow__t">Set the date at cutover</p><p class="flow__b">Dates negotiated after the fact tend to keep moving.</p></div>
+  <div class="flow__step"><div class="flow__n">02</div><p class="flow__t">Cut the inputs first</p><p class="flow__b">Anything still calling it will fail loudly while the system is up and you can still look.</p></div>
+  <div class="flow__step"><div class="flow__n">03</div><p class="flow__t">Archive the data</p><p class="flow__b">Readable without the application. Data is usually the reason an old system stays switched on.</p></div>
   <div class="flow__step"><div class="flow__n">04</div><p class="flow__t">Decommission</p><p class="flow__b">Licences, credentials, network, jobs, monitoring nobody will act on.</p></div>
 </div>
 
 <h2>What it costs, and when not to</h2>
 
 <p class="key">
-  Slower to the first cutover. Considerably faster to the last one, because the harness, the
-  comparator and the facade already exist for every seam after it.
+  You reach the first cutover later than you would with a big bang. Every seam after it goes
+  faster, because the harness, the comparator and the facade pattern already exist.
 </p>
 
 <div class="dont">
