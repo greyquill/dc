@@ -47,12 +47,17 @@
     });
 
     /* native share sheet: the only route into apps like Instagram or WhatsApp.
-       Hidden unless the browser actually has one (phones and tablets do). */
+       Phones and tablets have one; on browsers without it (desktop Firefox and
+       friends) the button copies the link instead, so it is never dead. */
     var nativeBtn = document.querySelector('[data-share="native"]');
-    if (nativeBtn && navigator.share) {
+    if (nativeBtn) {
       nativeBtn.hidden = false;
       nativeBtn.addEventListener("click", function () {
-        navigator.share({ title: title, url: url }).catch(function () {});
+        if (navigator.share) {
+          navigator.share({ title: title, url: url }).catch(function () {});
+        } else {
+          copyText(url, nativeBtn, "share__btn--copied");
+        }
       });
     }
 
