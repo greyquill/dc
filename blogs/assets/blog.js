@@ -1,7 +1,9 @@
 /* Greyquill blog — shared behavior (blog screens only). Self-contained, no CDNs.
    1) light/dark toggle: persists the reader's choice, defaults to the OS setting.
    2) share bar: wires LinkedIn / X / Facebook / Email / Copy-link at runtime from
-      the page's canonical URL and title. No third-party scripts, no trackers. */
+      the page's canonical URL and title, plus a native app share sheet (Instagram,
+      WhatsApp, and whatever else the device offers) where the browser supports
+      one. No third-party scripts, no trackers. */
 (function () {
   var KEY = "gq-blog-theme";
   var root = document.documentElement;
@@ -43,6 +45,16 @@
       var el = document.querySelector('[data-share="' + name + '"]');
       if (el) el.setAttribute("href", targets[name]);
     });
+
+    /* native share sheet: the only route into apps like Instagram or WhatsApp.
+       Hidden unless the browser actually has one (phones and tablets do). */
+    var nativeBtn = document.querySelector('[data-share="native"]');
+    if (nativeBtn && navigator.share) {
+      nativeBtn.hidden = false;
+      nativeBtn.addEventListener("click", function () {
+        navigator.share({ title: title, url: url }).catch(function () {});
+      });
+    }
 
     var copyBtn = document.querySelector('[data-share="copy"]');
     if (copyBtn) {
