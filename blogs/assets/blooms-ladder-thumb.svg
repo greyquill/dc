@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b4f88"/>
+      <stop offset="1" stop-color="#082b4c"/>
+    </linearGradient>
+    <linearGradient id="human" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#e8955c"/>
+      <stop offset="1" stop-color="#f4c08a"/>
+    </linearGradient>
+    <linearGradient id="machine" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#4d9be8"/>
+      <stop offset="1" stop-color="#8cc1f2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="1100" cy="140" r="320" fill="#4d9be8" opacity="0.22"/>
+  <!-- six ascending steps: lower three machine blue, upper three human amber -->
+  <g>
+    <rect x="150"  y="500" width="150" height="120" fill="url(#machine)" opacity="0.55"/>
+    <rect x="322"  y="435" width="150" height="185" fill="url(#machine)" opacity="0.7"/>
+    <rect x="494"  y="370" width="150" height="250" fill="url(#machine)" opacity="0.85"/>
+    <rect x="666"  y="290" width="150" height="330" fill="url(#human)" opacity="0.8"/>
+    <rect x="838"  y="210" width="150" height="410" fill="url(#human)" opacity="0.9"/>
+    <rect x="1010" y="130" width="150" height="490" fill="url(#human)"/>
+  </g>
+  <line x1="150" y1="335" x2="1160" y2="335" stroke="#ffffff" stroke-width="4" stroke-dasharray="12 10" opacity="0.75"/>
+</svg>
