@@ -1,9 +1,9 @@
 /* Greyquill blog — shared behavior (blog screens only). Self-contained, no CDNs.
    1) light/dark toggle: persists the reader's choice, defaults to the OS setting.
-   2) share bar: wires LinkedIn / X / Facebook / Email / Copy-link at runtime from
-      the page's canonical URL and title, plus a native app share sheet (Instagram,
-      WhatsApp, and whatever else the device offers) where the browser supports
-      one. No third-party scripts, no trackers. */
+   2) share bar: wires LinkedIn / X / Facebook / Substack / Email / Copy-link at
+      runtime from the page's canonical URL and title, plus a native app share
+      sheet (Instagram, WhatsApp, and whatever else the device offers) where the
+      browser supports one. No third-party scripts, no trackers. */
 (function () {
   var KEY = "gq-blog-theme";
   var root = document.documentElement;
@@ -35,10 +35,16 @@
     var title = (og && og.content) || document.title.replace(/\s+—\s+Greyquill$/, "");
     var u = encodeURIComponent(url);
     var t = encodeURIComponent(title);
+    /* Substack has no documented share endpoint. This opens the Notes composer
+       with the note pre-filled where Substack honours the parameter, and with an
+       empty composer where it does not, so the button still lands the reader in
+       the right place. @greyquillsoftware is the Greyquill publication. */
+    var note = encodeURIComponent(title + "\n\n" + url + "\n\nvia @greyquillsoftware");
     var targets = {
       linkedin: "https://www.linkedin.com/sharing/share-offsite/?url=" + u,
       x: "https://twitter.com/intent/tweet?url=" + u + "&text=" + t,
       facebook: "https://www.facebook.com/sharer/sharer.php?u=" + u,
+      substack: "https://substack.com/notes?action=compose&text=" + note,
       email: "mailto:?subject=" + t + "&body=" + u
     };
     Object.keys(targets).forEach(function (name) {
