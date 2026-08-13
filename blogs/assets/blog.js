@@ -63,9 +63,14 @@
 
     /* Substack accepts no share URL. Its Notes composer ignores any pre-fill
        parameter, so a link would open an empty box with nothing to paste. Copy
-       the title and link first, then open the composer, so the paste is ready. */
+       the title and link first, then open the composer, so the paste is ready.
+       The href is set here as well as in the markup: the two files are cached
+       independently, so a page held in cache must not end up with a dead button. */
     var substackBtn = document.querySelector('[data-share="substack"]');
     if (substackBtn) {
+      substackBtn.setAttribute("href", "https://substack.com/notes");
+      substackBtn.setAttribute("target", "_blank");
+      substackBtn.setAttribute("rel", "noopener");
       substackBtn.addEventListener("click", function () {
         copyText(title + "\n\n" + url, substackBtn, "share__btn--copied");
       });
