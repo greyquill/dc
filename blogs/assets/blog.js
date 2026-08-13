@@ -35,16 +35,10 @@
     var title = (og && og.content) || document.title.replace(/\s+—\s+Greyquill$/, "");
     var u = encodeURIComponent(url);
     var t = encodeURIComponent(title);
-    /* Substack has no documented share endpoint. This opens the Notes composer
-       with the note pre-filled where Substack honours the parameter, and with an
-       empty composer where it does not, so the button still lands the reader in
-       the right place. @greyquillsoftware is the Greyquill publication. */
-    var note = encodeURIComponent(title + "\n\n" + url + "\n\nvia @greyquillsoftware");
     var targets = {
       linkedin: "https://www.linkedin.com/sharing/share-offsite/?url=" + u,
       x: "https://twitter.com/intent/tweet?url=" + u + "&text=" + t,
       facebook: "https://www.facebook.com/sharer/sharer.php?u=" + u,
-      substack: "https://substack.com/notes?action=compose&text=" + note,
       email: "mailto:?subject=" + t + "&body=" + u
     };
     Object.keys(targets).forEach(function (name) {
@@ -64,6 +58,16 @@
         } else {
           copyText(url, nativeBtn, "share__btn--copied");
         }
+      });
+    }
+
+    /* Substack accepts no share URL. Its Notes composer ignores any pre-fill
+       parameter, so a link would open an empty box with nothing to paste. Copy
+       the title and link first, then open the composer, so the paste is ready. */
+    var substackBtn = document.querySelector('[data-share="substack"]');
+    if (substackBtn) {
+      substackBtn.addEventListener("click", function () {
+        copyText(title + "\n\n" + url, substackBtn, "share__btn--copied");
       });
     }
 
