@@ -70,12 +70,23 @@
        with a dead button. */
     var substackBtn = document.querySelector('[data-share="substack"]');
     if (substackBtn) {
-      substackBtn.setAttribute("href", "https://substack.com/notes?action=compose");
       substackBtn.setAttribute("target", "_blank");
       substackBtn.setAttribute("rel", "noopener");
-      substackBtn.addEventListener("click", function () {
-        copyText(title + "\n\n" + url, substackBtn, "share__btn--copied");
-      });
+      /* Once the piece has been cross-posted, point at our own copy instead.
+         Substack's Restack button there does what no external link can: a real
+         share, with the preview card and the attribution, without leaving
+         Substack. The meta tag is written by the crosspost tool. */
+      var mine = document.querySelector('meta[name="gq:substack"]');
+      if (mine && mine.content) {
+        substackBtn.setAttribute("href", mine.content);
+        substackBtn.setAttribute("aria-label", "Read and restack this on Substack");
+        substackBtn.setAttribute("title", "Open this piece on Substack, where you can restack it");
+      } else {
+        substackBtn.setAttribute("href", "https://substack.com/notes?action=compose");
+        substackBtn.addEventListener("click", function () {
+          copyText(title + "\n\n" + url, substackBtn, "share__btn--copied");
+        });
+      }
     }
 
     var copyBtn = document.querySelector('[data-share="copy"]');
