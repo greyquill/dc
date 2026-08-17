@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>(function(){try{var k='gq-blog-theme',t=localStorage.getItem(k);if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+
+  <title>A hallucination is the model working correctly. Greyquill</title>
+  <meta name="description" content="A model is random by design. The reliability comes from the harness around it: deterministic code that calls the model like a function and checks every answer it returns.">
+  <meta name="author" content="Amarnath Bagineni">
+  <link rel="canonical" href="https://www.greyquill.io/dc/blogs/hallucination-is-the-model-working.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="A hallucination is the model working correctly">
+  <meta property="og:description" content="A model is random by design. The reliability comes from the harness around it: deterministic code that calls the model like a function and checks every answer it returns.">
+  <meta property="og:url" content="https://www.greyquill.io/dc/blogs/hallucination-is-the-model-working.html">
+  <meta property="og:site_name" content="Greyquill">
+  <meta property="og:image" content="https://www.greyquill.io/dc/blogs/assets/hallucination-is-the-model-working-og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:section" content="AI &amp; Analytics">
+  <meta property="article:author" content="Amarnath Bagineni">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.greyquill.io/dc/blogs/assets/hallucination-is-the-model-working-og.png">
+
+  <link rel="stylesheet" href="assets/blog.css">
+</head>
+<body>
+  <header class="site-bar">
+    <div class="site-bar__inner">
+      <div class="site-bar__brand">
+        <a class="brand-logo" href="https://www.greyquill.io/"><img src="assets/greyquill-logo.png" alt="Greyquill"></a>
+        <span class="site-bar__tag">Software Investments That Actually Deliver.</span>
+      </div>
+      <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle light or dark mode" title="Toggle light or dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="post">
+    <a class="post__back" href="index.html">Back to the blog</a>
+    <p class="eyebrow">AI &amp; Analytics</p>
+    <h1 class="post__title">A hallucination is the model working correctly</h1>
+    <p class="post__deck">A model is random by design. The reliability comes from the harness around it: deterministic code that calls the model like a function and checks every answer it returns.</p>
+
+    <div class="post__headmeta">
+      <span class="post__datetime">17 August 2026 &middot; 4 min read</span>
+      <div class="share" aria-label="Share this article">
+        <span class="share__label">Share</span>
+        <a class="share__btn" data-share="linkedin" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.3 8.75 21 11 21 14.1V21h-4v-6.1c0-1.45-.03-3.3-2-3.3-2 0-2.3 1.56-2.3 3.2V21H9z"/></svg></a>
+        <a class="share__btn" data-share="x" target="_blank" rel="noopener" aria-label="Share on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 3h3l-6.6 7.5L21.8 21h-6.1l-4.3-5.6L6.4 21H3.3l7-8L2.6 3h6.2l3.9 5.2zM16.4 19.2h1.7L7.7 4.7H5.9z"/></svg></a>
+        <a class="share__btn" data-share="facebook" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H17V3.6c-.3-.04-1.3-.13-2.47-.13-2.44 0-4.11 1.49-4.11 4.23v2.36H7.7V13h2.72v8z"/></svg></a>
+        <a class="share__btn" data-share="substack" href="https://substack.com/notes?action=compose" target="_blank" rel="noopener" aria-label="Copy this link and open Substack Notes" title="Copies the link, then opens Substack Notes"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.54 8.24H1.46V5.4h21.08v2.84zM1.46 10.81V24L12 18.11 22.54 24V10.81H1.46zM22.54 0H1.46v2.84h21.08V0z"/></svg></a>
+        <a class="share__btn" data-share="email" aria-label="Share by email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        <button class="share__btn" data-share="native" type="button" aria-label="Share via an app, such as Instagram or WhatsApp" title="Share via an app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.7l6.8-3.9M8.6 13.3l6.8 3.9"/></svg></button>
+        <button class="share__btn" data-share="copy" type="button" aria-label="Copy link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></button>
+      </div>
+    </div>
+
+    <article class="post__body">
+      <!-- BODY START -->
+      <p>Ask a model the same question twice and you can get two different answers. That is not a defect in the build. A model writes language by sampling from a probability distribution, and that sampling is the reason it can produce a sentence nobody has written before.</p>
+
+      <p>So when a model hallucinates, it is showing you the thing it is best at, at a moment you did not want it. Taking the randomness away is not an option, because there is no model left afterwards. The work is to make the randomness pay off, which is the same work as any other job where you cannot control every input.</p>
+
+      <h2>Every AI system has two halves</h2>
+      <p>One half is deterministic. It is the code we write, it behaves the same way on every run, and we can reason about it line by line. The other half is the model, and it is not deterministic at all.</p>
+      <p>Most products hand the model both halves. You ask, and it decides what the answer is and how to get there. As a way to explore an idea, that works. As the architecture for a claims pipeline, it means the system can reach a different decision on Tuesday than it reached on Monday, with no code change in between and nothing to point at afterwards.</p>
+
+      <h2>The model is a function that returns a judgment</h2>
+      <p>When we build, the model is an inference function. It takes a bounded question and returns a judgment. It does not hold the workflow, it does not choose the next step, and it does not write to a system of record.</p>
+
+      <blockquote>Intelligence as a function, called for a specific expected result.</blockquote>
+
+      <p>Everything around that call is ordinary deterministic code. Somewhere inside it there are places where a judgment is unavoidable: the input is a photograph of a form, or a paragraph of free text, or a pattern in a running system that somebody used to have to sit and watch. No rule can be written for those, and that is exactly where the call goes. The rest stays code, because code is cheaper to test and easier to defend.</p>
+      <p>Holding that line is what lets these systems work in places where being wrong is expensive.</p>
+
+      <h2>The harness is where the reliability lives</h2>
+      <p>An inference call on its own is a liability. What makes it safe is what surrounds it. The answer has to come back in an expected shape and an expected type. It is held to a range or a set of allowed values. It is cross-checked against the record it claims to be about. Evaluation sets run over the whole path before anything ships, and again whenever a prompt or a model changes. Nothing is trusted because the model said it.</p>
+      <p>Most anomalies are caught and settled without a person hearing about it. Where the harness cannot settle one, the work stops and asks for an approval. That path exists in every system we build and it stays quiet, which is the point. A reviewer is worth having when the queue holds the cases that genuinely need judgment rather than everything the system touched that day.</p>
+
+      <figure class="panel">
+        <img alt="Flow diagram: an input passes through deterministic steps to a single inference call, whose answer must pass shape, range and cross-check tests before the deterministic steps continue to a result. An answer that fails the checks is held for a human approval instead of being used." src="assets/hallucination-is-the-model-working-figure.png">
+        <figcaption>The model occupies one step. Its answer is checked before the deterministic part of the system will act on it, and an answer that fails the checks waits for a person.</figcaption>
+      </figure>
+
+      <h2>This is old practice</h2>
+      <p>Building the harness is our core expertise, and there is nothing modern about it. It is deterministic programming, which is what programming was before the model arrived and never stopped being right. What we expect of a system has not moved: same input, same state, same behaviour, and an honest stop when it cannot manage that. The model is impressive. It does not get an exemption.</p>
+      <p>We have built these harnesses for financial services, for retail, and for document-heavy operations where the work is reading scanned paper and generating documents from what it says. Different domains, same shape. Deterministic composition, with an inference call at the one step where judgment cannot be written down as a rule.</p>
+
+      <h2>A modest model with a good harness wins</h2>
+      <p>One result has held everywhere we have looked. A mediocre model inside a harness built for the problem beats a stronger model with nothing around it.</p>
+      <p>The frontier model is better at producing a plausible answer. It is no better at deciding whether that answer is safe to act on inside your business, because that depends on your data and your rules, and on what an auditor will ask you to show. None of it is in the model's weights. All of it is in the harness.</p>
+      <p>Which makes the model the replaceable part. We swapped one out on our own website chat and deleted around 800 lines of protective code, and the boundaries did not move: <a href="four-lines-we-would-keep.html">the four lines of code that keep our AI chat honest</a>. That is the position you want to be in when the next model lands.</p>
+
+      <aside class="callout">
+        <div class="callout__label">The short version</div>
+        <ul>
+          <li>A model is random by design. A hallucination is that same feature arriving at a moment you did not want it.</li>
+          <li>We call the model as an inference function: a bounded question in, a judgment out. It never holds the workflow.</li>
+          <li>The system around it is deterministic code, with checks on every answer the model returns.</li>
+          <li>A mediocre model with the right harness beats a strong model with nothing around it.</li>
+        </ul>
+      </aside>
+
+      <aside class="cta">
+        <p class="cta__lead">Putting AI somewhere it has to be right?</p>
+        <p class="cta__body">Happy to walk through how the harness would be shaped around your problem. Thirty minutes, no pitch.</p>
+        <a class="cta__link" href="https://www.greyquill.io/contact/">Start a conversation →</a>
+      </aside>
+      <!-- BODY END -->
+    </article>
+  </main>
+
+  <footer class="post-footer">
+    <strong>Greyquill</strong> helps regulated enterprises get AI to actually work:
+    structure and clean data for AI compatibility first, then deploy governed,
+    domain-specific agents on top. <a href="https://www.greyquill.io/">greyquill.io</a>
+  </footer>
+
+  <script src="assets/blog.js"></script>
+</body>
+</html>
