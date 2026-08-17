@@ -7,6 +7,9 @@
 <meta name="description" content="What evaluation, guardrails and an audit trail have to mean before an AI feature reaches a customer, written as gates somebody can check.">
 <link rel="icon" href="/dc/assets/greyquill-logo.png">
 <link rel="stylesheet" href="assets/services.css">
+<style>
+  a .gq-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#0B4F88;background:#eefbff;border:1px solid rgba(11,79,136,.28);border-radius:999px;padding:0 6px;margin-left:6px;vertical-align:middle;text-decoration:none}
+</style>
 </head>
 <body>
 
@@ -199,7 +202,7 @@
   <span class="note__label">Related</span>
   <p>
     The verification machinery behind this, including calibrating a grader and reading a
-    distribution, is in <a href="/dc/champ/harness-verification.html">Harness and verification</a>.
+    distribution, is in <a data-gq-gated="1" data-gq-title="Harness and Verification" data-gq-desc="The sandbox Champ agents are tested in, how they are verified before deployment, and how they are audited after." data-gq-url="https://gq-private.pages.dev/champ/harness-verification.html" href="/dc/champ/harness-verification.html">Harness and verification<span class="gq-tag">Private</span></a>.
   </p>
 </div>
 
@@ -267,9 +270,71 @@
 <footer class="foot no-print">
   <div class="foot__in">
     <span>&copy; Greyquill Software</span>
-    <span><a href="/dc/champ/harness-verification.html">Deeper: harness and verification</a> &middot; <a href="https://www.greyquill.io">greyquill.io</a></span>
+    <span><a data-gq-gated="1" data-gq-title="Harness and Verification" data-gq-desc="The sandbox Champ agents are tested in, how they are verified before deployment, and how they are audited after." data-gq-url="https://gq-private.pages.dev/champ/harness-verification.html" href="/dc/champ/harness-verification.html">Deeper: harness and verification<span class="gq-tag">Private</span></a> &middot; <a href="https://www.greyquill.io">greyquill.io</a></span>
   </div>
 </footer>
 
+
+<!-- greyquill:gate-modal injected by tools/gate.mjs in greyquill/dc-private -->
+<style>
+  .gq-modal[hidden]{display:none}
+  .gq-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px}
+  .gq-scrim{position:absolute;inset:0;background:rgba(8,16,30,.62)}
+  .gq-card{position:relative;width:100%;max-width:470px;background:#fff;color:#0a1628;border-radius:14px;
+    padding:30px 32px;box-shadow:0 24px 70px rgba(8,16,30,.35);
+    font-family:'Inter',system-ui,sans-serif;line-height:1.55;text-align:left}
+  .gq-eyebrow{font-family:'Sora',system-ui,sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:#0B4F88}
+  .gq-card h2{font-family:'Sora',system-ui,sans-serif;font-weight:700;font-size:21px;letter-spacing:-.01em;margin:7px 0 9px;color:#0a1628}
+  .gq-desc{font-size:14.5px;color:#475067;margin:0 0 18px}
+  .gq-note{font-size:14px;color:#475067;margin:0 0 12px}
+  .gq-note a{color:#0B4F88;font-weight:600}
+  .gq-actions{display:flex;gap:10px;align-items:center;margin-top:22px;flex-wrap:wrap}
+  .gq-go{font-family:'Sora',system-ui,sans-serif;font-weight:600;font-size:13.5px;text-decoration:none;
+    color:#fff;background:#0B4F88;border-radius:9px;padding:10px 18px}
+  .gq-go:hover{background:#083d6a}
+  .gq-close{font-family:'Sora',system-ui,sans-serif;font-weight:600;font-size:13.5px;color:#475067;
+    background:none;border:1px solid #e4e7ee;border-radius:9px;padding:10px 16px;cursor:pointer}
+  .gq-close:hover{border-color:#8b93a7}
+</style>
+<div class="gq-modal" id="gq-modal" hidden>
+  <div class="gq-scrim" data-gq-close></div>
+  <div class="gq-card" role="dialog" aria-modal="true" aria-labelledby="gq-modal-title">
+    <div class="gq-eyebrow">Restricted material</div>
+    <h2 id="gq-modal-title"></h2>
+    <p class="gq-desc"></p>
+    <p class="gq-note">This document is not published. Greyquill shares it with named people only.</p>
+    <p class="gq-note">To ask for access, email <a class="gq-mail" href="mailto:hello@greyquill.io">hello@greyquill.io</a>
+      and mention this document by name. If we can share it, we will add your address and send you a link.</p>
+    <div class="gq-actions">
+      <a class="gq-go" href="#">I already have access</a>
+      <button class="gq-close" type="button" data-gq-close>Close</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var m=document.getElementById('gq-modal'); if(!m) return;
+  var mail="hello@greyquill.io";
+  var t=m.querySelector('#gq-modal-title'), d=m.querySelector('.gq-desc'),
+      go=m.querySelector('.gq-go'), ml=m.querySelector('.gq-mail'), prev=null;
+  function open(a){
+    var title=a.getAttribute('data-gq-title')||'';
+    t.textContent=title;
+    d.textContent=a.getAttribute('data-gq-desc')||'';
+    go.href=a.getAttribute('data-gq-url')||'#';
+    ml.href='mailto:'+mail+'?subject='+encodeURIComponent('Access request: '+title);
+    m.hidden=false; document.body.style.overflow='hidden';
+    prev=document.activeElement; go.focus();
+  }
+  function close(){ m.hidden=true; document.body.style.overflow=''; if(prev&&prev.focus) prev.focus(); }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest?e.target.closest('[data-gq-gated]'):null;
+    if(a){ e.preventDefault(); open(a); return; }
+    if(e.target.closest&&e.target.closest('[data-gq-close]')) close();
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!m.hidden) close(); });
+})();
+</script>
 </body>
 </html>
