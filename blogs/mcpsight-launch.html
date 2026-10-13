@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>(function(){try{var k='gq-blog-theme',t=localStorage.getItem(k);if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+
+  <!-- Fill per post. Keep mcpsight-launch identical to the filename (blogs/mcpsight-launch.html). -->
+  <title>Who reads the tool descriptions? Greyquill</title>
+  <meta name="description" content="Your agent follows every word of an MCP server&#39;s tool descriptions, and the server can change them after you install it. We built MCPsight to read them before your agent does.">
+  <meta name="author" content="Amarnath Bagineni"><!-- attribution/metadata only; not shown in the header -->
+  <link rel="canonical" href="https://www.greyquill.io/dc/blogs/mcpsight-launch.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Who reads the tool descriptions?">
+  <meta property="og:description" content="Your agent follows every word of an MCP server&#39;s tool descriptions, and the server can change them after you install it. We built MCPsight to read them before your agent does.">
+  <meta property="og:url" content="https://www.greyquill.io/dc/blogs/mcpsight-launch.html">
+  <meta property="og:site_name" content="Greyquill">
+  <meta property="article:section" content="Risk &amp; Resilience">
+  <meta property="article:author" content="Amarnath Bagineni">
+  <meta property="og:image" content="https://www.greyquill.io/dc/blogs/assets/mcpsight-launch-og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.greyquill.io/dc/blogs/assets/mcpsight-launch-og.png">
+
+  <link rel="stylesheet" href="assets/blog.css">
+</head>
+<body>
+  <header class="site-bar">
+    <div class="site-bar__inner">
+      <div class="site-bar__brand">
+        <a class="brand-logo" href="https://www.greyquill.io/"><img src="assets/greyquill-logo.png" alt="Greyquill"></a>
+        <span class="site-bar__tag">Software Investments That Actually Deliver.</span>
+      </div>
+      <button class="theme-toggle" data-theme-toggle type="button" aria-label="Toggle light or dark mode" title="Toggle light or dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="post">
+    <a class="post__back" href="index.html">Back to the blog</a>
+    <p class="eyebrow">Risk &amp; Resilience</p>
+    <h1 class="post__title">Who reads the tool descriptions?</h1>
+    <p class="post__deck">Your agent follows every word of an MCP server's tool descriptions, and the server can change them after you install it. We built MCPsight to read them before your agent does.</p>
+
+    <div class="post__headmeta">
+      <span class="post__datetime">13 October 2026 &middot; 3 min read</span>
+      <div class="share" aria-label="Share this article">
+        <span class="share__label">Share</span>
+        <a class="share__btn" data-share="linkedin" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.3 8.75 21 11 21 14.1V21h-4v-6.1c0-1.45-.03-3.3-2-3.3-2 0-2.3 1.56-2.3 3.2V21H9z"/></svg></a>
+        <a class="share__btn" data-share="x" target="_blank" rel="noopener" aria-label="Share on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 3h3l-6.6 7.5L21.8 21h-6.1l-4.3-5.6L6.4 21H3.3l7-8L2.6 3h6.2l3.9 5.2zM16.4 19.2h1.7L7.7 4.7H5.9z"/></svg></a>
+        <a class="share__btn" data-share="facebook" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H17V3.6c-.3-.04-1.3-.13-2.47-.13-2.44 0-4.11 1.49-4.11 4.23v2.36H7.7V13h2.72v8z"/></svg></a>
+        <a class="share__btn" data-share="substack" href="https://substack.com/notes?action=compose" target="_blank" rel="noopener" aria-label="Copy this link and open Substack Notes" title="Copies the link, then opens Substack Notes"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.54 8.24H1.46V5.4h21.08v2.84zM1.46 10.81V24L12 18.11 22.54 24V10.81H1.46zM22.54 0H1.46v2.84h21.08V0z"/></svg></a>
+        <a class="share__btn" data-share="email" aria-label="Share by email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+        <button class="share__btn" data-share="native" type="button" aria-label="Share via an app, such as Instagram or WhatsApp" title="Share via an app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.7l6.8-3.9M8.6 13.3l6.8 3.9"/></svg></button>
+        <button class="share__btn" data-share="copy" type="button" aria-label="Copy link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg></button>
+      </div>
+    </div>
+
+
+    <article class="post__body">
+      <!-- BODY START -->
+      <p>Open your MCP config and look at the servers in it. Now think about the last time you read one of their tool descriptions. I mean the paragraph under the tool name, the text the model actually gets. If you're like most of us, the honest answer is never.</p>
+
+      <p>Your agent reads all of it, on every request, and treats it as instructions. That's what it's for. MCP, the protocol Anthropic put out in November 2024,<sup class="ref"><a href="#ref-1">1</a></sup> made it very easy to plug a new tool into an agent, and almost nothing about that flow asks you to look at what the tool is telling the model.</p>
+
+      <h2>A calculator that wanted your SSH key</h2>
+      <p>In April 2025 a team at Invariant Labs showed how badly this can go.<sup class="ref"><a href="#ref-2">2</a></sup> They built a server with a harmless-looking calculator tool and hid instructions in its description. Go read the user's SSH key and MCP config, they told the model, and pass them along in one of the tool's parameters. The agent did it. The person at the keyboard saw a calculator.</p>
+
+      <p>The part of that advisory we kept coming back to was shorter. They called it a rug pull. You can read every description carefully on the day you install a server, and the server can change them next week. In most setups, nothing will tell you it happened.</p>
+
+      <p>If you work at a bank or an insurer, try explaining that one to your risk team. The agent has real access to real systems, and the instructions steering it were written by someone outside the company that nobody inside has read.</p>
+
+      <h2>So we built something to read them</h2>
+      <p>MCPsight is a command-line tool. Point it at one server, or at your whole config, and it tells you what's in there.</p>
+
+      <figure class="code">
+        <figcaption class="code__bar">
+          <span class="code__lang">shell</span>
+          <button class="code__copy" type="button" aria-label="Copy code">Copy</button>
+        </figcaption>
+        <pre><code>mcpsight scan --from claude_desktop_config.json</code></pre>
+      </figure>
+
+      <p>It goes through every tool description looking for the things you'd hope never to find. Text telling the model to ignore what it was told. Text pointing at <code>~/.ssh</code> or <code>.env</code>. Characters that don't show up on screen when a human reviews it.</p>
+
+      <p>Local servers get run in a sandbox with no network and a fake home directory, and we leave decoy credentials lying around in it. A server that goes looking for a fake SSH key the moment it starts has told you most of what you need to know about it.</p>
+
+      <p>It also counts how many tokens the tool definitions add to every request, which is worth knowing when you pay per token, and checks the usual supply-chain things like install scripts, known CVEs and package names that are one letter off a popular one. Each server ends up with a grade. The rubric behind it is published in the repo, so you can redo any score by hand from the findings. If the people who need this answer are auditors, they should be able to check our arithmetic.</p>
+
+      <h2>Why it's built to live in CI</h2>
+      <p>A scan you run once only helps on that day, and the rug pull happens later. So every scan writes a baseline file that you commit next to your config. In your pipeline you run <code>mcpsight verify</code>, and if a server's tools have changed since the baseline, the build fails.</p>
+
+      <figure class="code">
+        <figcaption class="code__bar">
+          <span class="code__lang">shell</span>
+          <button class="code__copy" type="button" aria-label="Copy code">Copy</button>
+        </figcaption>
+        <pre><code>mcpsight verify    # exits non-zero if a server changed under you</code></pre>
+      </figure>
+
+      <p>It pays attention to which way things moved. A description that got shorter is fine. One that suddenly contains an instruction, or a tool that used to read files and now writes them, gets flagged hard.</p>
+
+      <h2>What it won't do</h2>
+      <p>It isn't a malware scanner, and we're not going to pretend it is. Code written to hide from its tracing can hide. Local servers only scan on Linux for now, because that's where the sandbox works. On a Mac or Windows it refuses to run them unsandboxed, and you can still scan remote ones. It's also version 0.1.0, out since 3 October, so expect rough edges.</p>
+
+      <p>It's open source under Apache-2.0, it runs offline, and there's no account to create. Grab it from <a href="https://mcpsight.dev">mcpsight.dev</a> and run it against your own config. If it finds something, or gets something wrong, we'd like to hear about it.</p>
+
+      <section class="references" aria-label="Sources">
+        <h2 class="references__title">Sources</h2>
+        <ol class="references__list">
+          <li id="ref-1">Anthropic. "Introducing the Model Context Protocol." 25 November 2024. <a href="https://www.anthropic.com/news/model-context-protocol">link</a></li>
+          <li id="ref-2">Luca Beurer-Kellner and Marc Fischer, Invariant Labs. "MCP Security Notification: Tool Poisoning Attacks." 1 April 2025. <a href="https://invariantlabs.ai/blog/mcp-security-notification">link</a></li>
+          <li id="ref-3">Greyquill. "MCPsight." Source code, threat model and scoring rubric. <a href="https://github.com/greyquill/mcpsight">link</a></li>
+        </ol>
+      </section>
+      <!-- BODY END -->
+    </article>
+  </main>
+
+  <footer class="post-footer">
+    <strong>Greyquill</strong> helps regulated enterprises get AI to actually work:
+    structure and clean data for AI compatibility first, then deploy governed,
+    domain-specific agents on top. <a href="https://www.greyquill.io/">greyquill.io</a>
+  </footer>
+
+  <script src="assets/blog.js"></script>
+</body>
+</html>
